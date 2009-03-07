@@ -1,0 +1,3 @@
+src/upnp-port-mapper.c
+data/upnp-port-mapper.glade
+upnp-port-mapper.desktop.in

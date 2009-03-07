@@ -1,0 +1,112 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-03-06 22:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/upnp-port-mapper.c:220
+msgid "Enabled"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:221
+msgid "Description"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:222
+msgid "Protocol"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:223
+msgid "Int. Port"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:224
+msgid "Ext. Port"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:225
+msgid "Local IP"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:226
+msgid "Remote IP"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:336 ../src/upnp-port-mapper.c:371
+msgid "n.a."
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:385
+msgid "<b>WAN status:</b> <span color=\"#009000\"><b>Connected</b></span>"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:387
+msgid "<b>WAN status:</b> <span color=\"green\">Disconnected</span>"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:416
+#, c-format
+msgid "<b>IP:</b> %s"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:440
+msgid "<span color=\"blue\"><u>Open router config</u></span>"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:453 ../src/upnp-port-mapper.c:507
+msgid "<span color=\"blue\">Open router config</span>"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:501
+#, c-format
+msgid "<b>Name:</b> %s"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:645 ../data/upnp-port-mapper.glade.h:2
+msgid "<b>Name:</b>"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:648
+msgid "<b>WAN status:</b>"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:651 ../data/upnp-port-mapper.glade.h:1
+msgid "<b>IP:</b>"
+msgstr ""
+
+#. Feel free to put your names here translators :-)
+#: ../src/upnp-port-mapper.c:714
+msgid "translator-credits"
+msgstr ""
+
+#: ../src/upnp-port-mapper.c:720 ../upnp-port-mapper.desktop.in.h:1
+msgid "A simple program to map the ports on the router via UPnP"
+msgstr ""
+
+#: ../data/upnp-port-mapper.glade.h:3
+msgid "<b>State:</b>"
+msgstr ""
+
+#: ../data/upnp-port-mapper.glade.h:4
+msgid "_File"
+msgstr ""
+
+#: ../data/upnp-port-mapper.glade.h:5
+msgid "_Help"
+msgstr ""
+
+#: ../data/upnp-port-mapper.glade.h:6
+msgid "_Switch router"
+msgstr ""

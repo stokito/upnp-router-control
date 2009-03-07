@@ -1,0 +1,34 @@
+UPnP Port Mapper
+******************************************
+
+Copyright (C) 2009  Daniele Napolitano <dnax88@gmail.com>
+
+A UPnP port mapper for routers that support it
+
+
+Compilation and installation
+============================
+
+In order to compile UPnP Port Mapper you need following software packages:
+	- GTK+ library ( >= 2.14 )
+	- Glade library ( >= 2.6 )
+	- GUPnP library
+
+To configure run:
+	./waf configure --prefix=/usr
+ 
+Configure automatically searches for all required components and packages. 
+
+To compile and install run:
+	./waf build
+	sudo ./waf install
+
+
+Information
+===========
+
+Main project site:
+	https://launchpad.net/upnp-port-mapper
+
+For bugs filling and search:
+	https://bugs.launchpad.net/upnp-port-mapper

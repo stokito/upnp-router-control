@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=UPnP Port Mapper
+_Comment=A simple program to map the ports on the router via UPnP
+Exec=upnp-port-mapper
+Icon=upnp-port-mapper
+Terminal=false
+Categories=Utility;
