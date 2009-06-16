@@ -292,50 +292,6 @@ static void setup_treeview()
     
 }
 
-
-static gboolean get_external_ip (gpointer data)
-{
-    GError *error = NULL;
-    gchar* ext_ip_addr;
-    
-    g_print("\e[1;36mRequest for external IP address... ");
-    
-    /* download speed */
-    gupnp_service_proxy_send_action (router.wan_device,
-				   /* Action name and error location */
-				   "GetExternalIPAddress", &error,
-				   /* IN args */
-				   NULL,
-				   /* OUT args */
-				   "NewExternalIPAddress",
-				   G_TYPE_STRING, &ext_ip_addr,
-				   NULL);
-				   
-    if (error == NULL)
-    {
-        router.external_ip = g_strdup(ext_ip_addr);
-        
-        g_print("\e[1;32msuccessful \e[1;37m[%s]\e[0;0m\n", router.external_ip);
-        
-        gchar *str;
-        str = g_strdup_printf( _("<b>IP:</b> %s"), router.external_ip);
-        gtk_label_set_markup (GTK_LABEL(ui.ip_label), str);
-        gtk_widget_set_sensitive(ui.ip_label, TRUE);
-        g_free(str); 
-        return TRUE;        
-    }
-    else
-    {
-        g_print("\e[1;31mfailed\e[0;0m\n");
-        gtk_widget_set_sensitive(ui.down_rate_label, FALSE);
-        gtk_label_set_text (GTK_LABEL(ui.down_rate_label), _("n.a.") );   
-        
-        g_printerr ("Error: %s\n", error->message);
-        g_error_free (error);
-        return FALSE;
-    }
-}
-
 /* Retrive download and upload speeds */
 static gboolean update_data_rate_cb (gpointer data)
 {
@@ -436,6 +392,104 @@ static void gui_set_state(const gchar *state)
     
 }
 
+/* Retrive connection infos: connection status, uptime and last error. */
+static gboolean get_conn_status (gpointer data)
+{
+    GError *error = NULL;
+    gchar* conn_status;
+    gchar* last_conn_error;
+    guint  uptime = 0;
+    
+    g_print("\e[1;36mRequest for connection status info... ");
+    
+    /* download speed */
+    gupnp_service_proxy_send_action (router.wan_device,
+				   /* Action name and error location */
+				   "GetStatusInfo", &error,
+				   /* IN args */
+				   NULL,
+				   /* OUT args */
+				   "NewConnectionStatus",
+				   G_TYPE_STRING, &conn_status,
+				   "NewLastConnectionError",
+				   G_TYPE_STRING, &last_conn_error,
+				   "NewUptime",
+				   G_TYPE_UINT, &uptime,
+				   NULL);
+				   
+    if (error == NULL)
+    {
+        gtk_widget_set_sensitive(ui.wan_status_label, TRUE);
+        gui_set_state(conn_status);
+        if(g_strcmp0("Connected", conn_status) == 0)
+            router.connected = TRUE;
+        else
+            router.connected = FALSE;
+        
+        g_print("\e[1;32msuccessful\e[0;0m\n");
+        g_print("\e[1;37mConnection info:\e[0m Status: %s, Uptime: %i sec.\n", conn_status, uptime);
+        
+        if(g_strcmp0("ERROR_NONE", last_conn_error) != 0)
+            g_print("\e[33mLast connection error:\e[0m %s\n", last_conn_error);
+        
+        return TRUE;        
+    }
+    else
+    {
+        g_print("\e[1;31mfailed\e[0;0m\n");
+        gtk_widget_set_sensitive(ui.wan_status_label, TRUE);
+        gtk_label_set_text (GTK_LABEL(ui.wan_status_label), _("unknown") );   
+        
+        g_printerr ("Error: %s\n", error->message);
+        g_error_free (error);
+        return FALSE;
+    }
+}
+
+/* Retrive external IP address */
+static gboolean get_external_ip (gpointer data)
+{
+    GError *error = NULL;
+    gchar* ext_ip_addr;
+    
+    g_print("\e[1;36mRequest for external IP address... ");
+    
+    /* download speed */
+    gupnp_service_proxy_send_action (router.wan_device,
+				   /* Action name and error location */
+				   "GetExternalIPAddress", &error,
+				   /* IN args */
+				   NULL,
+				   /* OUT args */
+				   "NewExternalIPAddress",
+				   G_TYPE_STRING, &ext_ip_addr,
+				   NULL);
+				   
+    if (error == NULL)
+    {
+        router.external_ip = g_strdup(ext_ip_addr);
+        
+        g_print("\e[1;32msuccessful \e[1;37m[%s]\e[0;0m\n", router.external_ip);
+        
+        gchar *str;
+        str = g_strdup_printf( _("<b>IP:</b> %s"), router.external_ip);
+        gtk_label_set_markup (GTK_LABEL(ui.ip_label), str);
+        gtk_widget_set_sensitive(ui.ip_label, TRUE);
+        g_free(str); 
+        return TRUE;        
+    }
+    else
+    {
+        g_print("\e[1;31mfailed\e[0;0m\n");
+        gtk_widget_set_sensitive(ui.ip_label, FALSE);
+        gtk_label_set_text (GTK_LABEL(ui.ip_label), _("unknown") );   
+        
+        g_printerr ("Error: %s\n", error->message);
+        g_error_free (error);
+        return FALSE;
+    }
+}
+
 /* Service event callback */
 static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
                                         const char *variable,
@@ -507,9 +561,10 @@ static gboolean on_mousepress_cb (GtkWidget      *widget,
                                   GdkEventButton *event,
                                   gpointer        user_data)
 {
-    gchar* str;    
+    gchar* str;
+    guint ret;    
     str = g_strdup_printf("xdg-open %s", router.http_address);
-    system(str);
+    ret = system(str);
     g_free(str);
 
     return FALSE;
@@ -623,6 +678,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         
         gupnp_service_proxy_set_subscribed(child->data, TRUE);
         
+        get_conn_status(NULL);
         get_external_ip(NULL);
         
         g_print("   => Subscribed to WANIPConn events\n");
