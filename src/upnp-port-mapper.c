@@ -292,6 +292,50 @@ static void setup_treeview()
     
 }
 
+
+static gboolean get_external_ip (gpointer data)
+{
+    GError *error = NULL;
+    gchar* ext_ip_addr;
+    
+    g_print("\e[1;36mRequest for external IP address... ");
+    
+    /* download speed */
+    gupnp_service_proxy_send_action (router.wan_device,
+				   /* Action name and error location */
+				   "GetExternalIPAddress", &error,
+				   /* IN args */
+				   NULL,
+				   /* OUT args */
+				   "NewExternalIPAddress",
+				   G_TYPE_STRING, &ext_ip_addr,
+				   NULL);
+				   
+    if (error == NULL)
+    {
+        router.external_ip = g_strdup(ext_ip_addr);
+        
+        g_print("\e[1;32msuccessful \e[1;37m[%s]\e[0;0m\n", router.external_ip);
+        
+        gchar *str;
+        str = g_strdup_printf( _("<b>IP:</b> %s"), router.external_ip);
+        gtk_label_set_markup (GTK_LABEL(ui.ip_label), str);
+        gtk_widget_set_sensitive(ui.ip_label, TRUE);
+        g_free(str); 
+        return TRUE;        
+    }
+    else
+    {
+        g_print("\e[1;31mfailed\e[0;0m\n");
+        gtk_widget_set_sensitive(ui.down_rate_label, FALSE);
+        gtk_label_set_text (GTK_LABEL(ui.down_rate_label), _("n.a.") );   
+        
+        g_printerr ("Error: %s\n", error->message);
+        g_error_free (error);
+        return FALSE;
+    }
+}
+
 /* Retrive download and upload speeds */
 static gboolean update_data_rate_cb (gpointer data)
 {
@@ -578,6 +622,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router.wan_service = child->data;
         
         gupnp_service_proxy_set_subscribed(child->data, TRUE);
+        
+        get_external_ip(NULL);
         
         g_print("   => Subscribed to WANIPConn events\n");
         
