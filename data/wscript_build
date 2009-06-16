@@ -2,9 +2,21 @@
 # encoding: utf-8
 # Daniele Napolitano, 2009
 
+# Launcher
+if bld.env['INTLTOOL']:
+    obj			        = bld.new_task_gen('intltool_in')
+    obj.source		    = 'upnp-port-mapper.desktop.in'
+    obj.install_path	= '${DATADIR}/applications'
+    obj.podir           = '../po'
+    obj.flags		    = ['-d', '-u', '-c' ]
+
 # Icons
-bld.install_files('${DATADIR}/icons/hicolor/scalable/apps', 'upnp-port-mapper.svg')
-bld.install_files('${DATADIR}/upnp-port-mapper', 'upnp-port-mapper.svg')
+bld.install_as('${DATADIR}/icons/hicolor/scalable/apps/upnp-port-mapper.svg', 'apps_scalable_upnp-port-mapper.svg')
+
+for i in ["16x16", "22x22", "24x24", "32x32", "48x48"]:
+	bld.install_as('${DATADIR}/icons/hicolor/%s/apps/upnp-port-mapper.png' % i, 'apps_%s_upnp-port-mapper.png' % i)
 
 # Glade file
 bld.install_files('${DATADIR}/upnp-port-mapper', 'upnp-port-mapper.glade')
+
+

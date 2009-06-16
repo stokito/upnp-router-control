@@ -1,0 +1,6 @@
+#! /usr/bin/env python
+# encoding: utf-8
+# Daniele Napolitano, 2009
+
+obj = bld.new_task_gen('intltool_po')
+obj.appname = 'upnp-port-mapper'

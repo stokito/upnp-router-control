@@ -4,6 +4,7 @@
 
 import os
 import intltool
+import gnome
 
 # the following two variables are used by the target "waf dist"
 VERSION='0.1'
@@ -11,8 +12,7 @@ APPNAME='upnp-port-mapper'
 
 # these variables are mandatory ('/' are converted automatically)
 srcdir = '.'
-blddir = 'build'
-
+blddir = '_build_'
 
 def set_options(opt):
     pass
@@ -31,24 +31,22 @@ def configure(conf):
     conf.define('PACKAGE_VERSION', APPNAME + '-' + VERSION)
     conf.define('PACKAGE_BUGREPORT','https://bugs.launchpad.net/upnp-port-mapper')
     conf.define('GETTEXT_PACKAGE', APPNAME)
+    conf.define('PACKAGE_DATADIR', conf.env['DATADIR'] + '/' + APPNAME)
 
     conf.env.append_value('CCFLAGS', '-DHAVE_CONFIG_H')
 
-    conf.write_config_header('src/config.h')
-    
+    conf.write_config_header('config.h')    
 
 def build(bld):
- 
-    bld.add_subdirs('src data')
+    bld.env['PACKAGE_DATADIR'] = bld.env['DATADIR'] + '/' + APPNAME
 
+    bld.add_subdirs('src data')
+    
     # translations
     if bld.env['INTLTOOL']:
-        obj = bld.new_task_gen('intltool_po')
-        obj.podir = 'po'
-        obj.appname = 'upnp-port-mapper'
-
-    # Launcher
-    obj			= bld.new_task_gen('intltool_in')
-    obj.source		= 'upnp-port-mapper.desktop.in'
-    obj.flags		= '-d'
-    obj.install_path	= '${DATADIR}/applications'
+        bld.add_subdirs('po')
+        
+    
+def shutdown():
+	# Postinstall tasks:
+	gnome.postinstall_icons() # Updating the icon cache

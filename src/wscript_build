@@ -3,10 +3,10 @@
 # Daniele Napolitano, 2009
 
 obj = bld.new_task_gen('cc', 'program')
-obj.includes='.'
-obj.env['CPPFLAGS'] = '-g -Wall'
-#obj.env['CPPFLAGS'] = '-march=pentium4 -O2 -pipe -fomit-frame-pointer'
-#obj.env['LINKFLAGS'] = '-ljsw -export-dynamic'
+obj.includes= ['.', '../']
+obj.env['CPPFLAGS'] = ['-Wall', '-g', '-O2']
+#obj.env['CPPFLAGS'] = ['-march=pentium4', '-pipe', '-fomit-frame-pointer']
+#obj.env['LINKFLAGS'] = ['-export-dynamic']
 obj.find_sources_in_dirs('.')
 obj.uselib = 'GTK GLADE GUPNP'
 obj.target = 'upnp-port-mapper'
