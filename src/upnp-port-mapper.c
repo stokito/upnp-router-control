@@ -369,7 +369,7 @@ static gboolean update_data_rate_cb (gpointer data)
         /* Errors on sending action */
         gtk_widget_set_sensitive(ui.up_rate_label, FALSE);
         gtk_label_set_text (GTK_LABEL(ui.up_rate_label), _("n.a.") );
-        g_printerr ("Error: %s\n", error->message);
+        g_printerr ("\e[1;31mError:\e[1;0m %s\e[0m\n", error->message);
         g_error_free (error);
         return FALSE;
     }
@@ -400,7 +400,7 @@ static gboolean get_conn_status (gpointer data)
     gchar* last_conn_error;
     guint  uptime = 0;
     
-    g_print("\e[1;36mRequest for connection status info... ");
+    g_print("\e[36mRequest for connection status info... ");
     
     /* download speed */
     gupnp_service_proxy_send_action (router.wan_device,
@@ -426,8 +426,8 @@ static gboolean get_conn_status (gpointer data)
         else
             router.connected = FALSE;
         
-        g_print("\e[1;32msuccessful\e[0;0m\n");
-        g_print("\e[1;37mConnection info:\e[0m Status: %s, Uptime: %i sec.\n", conn_status, uptime);
+        g_print("\e[32msuccessful\e[0;0m\n");
+        g_print("\e[36mConnection info:\e[0m Status: %s, Uptime: %i sec.\n", conn_status, uptime);
         
         if(g_strcmp0("ERROR_NONE", last_conn_error) != 0)
             g_print("\e[33mLast connection error:\e[0m %s\n", last_conn_error);
@@ -452,7 +452,7 @@ static gboolean get_external_ip (gpointer data)
     GError *error = NULL;
     gchar* ext_ip_addr;
     
-    g_print("\e[1;36mRequest for external IP address... ");
+    g_print("\e[36mRequest for external IP address... ");
     
     /* download speed */
     gupnp_service_proxy_send_action (router.wan_device,
@@ -469,7 +469,7 @@ static gboolean get_external_ip (gpointer data)
     {
         router.external_ip = g_strdup(ext_ip_addr);
         
-        g_print("\e[1;32msuccessful \e[1;37m[%s]\e[0;0m\n", router.external_ip);
+        g_print("\e[32msuccessful \e[0m[%s]\n", router.external_ip);
         
         gchar *str;
         str = g_strdup_printf( _("<b>IP:</b> %s"), router.external_ip);
@@ -501,14 +501,14 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
     if(g_strcmp0("PortMappingNumberOfEntries", variable) == 0)
     {
         router.PortMappingNumberOfEntries = g_value_get_uint(value);
-        g_print("\e[1;33mEvent:\e[0;0m Ports mapped: %d\n", router.PortMappingNumberOfEntries);
+        g_print("\e[33mEvent:\e[0;0m Ports mapped: %d\n", router.PortMappingNumberOfEntries);
         make_port_mapping_list();           
     }
     /* Got external IP */
     else if(g_strcmp0("ExternalIPAddress", variable) == 0)
     {
         router.external_ip = g_strdup(g_value_get_string(value));
-        g_print("\e[1;33mEvent:\e[0;0m External IP: %s\n", router.external_ip);
+        g_print("\e[33mEvent:\e[0;0m External IP: %s\n", router.external_ip);
         
         gchar *str;
         str = g_strdup_printf( _("<b>IP:</b> %s"), router.external_ip);
@@ -525,7 +525,7 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
             router.connected = TRUE;
         else
             router.connected = FALSE;
-        g_print("\e[1;33mEvent:\e[0;0m Connection status: %s\n", g_value_get_string(value) );
+        g_print("\e[33mEvent:\e[0;0m Connection status: %s\n", g_value_get_string(value) );
     }
 }
 
@@ -582,9 +582,16 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
   const char *service_type = NULL;
   const char *service_id = NULL;
   const char *device_type = NULL;
+  static int level = 0;
+  int i;
   
-  g_print("==> Device Available: \e[1;31m%s\e[0;0m\n",
+  if(level == 0) {
+    for(i = 0; i < level; i++)
+      g_print("    ");
+    g_print("==> Device Available: \e[31m%s\e[0;0m\n",
            gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
+  }
+   
   device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
   
   /* Is a gateway? */
@@ -623,15 +630,22 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
   /* Enum services */
   child = gupnp_device_info_list_services(GUPNP_DEVICE_INFO (proxy));
   
+  for(i = 0; i < level; i++)
+      g_print("    ");
+  
   if (g_list_length(child) > 0)
-    g_print("\e[1;32mEnum services...\e[0;0m\n");
+    g_print("    \e[1;32mEnum services...\e[0;0m\n");
   
   while( child )
   {
     
     service_type = gupnp_service_info_get_service_type(GUPNP_SERVICE_INFO (child->data));
     service_id = gupnp_service_info_get_id(GUPNP_SERVICE_INFO (child->data));
-    g_print(" > Service Available: %s\n", service_id );
+    
+    for(i = 0; i < level; i++)
+      g_print("    ");
+    
+    g_print("      \e[32mService Available:\e[0m %s\n", service_id );
     
     /* Is a IP forwarding service? */
     if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:Layer3Forwarding:1") == 0)
@@ -677,11 +691,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router.wan_service = child->data;
         
         gupnp_service_proxy_set_subscribed(child->data, TRUE);
+                
+        for(i = 0; i < level; i++)
+            g_print("    ");
         
-        get_conn_status(NULL);
+        g_print("      \e[32m** Subscribed to WANIPConn events\e[0m\n");
+        
         get_external_ip(NULL);
-        
-        g_print("   => Subscribed to WANIPConn events\n");
+        get_conn_status(NULL);
         
         gupnp_service_proxy_add_notify (child->data,
                                         "PortMappingNumberOfEntries",
@@ -698,6 +715,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                         G_TYPE_STRING,
                                         service_proxy_event_cb,
                                         NULL);
+                                        
     }
     else
         g_object_unref (child->data);
@@ -710,16 +728,25 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
   child = gupnp_device_info_list_devices(GUPNP_DEVICE_INFO (proxy));
   
   if (g_list_length(child) > 0)
-    g_print("\e[1;32mEnum sub-devices (recursive)...\e[0;0m\n");
+  {
+      for(i = 0; i < level; i++)
+          g_print("    ");
+          
+      g_print("    \e[1;32mEnum sub-devices (recursive)...\e[0;0m\n");
+  }
   
   while( child )
   {
 
-    g_print(" * Sub-Device Available: %s\n",
+    for(i = 0; i < level; i++)
+          g_print("    ");
+    g_print("      \e[32mSub-Device Available: \e[31m%s\e[0m\n",
         gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (child->data)));
     
+    level = level + 1;
     /* Recursive pass */
     device_proxy_available_cb (NULL, child->data);
+    level = level - 1;
     
     g_object_unref (child->data);
     child = g_list_delete_link (child, child);
@@ -734,7 +761,7 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 { 
     const char *device_type = NULL;
     
-    g_print("==> Device Unavailable: \e[1;31m%s\e[0;0m\n",
+    g_print("==> Device Unavailable: \e[31m%s\e[0;0m\n",
             gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
     
     device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
