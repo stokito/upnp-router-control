@@ -127,7 +127,7 @@ msgstr "not available"
 #. Feel free to put your names here translators :-)
 #: ../src/urc-gui.c:507
 msgid "translator-credits"
-msgstr "Daniele Napolitano <dnax88@gomail.com>"
+msgstr "Daniele Napolitano <dnax88@gmail.com>"
 
 #: ../src/urc-gui.c:513 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP compliant routers"
