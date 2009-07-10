@@ -1,28 +1,28 @@
 icons = \
-	apps_16x16_upnp-port-mapper.png \
-	apps_22x22_upnp-port-mapper.png \
-	apps_24x24_upnp-port-mapper.png \
-	apps_32x32_upnp-port-mapper.png \
-	apps_48x48_upnp-port-mapper.png \
-	apps_scalable_upnp-port-mapper.svg \
+	apps_16x16_upnp-router-control.png \
+	apps_22x22_upnp-router-control.png \
+	apps_24x24_upnp-router-control.png \
+	apps_32x32_upnp-router-control.png \
+	apps_48x48_upnp-router-control.png \
+	apps_scalable_upnp-router-control.svg \
 	$(NULL)
 	
 noinst_DATA = \
-	apps_16x16_upnp-port-mapper.svg \
-	apps_22x22_upnp-port-mapper.svg \
-	apps_24x24_upnp-port-mapper.svg \
-	apps_32x32_upnp-port-mapper.svg \
-	apps_48x48_upnp-port-mapper.svg \
-	apps_scalable2_upnp-port-mapper.svg \
+	apps_16x16_upnp-router-control.svg \
+	apps_22x22_upnp-router-control.svg \
+	apps_24x24_upnp-router-control.svg \
+	apps_32x32_upnp-router-control.svg \
+	apps_48x48_upnp-router-control.svg \
+	apps_scalable2_upnp-router-control.svg \
 	$(NULL)
 
-gladedir = $(datadir)/upnp-port-mapper
+gladedir = $(datadir)/upnp-router-control
 glade_DATA = \
-    upnp-port-mapper.glade
+    upnp-router-control.glade
 
 @INTLTOOL_DESKTOP_RULE@
 desktopdir = $(datadir)/applications
-desktop_in_files = upnp-port-mapper.desktop.in
+desktop_in_files = upnp-router-control.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 	
 EXTRA_DIST = \

@@ -1,4 +1,4 @@
-AC_INIT([upnp-port-mapper], [0.1], [https://launchpad.net/upnp-port-mapper])
+AC_INIT([upnp-router-control], [0.1], [https://launchpad.net/upnp-port-mapper])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
@@ -17,7 +17,7 @@ AC_PROG_MAKE_SET
 CFLAGS="${CFLAGS} -Wall"
 
 dnl Initialize intltool
-GETTEXT_PACKAGE=upnp-port-mapper
+GETTEXT_PACKAGE=upnp-router-control
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 
@@ -26,18 +26,11 @@ AM_GLIB_GNU_GETTEXT
 
 
 #### Check for GTK+ >= 2.14 ####
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.14,,
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16,,
 	AC_MSG_ERROR([GTK+-2.6 is required to compile upnp-port-mapper]))
 	
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
-
-#### Check for libglade2 >= 2.6 ####
-PKG_CHECK_MODULES(GLADE, libglade-2.0 >= 2.6,,
-	AC_MSG_ERROR([libglade-2.6 is required to compile upnp-port-mapper]))
-	
-AC_SUBST(GLADE_CFLAGS)
-AC_SUBST(GLADE_LIBS)
 
 #### Check for gupnp1.0 ####
 PKG_CHECK_MODULES(GUPNP, gupnp-1.0,,
@@ -56,4 +49,4 @@ po/Makefile.in
 AC_OUTPUT
 
 echo
-echo -e "Now type 'make' to compile upnp-port-mapper,\nthen type 'sudo make install' to install it."
+echo -e "Now type 'make' to compile upnp-router-control,\nthen type 'sudo make install' to install it."

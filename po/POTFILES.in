@@ -1,5 +1,7 @@
 # List of source files containing translatable strings.
 [encoding: UTF-8]
-src/upnp-port-mapper.c
-data/upnp-port-mapper.glade
-data/upnp-port-mapper.desktop.in
+src/urc-main.c
+src/urc-upnp.c
+src/urc-gui.c
+data/upnp-router-control.glade
+data/upnp-router-control.desktop.in

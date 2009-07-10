@@ -8,7 +8,7 @@ import gnome
 
 # the following two variables are used by the target "waf dist"
 VERSION='0.1'
-APPNAME='upnp-port-mapper'
+APPNAME='upnp-router-control'
 
 # these variables are mandatory ('/' are converted automatically)
 srcdir = '.'
@@ -22,7 +22,6 @@ def configure(conf):
     conf.check_tool('gcc intltool')
  
     conf.check_cfg(package='gtk+-2.0', uselib_store='GTK', atleast_version='2.14', mandatory=True, args='--cflags --libs')
-    conf.check_cfg(package='libglade-2.0', uselib_store='GLADE', atleast_version='2.6', mandatory=True, args='--cflags --libs')
     conf.check_cfg(package='gupnp-1.0', uselib_store='GUPNP', mandatory=True, args='--cflags --libs')
 
     conf.define('PACKAGE', APPNAME)

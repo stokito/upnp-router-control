@@ -3,4 +3,4 @@
 # Daniele Napolitano, 2009
 
 obj = bld.new_task_gen('intltool_po')
-obj.appname = 'upnp-port-mapper'
+obj.appname = 'upnp-router-control'
