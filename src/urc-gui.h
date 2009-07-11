@@ -21,6 +21,7 @@
 #define __URC_GUI_H__
 
 #include <glib.h>
+#include "urc-upnp.h"
 
 void gui_init();
 
@@ -28,7 +29,7 @@ void gui_enable();
 
 void gui_disable();
 
-void gui_set_button_delete_callback_data(gpointer data);
+void gui_set_ports_buttons_callback_data(gpointer data);
 
 void gui_set_router_info (const gchar *router_friendly_name,
                           const gchar *router_conf_url,
@@ -53,8 +54,7 @@ void gui_set_download_speed(const gdouble down_speed);
 
 void gui_set_upload_speed(const gdouble up_speed);
 
-void gui_add_mapped_port(const gboolean enabled, const gchar *description, const gchar *protocol, const guint internal_port,
-                         const guint external_port, const gchar *internal_host, const gchar *remote_host);
+void gui_add_mapped_port(const PortForwardInfo* port_info);
                          
 void gui_clear_ports_list_treeview(void);
 

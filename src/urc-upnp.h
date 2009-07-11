@@ -24,8 +24,23 @@
 #include <glib.h>
 #include <libgupnp/gupnp-control-point.h>
 
+typedef struct
+{
+    gboolean enabled;
+    gchar*   description;
+    gchar*   protocol;
+    guint    internal_port;
+    guint    external_port;
+    gchar*   internal_host;
+    gchar*   remote_host;
+    guint    lease_time;
+
+} PortForwardInfo;
+
 gboolean upnp_init(const char *host_ip, const gboolean debug);
 
-void delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host);
+gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host);
+
+gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_info);
 
 #endif /* __URC_UPNP_H__ */

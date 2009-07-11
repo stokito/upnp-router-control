@@ -42,6 +42,17 @@ enum Columns
 
 typedef struct
 {
+    GtkWidget *window,
+              *add_desc,
+              *add_ext_port,
+              *add_proto,
+              *add_local_ip,
+              *add_local_port;
+
+} AddPortWindow;
+
+typedef struct
+{
     GtkBuilder* builder;
     
     GtkWidget *main_window,
@@ -53,27 +64,117 @@ typedef struct
               *ip_label,
               *down_rate_label,
               *up_rate_label;
+              
+    AddPortWindow* add_port_window;
+
 } GuiContext;
 
 static GuiContext* gui;
 
+static void gui_add_port_window_close(GtkWidget *button,
+                                      gpointer   user_data)
+{
+    PortForwardInfo* port_info;
+    
+    if( user_data != NULL )
+    {
+        port_info = g_malloc( sizeof(PortForwardInfo) );
+        
+        port_info->description = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_desc)) );
+        port_info->protocol = g_strdup( gtk_combo_box_get_active_text(GTK_COMBO_BOX (gui->add_port_window->add_proto)) );
+        port_info->internal_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_local_port) );
+        port_info->external_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_ext_port) );
+        port_info->internal_host = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_local_ip)) );
+        port_info->remote_host = "";
+        port_info->lease_time = 0;
+        
+        add_port_mapping(user_data, port_info);
+        
+        g_free(port_info->description);
+        g_free(port_info->protocol);
+        g_free(port_info->internal_host);
+        g_free(port_info);
+    }
+
+    gtk_widget_destroy (gui->add_port_window->window);
+    
+    g_object_unref(gui->add_port_window->window);
+    
+    g_free(gui->add_port_window);
+    
+    gui->add_port_window = NULL;
+    
+}
+
+static void gui_run_add_port_window(GtkWidget *button,
+                                    gpointer   user_data)
+{
+    AddPortWindow* add_port_window;
+    GtkListStore *list_store;
+    GtkCellRenderer *renderer;
+    
+    add_port_window = g_malloc( sizeof(AddPortWindow) );
+    
+    add_port_window->window = GTK_WIDGET (g_object_ref(gtk_builder_get_object (gui->builder, "add_port_window")));
+    g_assert (add_port_window->window != NULL);
+    
+    gtk_window_set_transient_for(GTK_WINDOW(add_port_window->window), GTK_WINDOW(gui->main_window));
+    
+    add_port_window->add_desc = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_desc"));
+    add_port_window->add_ext_port = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_ext_port"));
+    add_port_window->add_proto = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_proto"));
+    add_port_window->add_local_ip = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_local_ip"));
+    add_port_window->add_local_port = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_local_port"));
+    
+
+    list_store = gtk_list_store_new (1, G_TYPE_STRING );
+    
+    gtk_combo_box_set_model(GTK_COMBO_BOX(add_port_window->add_proto), GTK_TREE_MODEL(list_store));
+    
+    renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start( GTK_CELL_LAYOUT(add_port_window->add_proto), renderer, TRUE);
+	gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT(add_port_window->add_proto),
+					renderer,
+					"text",
+					0,
+					NULL);
+    
+    gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "TCP");
+    gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "UDP");           
+    
+    
+    gtk_entry_set_text (GTK_ENTRY(add_port_window->add_desc), "");
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON(add_port_window->add_ext_port), 0);
+    gtk_entry_set_text (GTK_ENTRY(add_port_window->add_local_ip), "");
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON(add_port_window->add_local_port), 0);
+                         
+    g_signal_connect(gtk_builder_get_object (gui->builder, "button_apply"), "clicked",
+                         G_CALLBACK(gui_add_port_window_close), user_data);
+    
+    g_signal_connect(gtk_builder_get_object (gui->builder, "button_cancel"), "clicked",
+                         G_CALLBACK(gui_add_port_window_close), NULL);    
+    
+    gtk_widget_show_all(add_port_window->window);
+   
+    gui->add_port_window = add_port_window;
+}
+
 /* Clean the Treeview */
 void gui_clear_ports_list_treeview (void)
 {
-        GtkTreeModel *model;
-        GtkTreeIter   iter;
-        gboolean      more;
+    GtkTreeModel *model;
+    GtkTreeIter   iter;
+    gboolean      more;
 
-        model = gtk_tree_view_get_model (GTK_TREE_VIEW (gui->treeview));
-        more = gtk_tree_model_get_iter_first (model, &iter);
+    model = gtk_tree_view_get_model (GTK_TREE_VIEW (gui->treeview));
+    more = gtk_tree_model_get_iter_first (model, &iter);
 
-        while (more)
-                more = gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
+    while (more)
+        more = gtk_list_store_remove (GTK_LIST_STORE (model), &iter);
 }
 
 /* Add a port mapped in the treeview list */
-void gui_add_mapped_port(const gboolean enabled, const gchar *description, const gchar *protocol, const guint internal_port,
-                         const guint external_port, const gchar *internal_host, const gchar *remote_host)
+void gui_add_mapped_port(const PortForwardInfo* port_info)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
@@ -83,13 +184,13 @@ void gui_add_mapped_port(const gboolean enabled, const gchar *description, const
     gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
     gtk_list_store_set (GTK_LIST_STORE (model),
                         &iter,
-                        UPNP_COLUMN_ENABLED, enabled,
-                        UPNP_COLUMN_DESC, description,
-                        UPNP_COLUMN_PROTOCOL, protocol,
-                        UPNP_COLUMN_INT_PORT, internal_port,
-                        UPNP_COLUMN_EXT_PORT, external_port,
-                        UPNP_COLUMN_LOCAL_IP, internal_host,
-                        UPNP_COLUMN_REM_IP, remote_host,
+                        UPNP_COLUMN_ENABLED, port_info->enabled,
+                        UPNP_COLUMN_DESC, port_info->description,
+                        UPNP_COLUMN_PROTOCOL, port_info->protocol,
+                        UPNP_COLUMN_INT_PORT, port_info->internal_port,
+                        UPNP_COLUMN_EXT_PORT, port_info->external_port,
+                        UPNP_COLUMN_LOCAL_IP, port_info->internal_host,
+                        UPNP_COLUMN_REM_IP, port_info->remote_host,
                         -1);
 }
 
@@ -445,10 +546,13 @@ void gui_set_router_info (const gchar *router_friendly_name,
 
 }
 
-void gui_set_button_delete_callback_data(gpointer data)
+void gui_set_ports_buttons_callback_data(gpointer data)
 {
     g_signal_connect(gtk_builder_get_object (gui->builder, "button_remove"), "clicked",
                      G_CALLBACK(on_button_remove_clicked), data);
+    
+    g_signal_connect(gtk_builder_get_object (gui->builder, "button_add"), "clicked",
+                     G_CALLBACK(gui_run_add_port_window), data);
 }
 
 void gui_enable()
@@ -522,6 +626,7 @@ void gui_init()
 {
     GtkBuilder* builder;
     GError* error = NULL;
+    AddPortWindow* add_port_window;
     
     g_print("* Initializing GUI...\n");
     

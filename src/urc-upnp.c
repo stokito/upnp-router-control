@@ -46,28 +46,9 @@ typedef struct
 
 } RouterInfo;
 
-
-typedef struct
-{
-    gboolean enabled;
-    gchar*   description;
-    gchar*   protocol;
-    guint    internal_port;
-    guint    external_port;
-    gchar*   internal_host;
-    gchar*   remote_host;
-    guint    lease_time;
-
-} PortForwardInfo;
-
-enum Protocols
-{
-    TCP, UDP
-};
-
 static gboolean opt_debug = FALSE;
 
-void delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host)
+gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host)
 {
     GError *error = NULL;
     
@@ -86,11 +67,66 @@ void delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, c
     
     if (error == NULL) {
 	    
-	    g_print("*** Removed entry: Port %d (%s) IP %s\n", external_port, protocol, remote_host );
+	    g_print("\e[36m*** Removed entry:\e[0m Port %d (%s) for External IP %s\n", external_port, protocol, remote_host );
+	    
+	    return TRUE;
         
     } else {
+    
         g_printerr ("Error: %s\n", error->message);
         g_error_free (error);
+        
+        return FALSE;
+    }    
+}
+
+gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_info)
+{
+    GError *error = NULL;
+    
+    gupnp_service_proxy_send_action (wan_service,
+				   /* Action name and error location */
+				   "AddPortMapping", &error,
+				   /* IN args */
+				   "NewRemoteHost",
+				   G_TYPE_STRING, port_info->remote_host,
+				   "NewExternalPort",
+				   G_TYPE_UINT, port_info->external_port,
+				   "NewProtocol",
+				   G_TYPE_STRING, port_info->protocol,
+				   "NewInternalPort",
+				   G_TYPE_UINT, port_info->internal_port,
+				   "NewInternalClient",
+				   G_TYPE_STRING, port_info->internal_host,
+				   "NewEnabled",
+				   G_TYPE_BOOLEAN, port_info->enabled,
+				   "NewPortMappingDescription",
+				   G_TYPE_STRING, port_info->description,
+				   "NewLeaseDuration",
+				   G_TYPE_UINT, port_info->lease_time,
+				   NULL,
+				   NULL);
+    
+    if (error == NULL) {
+	    
+	    g_print ("\e[36m*** Added entry: \e[0m%s\n", port_info->description );
+	    g_print ("    RemoteIP: %s, ExtPort: %d %s, IntPort: %d, IntIP: %s\n",
+	                 port_info->remote_host,
+	                 port_info->external_port,
+	                 port_info->protocol,
+	                 port_info->internal_port,
+	                 port_info->internal_host
+	                 );
+	    
+	    gui_add_mapped_port(port_info);
+	    
+	    return TRUE;
+        
+    } else {
+        g_printerr ("Error %i: %s\n", error->code, error->message);
+        g_error_free (error);
+        
+        return FALSE;
     }    
 }
 
@@ -166,8 +202,7 @@ void discovery_mapped_ports_list(RouterInfo *router)
 	             );
             
         if(port_info->external_port > 0) {
-                gui_add_mapped_port(port_info->enabled, port_info->description, port_info->protocol, port_info->internal_port,
-                                    port_info->external_port, port_info->internal_host, port_info->remote_host);
+                gui_add_mapped_port(port_info);
         }
         
         g_free (port_info->description);
@@ -219,8 +254,7 @@ static void get_mapped_ports_list(RouterInfo *router)
             
             if(port_info->external_port > 0)
             {
-                gui_add_mapped_port(port_info->enabled, port_info->description, port_info->protocol, port_info->internal_port,
-                                    port_info->external_port, port_info->internal_host, port_info->remote_host);
+                gui_add_mapped_port(port_info);
             }
             g_free (port_info->description);
             g_free (port_info->protocol);
@@ -575,7 +609,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         
             router->wan_service = child->data;
             
-            gui_set_button_delete_callback_data(router->wan_device);
+            gui_set_ports_buttons_callback_data(router->wan_device);
         
             gupnp_service_proxy_set_subscribed(child->data, TRUE);
             
