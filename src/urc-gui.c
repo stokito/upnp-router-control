@@ -47,7 +47,9 @@ typedef struct
               *add_ext_port,
               *add_proto,
               *add_local_ip,
-              *add_local_port;
+              *add_local_port,              
+              *button_apply,
+              *button_cancel;
 
 } AddPortWindow;
 
@@ -63,7 +65,9 @@ typedef struct
               *wan_status_label,
               *ip_label,
               *down_rate_label,
-              *up_rate_label;
+              *up_rate_label,
+              *button_remove,
+              *button_add;
               
     AddPortWindow* add_port_window;
 
@@ -96,18 +100,29 @@ static void gui_add_port_window_close(GtkWidget *button,
         g_free(port_info);
     }
 
-    gtk_widget_destroy (gui->add_port_window->window);
-    
-    g_object_unref(gui->add_port_window->window);
-    
-    g_free(gui->add_port_window);
-    
-    gui->add_port_window = NULL;
+    gtk_widget_hide_all (gui->add_port_window->window);
     
 }
 
 static void gui_run_add_port_window(GtkWidget *button,
                                     gpointer   user_data)
+{
+	
+	gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_desc), "");
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_ext_port), 0);
+    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_local_ip), "");
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), 0);
+    
+    g_signal_connect(gui->add_port_window->button_apply, "clicked",
+                         G_CALLBACK(gui_add_port_window_close), user_data);
+    
+    g_signal_connect(gui->add_port_window->button_cancel, "clicked",
+                         G_CALLBACK(gui_add_port_window_close), NULL);    
+    
+    gtk_widget_show_all (gui->add_port_window->window);
+}
+
+static void gui_create_add_port_window(GtkBuilder* builder)
 {
     AddPortWindow* add_port_window;
     GtkListStore *list_store;
@@ -115,17 +130,18 @@ static void gui_run_add_port_window(GtkWidget *button,
     
     add_port_window = g_malloc( sizeof(AddPortWindow) );
     
-    add_port_window->window = GTK_WIDGET (g_object_ref(gtk_builder_get_object (gui->builder, "add_port_window")));
+    add_port_window->window = GTK_WIDGET (gtk_builder_get_object (builder, "add_port_window"));
     g_assert (add_port_window->window != NULL);
     
     gtk_window_set_transient_for(GTK_WINDOW(add_port_window->window), GTK_WINDOW(gui->main_window));
     
-    add_port_window->add_desc = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_desc"));
-    add_port_window->add_ext_port = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_ext_port"));
-    add_port_window->add_proto = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_proto"));
-    add_port_window->add_local_ip = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_local_ip"));
-    add_port_window->add_local_port = GTK_WIDGET (gtk_builder_get_object (gui->builder, "add_local_port"));
-    
+    add_port_window->add_desc = GTK_WIDGET (gtk_builder_get_object (builder, "add_desc"));
+    add_port_window->add_ext_port = GTK_WIDGET (gtk_builder_get_object (builder, "add_ext_port"));
+    add_port_window->add_proto = GTK_WIDGET (gtk_builder_get_object (builder, "add_proto"));
+    add_port_window->add_local_ip = GTK_WIDGET (gtk_builder_get_object (builder, "add_local_ip"));
+    add_port_window->add_local_port = GTK_WIDGET (gtk_builder_get_object (builder, "add_local_port"));
+    add_port_window->button_apply = GTK_WIDGET (gtk_builder_get_object (builder, "button_apply"));
+    add_port_window->button_cancel = GTK_WIDGET (gtk_builder_get_object (builder, "button_cancel"));    
 
     list_store = gtk_list_store_new (1, G_TYPE_STRING );
     
@@ -140,21 +156,7 @@ static void gui_run_add_port_window(GtkWidget *button,
 					NULL);
     
     gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "TCP");
-    gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "UDP");           
-    
-    
-    gtk_entry_set_text (GTK_ENTRY(add_port_window->add_desc), "");
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON(add_port_window->add_ext_port), 0);
-    gtk_entry_set_text (GTK_ENTRY(add_port_window->add_local_ip), "");
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON(add_port_window->add_local_port), 0);
-                         
-    g_signal_connect(gtk_builder_get_object (gui->builder, "button_apply"), "clicked",
-                         G_CALLBACK(gui_add_port_window_close), user_data);
-    
-    g_signal_connect(gtk_builder_get_object (gui->builder, "button_cancel"), "clicked",
-                         G_CALLBACK(gui_add_port_window_close), NULL);    
-    
-    gtk_widget_show_all(add_port_window->window);
+    gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "UDP");
    
     gui->add_port_window = add_port_window;
 }
@@ -210,7 +212,12 @@ static void on_button_remove_clicked (GtkWidget *button,
     selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (gui->treeview));
     
     if(!gtk_tree_selection_get_selected(selection, NULL, &iter))
-        return;
+    {
+    	/* no selection */
+    	gtk_widget_set_sensitive(button, FALSE);
+    	return;
+    }
+        
     
     gtk_tree_model_get(model, &iter,
                        UPNP_COLUMN_PROTOCOL, &protocol,
@@ -224,7 +231,7 @@ static void on_button_remove_clicked (GtkWidget *button,
 
 
 /* Callback for enable checkbox */
-static void list_enable_toggled_cb (GtkCellRendererToggle *widget,
+/*static void list_enable_toggled_cb (GtkCellRendererToggle *widget,
                              gchar                 *path,
                              GtkWidget             *treeview)
 {
@@ -240,12 +247,30 @@ static void list_enable_toggled_cb (GtkCellRendererToggle *widget,
                        UPNP_COLUMN_ENABLED, &enabled,
                        -1);
 
-    /* set value in store */
+    // set value in store
     gtk_list_store_set(GTK_LIST_STORE(model), &iter,
                         UPNP_COLUMN_ENABLED, !enabled,
                         -1);
 
+}*/
+
+static gboolean gui_on_treeview_selection (GtkTreeSelection *selection,
+                       GtkTreeModel     *model,
+                       GtkTreePath      *path,
+                       gboolean          path_currently_selected,
+                       gpointer          userdata)
+{
+	
+	if (!path_currently_selected)	
+		gtk_widget_set_sensitive(gui->button_remove, TRUE);
+	
+	else	
+		gtk_widget_set_sensitive(gui->button_remove, FALSE);
+	
+
+	return TRUE; /* allow selection state to change */
 }
+
 
 /* Initialize model for Treeview */
 static void gui_init_treeview()
@@ -259,7 +284,7 @@ static void gui_init_treeview()
                                 _("Int. Port"),
                                 _("Ext. Port"),
                                 _("Local IP"),
-                                _("Remote IP"),
+                                /*_("Remote IP"),*/
                                 NULL };
     
     GtkListStore *store;
@@ -292,9 +317,10 @@ static void gui_init_treeview()
                                                     renderer,
                                                     "active", i);
                                                     
-                    g_signal_connect(G_OBJECT(renderer), "toggled",
+                    /* enable/disable port mappign callback */
+                    /*g_signal_connect(G_OBJECT(renderer), "toggled",
                          G_CALLBACK(list_enable_toggled_cb),
-                         NULL);
+                         NULL);*/
 
                     g_object_set(renderer,
                      "radio", FALSE,
@@ -319,15 +345,19 @@ static void gui_init_treeview()
                 
                 gtk_tree_view_insert_column (GTK_TREE_VIEW (gui->treeview),
                                              column, -1);
+                
                 gtk_tree_view_column_set_sizing(column,
                                                 GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+                
                 gtk_tree_view_column_set_resizable (column, TRUE);
         }
 
         gtk_tree_view_set_model (GTK_TREE_VIEW (gui->treeview),
                                  model);
         gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
-    
+        
+        gtk_tree_selection_set_select_function(selection, gui_on_treeview_selection, NULL, NULL);
+            
 }
 
 void gui_disable_download_speed()
@@ -414,13 +444,13 @@ void gui_set_conn_status(const gchar *state)
     gchar* str = NULL;
 
     if(g_strcmp0("Connected", state) == 0)
-            str = g_strdup( _("<b>WAN status:</b> <span color=\"#009000\"><b>Connected</b></span>"));
+            str = g_strdup_printf( "<b>%s</b> <span color=\"#009000\"><b>%s</b></span>", _("WAN status:"), _("Connected") );
     if(g_strcmp0("Disconnected", state) == 0)
-            str = g_strdup( _("<b>WAN status:</b> <span color=\"#900000\"><b>Disconnected</b></span>"));
+            str = g_strdup_printf( "<b>%s</b> <span color=\"#900000\"><b>%s</b></span>", _("WAN status:"), _("Disconnected"));
     if(g_strcmp0("Connecting", state) == 0)
-            str = g_strdup( _("<b>WAN status:</b> <span color=\"#0000a0\"><b>Connecting</b></span>"));
+            str = g_strdup_printf( "<b>%s</b> <span color=\"#0000a0\"><b>%s</b></span>", _("WAN status:"), _("Connecting"));
     if(g_strcmp0("Disconnecting", state) == 0)
-            str = g_strdup( _("<b>WAN status:</b> <span color=\"#c04000\"><b>Disconnecting</b></span>"));
+            str = g_strdup_printf( "<b>%s</b> <span color=\"#c04000\"><b>%s</b></span>", _("WAN status:"), _("Disconnecting"));
     
     gtk_label_set_markup (GTK_LABEL(gui->wan_status_label), str);
     
@@ -540,19 +570,22 @@ void gui_set_router_info (const gchar *router_friendly_name,
 	gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "leave-notify-event",
 		    		     GTK_SIGNAL_FUNC(on_mouseout_cb), NULL
 		               );
-	gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "button-press-event",
+	
+	gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "button-release-event",
 		    		     GTK_SIGNAL_FUNC(on_mousepress_cb), (gchar *) router_conf_url
-		               );    
+		               );   
 
 }
 
 void gui_set_ports_buttons_callback_data(gpointer data)
 {
-    g_signal_connect(gtk_builder_get_object (gui->builder, "button_remove"), "clicked",
+    g_signal_connect(gui->button_remove, "clicked",
                      G_CALLBACK(on_button_remove_clicked), data);
     
-    g_signal_connect(gtk_builder_get_object (gui->builder, "button_add"), "clicked",
+    g_signal_connect(gui->button_add, "clicked",
                      G_CALLBACK(gui_run_add_port_window), data);
+                     
+    gtk_widget_set_sensitive(gui->button_add, TRUE);
 }
 
 void gui_enable()
@@ -566,6 +599,7 @@ void gui_enable()
     gtk_widget_set_sensitive(gui->down_rate_label, TRUE);
     gtk_widget_set_sensitive(gui->up_rate_label, TRUE);
     gtk_widget_set_sensitive(gui->router_url_label, TRUE);
+    gtk_widget_set_sensitive(gui->button_add, TRUE);
 }
 
 void gui_disable()
@@ -593,6 +627,9 @@ void gui_disable()
     gtk_label_set_markup (GTK_LABEL(gui->router_url_label), _("not available"));
     gtk_widget_set_sensitive(gui->router_url_label, FALSE);
     
+    gtk_widget_set_sensitive(gui->button_add, FALSE);
+    gtk_widget_set_sensitive(gui->button_remove, FALSE);
+    
 }
 
 /* Menu About activate callback */
@@ -604,7 +641,7 @@ static void on_about_activate_cb (GtkMenuItem *menuitem,
 		NULL
 	};
     gchar* artists[] = {
-		"Icon design: Frédéric Bellaiche - http://www.quantum-bits.org",
+		"Icon design:\n\tFrédéric Bellaiche - http://www.quantum-bits.org",
 		NULL
 	};
 	/* Feel free to put your names here translators :-) */
@@ -626,13 +663,12 @@ void gui_init()
 {
     GtkBuilder* builder;
     GError* error = NULL;
-    AddPortWindow* add_port_window;
     
     g_print("* Initializing GUI...\n");
     
     gui = g_malloc( sizeof(GuiContext) );
     
-    builder = gui->builder = gtk_builder_new ();
+    builder = gtk_builder_new ();
     if (!gtk_builder_add_from_file (builder, UI_FILE, &error))
     {
         g_error ("Couldn't load builder file: %s", error->message);
@@ -652,6 +688,10 @@ void gui_init()
     gui->up_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "up_rate_label"));
     gui->router_url_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "router_url_eventbox"));
     
+    gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
+    gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
+    
+    
     g_signal_connect(gtk_builder_get_object (builder, "menuitem_about"), "activate",
                          G_CALLBACK(on_about_activate_cb), NULL);
     
@@ -661,6 +701,10 @@ void gui_init()
     g_signal_connect(G_OBJECT(gui->main_window), "destroy",
                          G_CALLBACK(gtk_main_quit), NULL);
                              
+    gui_create_add_port_window(builder);
+    
+    g_object_unref (G_OBJECT (builder));
+    
     gui_init_treeview();
     
     gui_disable();

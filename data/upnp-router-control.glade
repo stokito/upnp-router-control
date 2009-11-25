@@ -99,6 +99,7 @@
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Name:&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
+                <property name="selectable">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -194,6 +195,7 @@
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;IP:&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
+                <property name="selectable">True</property>
               </object>
               <packing>
                 <property name="left_attach">3</property>
@@ -206,7 +208,7 @@
                 <property name="visible">True</property>
                 <property name="spacing">4</property>
                 <child>
-                  <object class="GtkLabel" id="label1">
+                  <object class="GtkLabel" id="label_config">
                     <property name="visible">True</property>
                     <property name="xalign">0</property>
                     <property name="label" translatable="yes">&lt;b&gt;Config:&lt;/b&gt;</property>
@@ -283,6 +285,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Click for map a new port</property>
                     <property name="use_stock">True</property>
                   </object>
                   <packing>
@@ -297,6 +300,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
+                    <property name="tooltip_text" translatable="yes">Click for remove a port mapping</property>
                     <property name="use_stock">True</property>
                   </object>
                   <packing>
@@ -324,12 +328,12 @@
     <property name="title" translatable="yes">Add new port forward</property>
     <property name="window_position">center-on-parent</property>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkTable" id="table1">
+          <object class="GtkTable" id="table2">
             <property name="visible">True</property>
             <property name="n_rows">10</property>
             <property name="n_columns">2</property>
