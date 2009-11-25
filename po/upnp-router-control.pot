@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-10 17:49+0200\n"
+"POT-Creation-Date: 2009-11-25 04:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,83 +16,84 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/urc-main.c:77 ../data/upnp-router-control.glade.h:22
+#: ../src/urc-main.c:77 ../data/upnp-router-control.glade.h:24
 #: ../data/upnp-router-control.desktop.in.h:2
 msgid "UPnP Router Control"
 msgstr ""
 
-#: ../src/urc-gui.c:155
+#: ../src/urc-gui.c:281
 msgid "Enabled"
 msgstr ""
 
-#: ../src/urc-gui.c:156
+#: ../src/urc-gui.c:282
 msgid "Description"
 msgstr ""
 
-#: ../src/urc-gui.c:157
+#: ../src/urc-gui.c:283
 msgid "Protocol"
 msgstr ""
 
-#: ../src/urc-gui.c:158
+#: ../src/urc-gui.c:284
 msgid "Int. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:159
+#: ../src/urc-gui.c:285
 msgid "Ext. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:160
+#: ../src/urc-gui.c:286
 msgid "Local IP"
 msgstr ""
 
-#: ../src/urc-gui.c:161
-msgid "Remote IP"
-msgstr ""
-
-#: ../src/urc-gui.c:235 ../src/urc-gui.c:274 ../src/urc-gui.c:483
-#: ../src/urc-gui.c:486
+#: ../src/urc-gui.c:366 ../src/urc-gui.c:405 ../src/urc-gui.c:621
+#: ../src/urc-gui.c:624
 msgid "n.a."
 msgstr ""
 
-#: ../src/urc-gui.c:316
-msgid "<b>WAN status:</b> <span color=\"#009000\"><b>Connected</b></span>"
+#: ../src/urc-gui.c:447 ../src/urc-gui.c:449 ../src/urc-gui.c:451
+#: ../src/urc-gui.c:453
+msgid "WAN status:"
 msgstr ""
 
-#: ../src/urc-gui.c:318
-msgid "<b>WAN status:</b> <span color=\"#900000\"><b>Disconnected</b></span>"
+#: ../src/urc-gui.c:447
+msgid "Connected"
 msgstr ""
 
-#: ../src/urc-gui.c:320
-msgid "<b>WAN status:</b> <span color=\"#0000a0\"><b>Connecting</b></span>"
+#: ../src/urc-gui.c:449
+msgid "Disconnected"
 msgstr ""
 
-#: ../src/urc-gui.c:322
-msgid "<b>WAN status:</b> <span color=\"#c04000\"><b>Disconnecting</b></span>"
+#: ../src/urc-gui.c:451
+msgid "Connecting"
 msgstr ""
 
-#: ../src/urc-gui.c:334
+#: ../src/urc-gui.c:453
+msgid "Disconnecting"
+msgstr ""
+
+#: ../src/urc-gui.c:465
 msgid "<b>WAN status:</b> unknown"
 msgstr ""
 
-#: ../src/urc-gui.c:344
+#: ../src/urc-gui.c:475
 msgid "<b>IP:</b> none"
 msgstr ""
 
-#: ../src/urc-gui.c:346
+#: ../src/urc-gui.c:477
 #, c-format
 msgid "<b>IP:</b> %s"
 msgstr ""
 
-#: ../src/urc-gui.c:359
+#: ../src/urc-gui.c:490
 msgid "<b>IP:</b> unknown"
 msgstr ""
 
-#: ../src/urc-gui.c:413
+#: ../src/urc-gui.c:544
 #, c-format
 msgid "<b>Router name:</b> %s"
 msgstr ""
 
-#: ../src/urc-gui.c:419
+#: ../src/urc-gui.c:550
 #, c-format
 msgid ""
 "<b>Brand:</b> %s\n"
@@ -101,32 +102,32 @@ msgid ""
 "<b>Model Number:</b> %s"
 msgstr ""
 
-#: ../src/urc-gui.c:434
+#: ../src/urc-gui.c:565
 msgid "Open the router config in the default browser"
 msgstr ""
 
-#: ../src/urc-gui.c:474
+#: ../src/urc-gui.c:612
 msgid "<b>Router name:</b> not available"
 msgstr ""
 
-#: ../src/urc-gui.c:477
+#: ../src/urc-gui.c:615
 msgid "<b>WAN status:</b> not available"
 msgstr ""
 
-#: ../src/urc-gui.c:480
+#: ../src/urc-gui.c:618
 msgid "<b>IP:</b> not available"
 msgstr ""
 
-#: ../src/urc-gui.c:489
+#: ../src/urc-gui.c:627
 msgid "not available"
 msgstr ""
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:507
+#: ../src/urc-gui.c:648
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/urc-gui.c:513 ../data/upnp-router-control.desktop.in.h:1
+#: ../src/urc-gui.c:654 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP compliant routers"
 msgstr ""
 
@@ -175,33 +176,41 @@ msgid "Add new port forward"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:17
-msgid "Description:"
+msgid "Click for map a new port"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:18
-msgid "External port:"
+msgid "Click for remove a port mapping"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:19
-msgid "Local IP:"
+msgid "Description:"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:20
-msgid "Local port:"
+msgid "External port:"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:21
-msgid "Protocol:"
+msgid "Local IP:"
+msgstr ""
+
+#: ../data/upnp-router-control.glade.h:22
+msgid "Local port:"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:23
-msgid "_File"
-msgstr ""
-
-#: ../data/upnp-router-control.glade.h:24
-msgid "_Help"
+msgid "Protocol:"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:25
+msgid "_File"
+msgstr ""
+
+#: ../data/upnp-router-control.glade.h:26
+msgid "_Help"
+msgstr ""
+
+#: ../data/upnp-router-control.glade.h:27
 msgid "_Switch router"
 msgstr ""
