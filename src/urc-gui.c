@@ -654,7 +654,7 @@ static void on_about_activate_cb (GtkMenuItem *menuitem,
              "comments", _("A simple program to manage UPnP compliant routers"),
              "copyright", "Copyright © 2009 Daniele Napolitano \"DnaX\"",
              "version", VERSION,
-             "website", "http://launchpad.net/upnp-port-mapper",
+             "website", "http://launchpad.net/upnp-router-control",
 		     "logo-icon-name", "upnp-router-control",
              NULL);
 }

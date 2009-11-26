@@ -28,7 +28,7 @@ def configure(conf):
     conf.define('VERSION', VERSION)
     conf.define('PACKAGE_NAME', APPNAME)
     conf.define('PACKAGE_VERSION', APPNAME + '-' + VERSION)
-    conf.define('PACKAGE_BUGREPORT','https://bugs.launchpad.net/upnp-port-mapper')
+    conf.define('PACKAGE_BUGREPORT','https://bugs.launchpad.net/upnp-router-control')
     conf.define('GETTEXT_PACKAGE', APPNAME)
     conf.define('PACKAGE_DATADIR', conf.env['DATADIR'] + '/' + APPNAME)
 
