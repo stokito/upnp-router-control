@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-25 04:46+0100\n"
+"POT-Creation-Date: 2009-11-26 04:55+0100\n"
 "PO-Revision-Date: 2009-03-06 22:43+0100\n"
 "Last-Translator: Daniele Napolitano <dnax88@gomail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/urc-main.c:77 ../data/upnp-router-control.glade.h:24
+#: ../src/urc-main.c:77 ../data/upnp-router-control.glade.h:21
 #: ../data/upnp-router-control.desktop.in.h:2
 msgid "UPnP Router Control"
 msgstr "Controllo router UPnP"
@@ -139,22 +139,10 @@ msgid "<b>Config:</b>"
 msgstr "<b>Configurazione:</b>"
 
 #: ../data/upnp-router-control.glade.h:2
-msgid "<b>IP:</b>"
-msgstr "<b>IP:</b>"
-
-#: ../data/upnp-router-control.glade.h:3
-msgid "<b>Name:</b>"
-msgstr "<b>Nome:</b>"
-
-#: ../data/upnp-router-control.glade.h:4
-msgid "<b>State:</b>"
-msgstr "<b>Stato:</b>"
-
-#: ../data/upnp-router-control.glade.h:5
 msgid "<i>Insert here a short description for this port</i>\n"
 msgstr "<i>Inserisci qui una breve descrizione per questa porta</i>\n"
 
-#: ../data/upnp-router-control.glade.h:7
+#: ../data/upnp-router-control.glade.h:4
 msgid ""
 "<i>Insert here the local IP where forward packets,\n"
 "usually IP of this computer</i>\n"
@@ -162,11 +150,11 @@ msgstr ""
 "<i>Inserisci qui l'IP locale dove trasferire i pacchetti,\n"
 "di solito l'IP di questo computer</i>\n"
 
-#: ../data/upnp-router-control.glade.h:10
+#: ../data/upnp-router-control.glade.h:7
 msgid "<i>Insert here the port exposed by the router to Internet</i>\n"
 msgstr "<i>Inserisci qui la porta esposta dal router su Internet</i>\n"
 
-#: ../data/upnp-router-control.glade.h:12
+#: ../data/upnp-router-control.glade.h:9
 msgid ""
 "<i>Insert the the local port where forward the packets from router to your "
 "computer</i>\n"
@@ -174,53 +162,62 @@ msgstr ""
 "<i>Inserisci la porta locale dove trasferire i pacchetti dal tuo router al "
 "tuo computer</i>\n"
 
-#: ../data/upnp-router-control.glade.h:14
+#: ../data/upnp-router-control.glade.h:11
 msgid "<i>Select here the protocol used, usually TCP</i>\n"
 msgstr "<i>Seleziona qui il protocollo usato, di solito TCP</i>\n"
 
-#: ../data/upnp-router-control.glade.h:16
+#: ../data/upnp-router-control.glade.h:13
 msgid "Add new port forward"
 msgstr "Aggiungi una nuova porta"
 
-#: ../data/upnp-router-control.glade.h:17
+#: ../data/upnp-router-control.glade.h:14
 msgid "Click for map a new port"
 msgstr "Clicca per mappare una nuova porta"
 
-#: ../data/upnp-router-control.glade.h:18
+#: ../data/upnp-router-control.glade.h:15
 msgid "Click for remove a port mapping"
 msgstr "Clicca per rimuovere una porta mappata"
 
-#: ../data/upnp-router-control.glade.h:19
+#: ../data/upnp-router-control.glade.h:16
 msgid "Description:"
 msgstr "Descrizione:"
 
-#: ../data/upnp-router-control.glade.h:20
+#: ../data/upnp-router-control.glade.h:17
 msgid "External port:"
 msgstr "Porta esterna:"
 
-#: ../data/upnp-router-control.glade.h:21
+#: ../data/upnp-router-control.glade.h:18
 msgid "Local IP:"
 msgstr "IP locale:"
 
-#: ../data/upnp-router-control.glade.h:22
+#: ../data/upnp-router-control.glade.h:19
 msgid "Local port:"
 msgstr "Porta locale:"
 
-#: ../data/upnp-router-control.glade.h:23
+#: ../data/upnp-router-control.glade.h:20
 msgid "Protocol:"
 msgstr "Protocollo:"
 
-#: ../data/upnp-router-control.glade.h:25
+#: ../data/upnp-router-control.glade.h:22
 msgid "_File"
 msgstr "_File"
 
-#: ../data/upnp-router-control.glade.h:26
+#: ../data/upnp-router-control.glade.h:23
 msgid "_Help"
 msgstr "A_iuto"
 
-#: ../data/upnp-router-control.glade.h:27
+#: ../data/upnp-router-control.glade.h:24
 msgid "_Switch router"
 msgstr "_Cambia router"
+
+#~ msgid "<b>IP:</b>"
+#~ msgstr "<b>IP:</b>"
+
+#~ msgid "<b>Name:</b>"
+#~ msgstr "<b>Nome:</b>"
+
+#~ msgid "<b>State:</b>"
+#~ msgstr "<b>Stato:</b>"
 
 #~ msgid "Remote IP"
 #~ msgstr "IP remoto"

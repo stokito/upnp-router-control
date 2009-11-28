@@ -1,4 +1,4 @@
-UPnP Port Mapper
+UPnP Router Control
 ******************************************
 
 Copyright (C) 2009  Daniele Napolitano <dnax88@gmail.com>
@@ -10,8 +10,7 @@ Compilation and installation
 ============================
 
 In order to compile UPnP Port Mapper you need following software packages:
-	- GTK+ library ( >= 2.14 )
-	- Glade library ( >= 2.6 )
+	- GTK+ library ( >= 2.16 )
 	- GUPnP library
 
 To configure run:
@@ -28,7 +27,7 @@ Information
 ===========
 
 Main project site:
-	https://launchpad.net/upnp-port-mapper
+	https://launchpad.net/upnp-router-control
 
 For bugs filling and search:
-	https://bugs.launchpad.net/upnp-port-mapper
+	https://bugs.launchpad.net/upnp-router-control

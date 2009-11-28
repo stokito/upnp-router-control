@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-25 04:46+0100\n"
+"POT-Creation-Date: 2009-11-26 17:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/urc-main.c:77 ../data/upnp-router-control.glade.h:24
+#: ../src/urc-main.c:77 ../data/upnp-router-control.glade.h:21
 #: ../data/upnp-router-control.desktop.in.h:2
 msgid "UPnP Router Control"
 msgstr ""
@@ -136,81 +136,69 @@ msgid "<b>Config:</b>"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:2
-msgid "<b>IP:</b>"
-msgstr ""
-
-#: ../data/upnp-router-control.glade.h:3
-msgid "<b>Name:</b>"
-msgstr ""
-
-#: ../data/upnp-router-control.glade.h:4
-msgid "<b>State:</b>"
-msgstr ""
-
-#: ../data/upnp-router-control.glade.h:5
 msgid "<i>Insert here a short description for this port</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:7
+#: ../data/upnp-router-control.glade.h:4
 msgid ""
 "<i>Insert here the local IP where forward packets,\n"
 "usually IP of this computer</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:10
+#: ../data/upnp-router-control.glade.h:7
 msgid "<i>Insert here the port exposed by the router to Internet</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:12
+#: ../data/upnp-router-control.glade.h:9
 msgid ""
 "<i>Insert the the local port where forward the packets from router to your "
 "computer</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:14
+#: ../data/upnp-router-control.glade.h:11
 msgid "<i>Select here the protocol used, usually TCP</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:16
+#: ../data/upnp-router-control.glade.h:13
 msgid "Add new port forward"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:17
+#: ../data/upnp-router-control.glade.h:14
 msgid "Click for map a new port"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:18
+#: ../data/upnp-router-control.glade.h:15
 msgid "Click for remove a port mapping"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:19
+#: ../data/upnp-router-control.glade.h:16
 msgid "Description:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:20
+#: ../data/upnp-router-control.glade.h:17
 msgid "External port:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:21
+#: ../data/upnp-router-control.glade.h:18
 msgid "Local IP:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:22
+#: ../data/upnp-router-control.glade.h:19
 msgid "Local port:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:23
+#: ../data/upnp-router-control.glade.h:20
 msgid "Protocol:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:25
+#: ../data/upnp-router-control.glade.h:22
 msgid "_File"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:26
+#: ../data/upnp-router-control.glade.h:23
 msgid "_Help"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:27
+#: ../data/upnp-router-control.glade.h:24
 msgid "_Switch router"
 msgstr ""
