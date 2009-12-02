@@ -110,7 +110,7 @@ static void gui_run_add_port_window(GtkWidget *button,
 	
 	gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_desc), "");
     gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_ext_port), 0);
-    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_local_ip), "");
+    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_local_ip), get_client_ip());
     gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), 0);
     
     g_signal_connect(gui->add_port_window->button_apply, "clicked",

@@ -50,6 +50,13 @@ typedef struct
 
 static gboolean opt_debug = FALSE;
 
+static const gchar* client_ip = NULL;
+
+const gchar* get_client_ip()
+{
+	return client_ip;
+}
+
 gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host)
 {
     GError *error = NULL;
@@ -829,6 +836,8 @@ gboolean upnp_init(const gchar *interface, const guint port, const gboolean debu
     gssdp_resource_browser_set_active (GSSDP_RESOURCE_BROWSER (cp), TRUE);
     
     g_print("done\n");
+    
+    client_ip = gupnp_context_get_host_ip(context);
     
     return TRUE;
 }
