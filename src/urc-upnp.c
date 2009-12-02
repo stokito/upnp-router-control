@@ -37,6 +37,8 @@ typedef struct
     
     gchar* external_ip;
     
+    gboolean rsip_available;
+    gboolean nat_enabled;
     gboolean connected;
     
     guint port_request_timeout;
@@ -442,6 +444,42 @@ static gboolean get_external_ip (RouterInfo *router)
     }
 }
 
+/* Retrive RSIP and NAT availability */
+static gboolean get_nat_rsip_status (RouterInfo *router)
+{
+    GError *error = NULL;
+    
+    g_print("\e[36mRequest for NAT and RSIP availability... ");
+    
+    /* download speed */
+    gupnp_service_proxy_send_action (router->wan_device,
+				   /* Action name and error location */
+				   "GetNATRSIPStatus", &error,
+				   /* IN args */
+				   NULL,
+				   /* OUT args */
+				   "NewRSIPAvailable",
+				   G_TYPE_BOOLEAN, &router->rsip_available,
+				   "NewNATEnabled",
+				   G_TYPE_BOOLEAN, &router->nat_enabled,
+				   NULL);
+				   
+    if (error == NULL)
+    {        
+        g_print("\e[32msuccessful \e[0m[RSIP=%s, NAT=%s]\n", router->rsip_available == TRUE ? "yes" : "no", router->nat_enabled == TRUE ? "yes" : "no" );
+        
+        return TRUE;        
+    }
+    else
+    {
+        g_print("\e[1;31mfailed\e[0;0m\n");
+        
+        g_printerr ("Error: %s\n", error->message);
+        g_error_free (error);
+        return FALSE;
+    }
+}
+
 /* Service event callback */
 static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
                                         const char *variable,
@@ -639,7 +677,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             g_timeout_add_seconds(1, update_data_rate_cb, router->wan_device);
             
         } 
-        /* Is a WAN Connection service or other? */
+        /* Is a WAN IP Connection service or other? */
         else if( (connect_service == NULL && g_strcmp0 (service_id, "urn:upnp-org:serviceId:WANIPConn1") == 0) ||
                 g_strcmp0 (service_id, connect_service) == 0 )
         {
@@ -662,8 +700,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         
             /* Get external IP */
             get_external_ip(router);
-            /*Get connection status info */
+            /* Get connection status info */
             get_conn_status(router);
+            /* Get RSIP and NAT status */
+            get_nat_rsip_status(router);
         
         	/* Subscribe to events */
         	gupnp_service_proxy_set_subscribed(child->data, TRUE);            
