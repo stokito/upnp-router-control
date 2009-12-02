@@ -30,14 +30,16 @@
 /* Options variables */
 static gboolean opt_version = FALSE;
 static gboolean opt_debug = FALSE;
-static gchar* opt_bindip = NULL;
+static gchar* opt_bindif = NULL;
+static guint opt_bindport = 0;
 
 /* Options schema */
 static GOptionEntry entries[] = 
 {
-  { "version", 'v', 0, G_OPTION_ARG_NONE, &opt_version, "Show version and exit", NULL },
-  { "debug", 'd', 0, G_OPTION_ARG_NONE, &opt_debug, "Allow debug messages", NULL },
-  { "bind-ip", 0, 0, G_OPTION_ARG_STRING, &opt_bindip, "Bind to specific IP", NULL },
+  { "if", 'i', 0, G_OPTION_ARG_STRING, &opt_bindif, "The network interface to use (autodetect if omitted)", NULL },
+  { "port", 'p', 0, G_OPTION_ARG_INT, &opt_bindport, "Use a specific source port", NULL },
+  { "version", 0, 0, G_OPTION_ARG_NONE, &opt_version, "Show version and exit", NULL },
+  { "debug", 0, 0, G_OPTION_ARG_NONE, &opt_debug, "Allow debug messages", NULL },
   { NULL }
 };
 
@@ -87,7 +89,7 @@ main(int argc, char** argv)
         gui_init();
         
         /* Initialize the UPnP subsystem */
-        if( ! upnp_init(opt_bindip, opt_debug) )
+        if( ! upnp_init(opt_bindif, opt_bindport, opt_debug) )
             return 1;
         
         /* Enter in the main loop */

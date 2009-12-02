@@ -780,15 +780,13 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
     
     device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
      
-    if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") != 0)
-        return;
-    
-    gui_disable();
-    
+    if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0)
+    	gui_disable();
+
 }
 
 
-gboolean upnp_init(const char *host_ip, const gboolean debug)
+gboolean upnp_init(const gchar *interface, const guint port, const gboolean debug)
 {
     GUPnPContext *context;
     GUPnPControlPoint *cp;
@@ -801,10 +799,8 @@ gboolean upnp_init(const char *host_ip, const gboolean debug)
     
     router = g_malloc( sizeof(RouterInfo) );
   
-    /* Create a new GUPnP Context.  By here we are using the default GLib main
-     context, and connecting to the current machine's default IP on an
-     automatically generated port. */
-    context = gupnp_context_new (NULL, host_ip, 0, &error);
+    /* Create a new GUPnP Context. */
+    context = gupnp_context_new (NULL, interface, port, &error);
     
     if(error != NULL)
     {
@@ -813,7 +809,7 @@ gboolean upnp_init(const char *host_ip, const gboolean debug)
         return FALSE;
     }
 
-    /* Create a Control Point targeting WAN IP Connection services */
+    /* Create a Control Point targeting RootDevice */
     cp = gupnp_control_point_new
     (context, "upnp:rootdevice");
 

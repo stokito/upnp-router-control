@@ -37,7 +37,7 @@ typedef struct
 
 } PortForwardInfo;
 
-gboolean upnp_init(const char *host_ip, const gboolean debug);
+gboolean upnp_init(const gchar *interface, const uint port, const gboolean debug);
 
 gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host);
 
