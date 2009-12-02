@@ -575,6 +575,19 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
         
+        /* workaround for urls like "/login" without base url */        
+        if(g_str_has_prefix(router->http_address, "http") == FALSE)
+        {
+        	const gchar* desc_location = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
+        	char** url_split = NULL;       
+        
+        	url_split = g_strsplit(desc_location, ":", 0);
+        	
+        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);
+        	
+        	g_strfreev(url_split);
+        }        
+        
         gui_set_router_info (router->friendly_name,
                              router->http_address,
                              router->brand,
