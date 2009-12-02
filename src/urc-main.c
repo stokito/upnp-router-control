@@ -59,7 +59,7 @@ main(int argc, char** argv)
     textdomain(GETTEXT_PACKAGE);
      
     /* commandline options */
-    context = g_option_context_new ("- A simple program to manage UPnP compliant routers");
+    context = g_option_context_new ("- A simple program to manage UPnP IGD compliant routers");
     g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
     
     if (!g_option_context_parse (context, &argc, &argv, &error))
