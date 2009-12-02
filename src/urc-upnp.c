@@ -564,6 +564,23 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                 g_print("    ");
     
             g_print("      \e[32mService:\e[0m %s\n", service_id );
+            
+            /* Introspect current service */
+            const GList *actions_list;
+            GUPnPServiceIntrospection *service_introspect;
+            
+            service_introspect = gupnp_service_info_get_introspection(child->data, NULL);            
+            actions_list = gupnp_service_introspection_list_action_names(service_introspect);
+            
+            do
+            {
+            	for(i = 0; i < level; i++)
+                g_print("    ");
+            	
+            	g_print("               > %s\n", (gchar*) actions_list->data);
+            }
+            while(actions_list = actions_list->next);            
+
         }
     
         /* Is a IP forwarding service? */
