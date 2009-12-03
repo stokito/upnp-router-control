@@ -19,4 +19,5 @@ for i in ["16x16", "22x22", "24x24", "32x32", "48x48"]:
 # Glade file
 bld.install_as('${DATADIR}/upnp-router-control/upnp-router-control.glade', 'upnp-router-control.glade')
 
-
+# Man page
+bld.install_as('${DATADIR}/man/man1/upnp-router-control.1', 'upnp-router-control.1')

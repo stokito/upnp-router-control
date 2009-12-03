@@ -19,6 +19,8 @@ noinst_DATA = \
 gladedir = $(datadir)/upnp-router-control
 glade_DATA = \
     upnp-router-control.glade
+    
+man_MANS = upnp-router-control.1
 
 @INTLTOOL_DESKTOP_RULE@
 desktopdir = $(datadir)/applications
@@ -30,6 +32,7 @@ EXTRA_DIST = \
       $(noinst_DATA)   \
       $(glade_DATA)     \
       $(desktop_DATA)   \
+      $(man_MANS)
       $(NULL)
       
 DISTCLEANFILES = \
