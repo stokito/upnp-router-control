@@ -116,9 +116,6 @@ static void gui_run_add_port_window(GtkWidget *button,
     g_signal_connect(gui->add_port_window->button_apply, "clicked",
                          G_CALLBACK(gui_add_port_window_close), user_data);
     
-    g_signal_connect(gui->add_port_window->button_cancel, "clicked",
-                         G_CALLBACK(gui_add_port_window_close), NULL);    
-    
     gtk_widget_show_all (gui->add_port_window->window);
 }
 
@@ -157,6 +154,12 @@ static void gui_create_add_port_window(GtkBuilder* builder)
     
     gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "TCP");
     gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "UDP");
+    
+    g_signal_connect(add_port_window->button_cancel, "clicked",
+                         G_CALLBACK(gui_add_port_window_close), NULL);
+                         
+    g_signal_connect(add_port_window->window, "delete-event",
+                         G_CALLBACK(gtk_widget_hide_on_delete), NULL);
    
     gui->add_port_window = add_port_window;
 }
