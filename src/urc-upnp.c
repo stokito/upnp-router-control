@@ -57,13 +57,13 @@ const gchar* get_client_ip()
 	return client_ip;
 }
 
-gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host)
+gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host, GError **error)
 {
-    GError *error = NULL;
+    GError *err = NULL;
     
     gupnp_service_proxy_send_action (wan_service,
 				   /* Action name and error location */
-				   "DeletePortMapping", &error,
+				   "DeletePortMapping", &err,
 				   /* IN args */
 				   "NewRemoteHost",
 				   G_TYPE_STRING, remote_host,
@@ -74,32 +74,35 @@ gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protoco
 				   NULL,
 				   NULL);
     
-    if (error == NULL) {
+    if (err == NULL) {
 	    
 	    g_print("\e[36m*** Removed entry:\e[0m Port %d (%s) for External IP %s\n", external_port, protocol, remote_host );
 	    
+	    error = NULL;
 	    return TRUE;
         
     } else {
     
-        g_printerr ("[EE] DeletePortMapping: %s (%i)\n", error->message, error->code);
-        g_error_free (error);
+        g_printerr ("[EE] DeletePortMapping: %s (%i)\n", err->message, err->code);
+        
+        *error = g_error_copy(err);
+        g_error_free (err);
         
         return FALSE;
     }    
 }
 
-gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_info)
+gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_info, GError **error)
 {
-    GError *error = NULL;
+    GError *err = NULL;
     
     gupnp_service_proxy_send_action (wan_service,
 				   /* Action name and error location */
-				   "AddPortMapping", &error,
+				   "AddPortMapping", &err,
 				   /* IN args */
 				   "NewRemoteHost",
 				   G_TYPE_STRING, port_info->remote_host,
-				   "NewExternalPort",
+				   "NewExternalPort2",
 				   G_TYPE_UINT, port_info->external_port,
 				   "NewProtocol",
 				   G_TYPE_STRING, port_info->protocol,
@@ -116,7 +119,7 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 				   NULL,
 				   NULL);
     
-    if (error == NULL) {
+    if (err == NULL) {
 	    
 	    g_print ("\e[36m*** Added entry: \e[0m%s\n", port_info->description );
 	    g_print ("    RemoteIP: %s, ExtPort: %d %s, IntPort: %d, IntIP: %s\n",
@@ -129,11 +132,14 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 	    
 	    gui_add_mapped_port(port_info);
 	    
+	    error = NULL;	    
 	    return TRUE;
         
     } else {
-        g_printerr ("[EE] AddPortMapping: %s (%i)\n", error->message, error->code);
-        g_error_free (error);
+        g_printerr ("[EE] AddPortMapping: %s (%i)\n", err->message, err->code);
+        
+        *error = g_error_copy(err);
+        g_error_free (err);
         
         return FALSE;
     }    

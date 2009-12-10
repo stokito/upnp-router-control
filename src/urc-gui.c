@@ -79,6 +79,7 @@ static void gui_add_port_window_close(GtkWidget *button,
                                       gpointer   user_data)
 {
     PortForwardInfo* port_info;
+    GError* error = NULL;
     
     if( user_data != NULL )
     {
@@ -92,7 +93,23 @@ static void gui_add_port_window_close(GtkWidget *button,
         port_info->remote_host = "";
         port_info->lease_time = 0;
         
-        add_port_mapping(user_data, port_info);
+        if(add_port_mapping(user_data, port_info, &error) != TRUE)
+        {
+        	GtkWidget* dialog;
+        	
+        	dialog = gtk_message_dialog_new(GTK_WINDOW(gui->add_port_window->window),
+					GTK_DIALOG_MODAL,
+					GTK_MESSAGE_ERROR,
+					GTK_BUTTONS_OK,
+					_("Unable to set this port forward"));
+			
+			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
+		                                            "%s", error->message);
+		    gtk_dialog_run(GTK_DIALOG(dialog));
+			gtk_widget_destroy(dialog);
+			g_error_free (error);
+			
+        }
         
         g_free(port_info->description);
         g_free(port_info->protocol);
@@ -113,6 +130,16 @@ static void gui_run_add_port_window(GtkWidget *button,
     gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_local_ip), get_client_ip());
     gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), 0);
     
+    /* Disconnect previous signals */
+    g_signal_handlers_disconnect_matched(gui->add_port_window->button_apply,
+    									 G_SIGNAL_MATCH_FUNC,
+    									 0,
+    									 0,
+    									 NULL,
+    									 G_CALLBACK(gui_add_port_window_close),
+    									 NULL);
+    
+    /* Connect new signal with new data */
     g_signal_connect(gui->add_port_window->button_apply, "clicked",
                          G_CALLBACK(gui_add_port_window_close), user_data);
     
@@ -206,6 +233,7 @@ static void on_button_remove_clicked (GtkWidget *button,
     GtkTreeModel *model;
     GtkTreeIter   iter;
     GtkTreeSelection *selection;
+    GError *error;
     
     gchar* remote_host;
     guint external_port;
@@ -228,7 +256,22 @@ static void on_button_remove_clicked (GtkWidget *button,
                        UPNP_COLUMN_REM_IP, &remote_host,
                        -1);
     
-    delete_port_mapped (user_data, protocol, external_port, remote_host);
+    if(delete_port_mapped (user_data, protocol, external_port, remote_host, &error) != TRUE)
+    {
+    	GtkWidget* dialog;
+        	
+        dialog = gtk_message_dialog_new(GTK_WINDOW(gui->add_port_window->window),
+				GTK_DIALOG_MODAL,
+				GTK_MESSAGE_ERROR,
+				GTK_BUTTONS_OK,
+				_("Unable to remove this port forward"));
+			
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
+		                                            "%s", error->message);
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+		g_error_free (error);
+	}
     
 }
 
