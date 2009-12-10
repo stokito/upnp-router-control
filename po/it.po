@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-10 04:43+0100\n"
+"POT-Creation-Date: 2009-12-10 14:11+0100\n"
 "PO-Revision-Date: 2009-03-06 22:43+0100\n"
 "Last-Translator: Daniele Napolitano <dnax88@gomail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -52,55 +52,50 @@ msgstr "Porta ext."
 msgid "Local IP"
 msgstr "IP locale"
 
-#: ../src/urc-gui.c:412 ../src/urc-gui.c:451 ../src/urc-gui.c:667
-#: ../src/urc-gui.c:670
+#: ../src/urc-gui.c:415 ../src/urc-gui.c:460 ../src/urc-gui.c:700
+#: ../src/urc-gui.c:703
 msgid "n.a."
 msgstr "n.d."
 
-#: ../src/urc-gui.c:493 ../src/urc-gui.c:495 ../src/urc-gui.c:497
-#: ../src/urc-gui.c:499
+#: ../src/urc-gui.c:508 ../src/urc-gui.c:510 ../src/urc-gui.c:512
+#: ../src/urc-gui.c:514 ../src/urc-gui.c:530
 msgid "WAN status:"
 msgstr "Stato WAN:"
 
-#: ../src/urc-gui.c:493
+#: ../src/urc-gui.c:508
 msgid "Connected"
 msgstr "Connesso"
 
-#: ../src/urc-gui.c:495
+#: ../src/urc-gui.c:510
 msgid "Disconnected"
 msgstr "Disconnesso"
 
-#: ../src/urc-gui.c:497
+#: ../src/urc-gui.c:512
 msgid "Connecting"
 msgstr "In connessione"
 
-#: ../src/urc-gui.c:499
+#: ../src/urc-gui.c:514
 msgid "Disconnecting"
 msgstr "In disconnessione"
 
-#: ../src/urc-gui.c:511
-msgid "<b>WAN status:</b> unknown"
-msgstr "<b>Stato WAN:</b> sconosciuto"
+#: ../src/urc-gui.c:530 ../src/urc-gui.c:566
+msgid "unknown"
+msgstr "sconosciuto"
 
-#: ../src/urc-gui.c:521
-msgid "<b>IP:</b> none"
-msgstr "<b>IP:</b> nessuno"
+#: ../src/urc-gui.c:547 ../src/urc-gui.c:549 ../src/urc-gui.c:566
+msgid "IP:"
+msgstr "IP:"
 
-#: ../src/urc-gui.c:523
-#, c-format
-msgid "<b>IP:</b> %s"
-msgstr "<b>IP:</b> %s"
+#: ../src/urc-gui.c:547
+msgid "none"
+msgstr "nessuno"
 
-#: ../src/urc-gui.c:536
-msgid "<b>IP:</b> unknown"
-msgstr "<b>IP:</b> unknown"
-
-#: ../src/urc-gui.c:590
+#: ../src/urc-gui.c:623
 #, c-format
 msgid "<b>Router name:</b> %s"
 msgstr "<b>Nome router:</b> %s"
 
-#: ../src/urc-gui.c:596
+#: ../src/urc-gui.c:629
 #, c-format
 msgid ""
 "<b>Brand:</b> %s\n"
@@ -113,32 +108,32 @@ msgstr ""
 "<b>Nome modello:</b> %s\n"
 "<b>Numero modello:</b> %s"
 
-#: ../src/urc-gui.c:611
+#: ../src/urc-gui.c:644
 msgid "Open the router config in the default browser"
 msgstr "Apri la configurazione del router nel borwser predefinito"
 
-#: ../src/urc-gui.c:658
+#: ../src/urc-gui.c:691
 msgid "<b>Router name:</b> not available"
 msgstr "<b>Nome router:</b> non disponibile"
 
-#: ../src/urc-gui.c:661
+#: ../src/urc-gui.c:694
 msgid "<b>WAN status:</b> not available"
 msgstr "<b>Stato WAN:</b> non disponibile"
 
-#: ../src/urc-gui.c:664
+#: ../src/urc-gui.c:697
 msgid "<b>IP:</b> not available"
 msgstr "<b>IP:</b> non disponibile"
 
-#: ../src/urc-gui.c:673
+#: ../src/urc-gui.c:706
 msgid "not available"
 msgstr "not available"
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:694
+#: ../src/urc-gui.c:727
 msgid "translator-credits"
 msgstr "Daniele Napolitano <dnax88@gmail.com>"
 
-#: ../src/urc-gui.c:700 ../data/upnp-router-control.desktop.in.h:1
+#: ../src/urc-gui.c:733 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP compliant routers"
 msgstr "Un semplice programma per gestire router compatibili con UPnP"
 
@@ -217,15 +212,3 @@ msgstr "A_iuto"
 #: ../data/upnp-router-control.glade.h:24
 msgid "_Switch router"
 msgstr "_Cambia router"
-
-#~ msgid "<b>IP:</b>"
-#~ msgstr "<b>IP:</b>"
-
-#~ msgid "<b>Name:</b>"
-#~ msgstr "<b>Nome:</b>"
-
-#~ msgid "<b>State:</b>"
-#~ msgstr "<b>Stato:</b>"
-
-#~ msgid "Remote IP"
-#~ msgstr "IP remoto"
