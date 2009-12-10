@@ -830,7 +830,7 @@ gboolean upnp_init(const gchar *interface, const guint port, const gboolean debu
     
     if(error != NULL)
     {
-        g_error("Error: %s", error->message);
+        g_error("[EE] gupnp_context_new: %s (%i)", error->message, error->code);
         g_error_free (error);
         return FALSE;
     }

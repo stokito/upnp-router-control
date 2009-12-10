@@ -408,6 +408,9 @@ static void gui_init_treeview()
 
 void gui_disable_download_speed()
 {
+    if(gui->down_rate_label == NULL)
+    	return;
+    
     gtk_widget_set_sensitive(gui->down_rate_label, FALSE);
     gtk_label_set_text (GTK_LABEL(gui->down_rate_label), _("n.a.") );
 }
@@ -419,6 +422,9 @@ void gui_set_download_speed(const gdouble down_speed)
     gchar* unit;
     gfloat value;
     /* Method of divisions is too expensive? */
+    
+    if(gui->down_rate_label == NULL)
+    	return;
         
     /* Down speed */
     if(down_speed >= 1024)
@@ -447,6 +453,9 @@ void gui_set_download_speed(const gdouble down_speed)
 
 void gui_disable_upload_speed()
 {
+    if(gui->up_rate_label == NULL)
+    	return;
+    
     gtk_widget_set_sensitive(gui->up_rate_label, FALSE);
     gtk_label_set_text (GTK_LABEL(gui->up_rate_label), _("n.a.") );
 }
@@ -458,6 +467,9 @@ void gui_set_upload_speed(const gdouble up_speed)
     gchar* unit;
     gfloat value;
     /* Method of divisions is too expensive? */
+    
+    if(gui->up_rate_label == NULL)
+    	return;
     
     /* Up speed */     
     if(up_speed >= 1024)
@@ -489,6 +501,9 @@ void gui_set_conn_status(const gchar *state)
 {
     gchar* str = NULL;
 
+    if(gui->wan_status_label == NULL)
+    	return;
+    
     if(g_strcmp0("Connected", state) == 0)
             str = g_strdup_printf( "<b>%s</b> <span color=\"#009000\"><b>%s</b></span>", _("WAN status:"), _("Connected") );
     if(g_strcmp0("Disconnected", state) == 0)
@@ -507,8 +522,16 @@ void gui_set_conn_status(const gchar *state)
 /* Set WAN state label unknown */
 void gui_disable_conn_status()
 {
+    gchar* str = NULL;
     
-    gtk_label_set_markup (GTK_LABEL(gui->wan_status_label), _("<b>WAN status:</b> unknown"));
+    if(gui->wan_status_label == NULL)
+    	return;
+    
+    str = g_strdup_printf("<b>%s</b> %s", _("WAN status:"), _("unknown"));
+    
+    gtk_label_set_markup (GTK_LABEL(gui->wan_status_label), str);
+    
+    g_free(str);
     
 }
 
@@ -517,10 +540,13 @@ void gui_set_ext_ip(const gchar *ip)
 {
     gchar* str;
     
+    if(gui->ip_label == NULL)
+    	return;
+    
     if(ip == NULL)
-        str = g_strdup( _("<b>IP:</b> none"));
+        str = g_strdup_printf( "<b>%s</b> %s", _("IP:"), _("none"));
     else
-        str = g_strdup_printf( _("<b>IP:</b> %s"), ip);
+        str = g_strdup_printf( "<b>%s</b> %s", _("IP:"), ip);
 
     gtk_label_set_markup (GTK_LABEL(gui->ip_label), str);
     g_free(str);  
@@ -532,9 +558,16 @@ void gui_set_ext_ip(const gchar *ip)
 /* Set external IP address */
 void gui_disable_ext_ip()
 {
+    gchar* str = NULL;
     
-    gtk_label_set_markup (GTK_LABEL(gui->ip_label), _("<b>IP:</b> unknown"));
- 
+    if(gui->ip_label == NULL)
+    	return;
+    
+    g_strdup_printf( "<b>%s</b> %s", _("IP:"), _("unknown"));
+    
+    gtk_label_set_markup (GTK_LABEL(gui->ip_label), str);
+    
+    g_free(str); 
 }
 
 /* onMouseOver URL label callback */
@@ -584,7 +617,7 @@ void gui_set_router_info (const gchar *router_friendly_name,
 {
     gchar* str;
     
-    if(gui == NULL)
+    if(gui == NULL || gui->main_window == NULL)
         return;
      
     str = g_strdup_printf( _("<b>Router name:</b> %s"), router_friendly_name);
@@ -636,7 +669,7 @@ void gui_set_ports_buttons_callback_data(gpointer data)
 
 void gui_enable()
 {
-    if(gui == NULL)
+    if(gui == NULL || gui->main_window == NULL)
         return;
     
     gtk_widget_set_sensitive(gui->router_name_label, TRUE);
@@ -650,7 +683,7 @@ void gui_enable()
 
 void gui_disable()
 {
-    if(gui == NULL)
+    if(gui == NULL || gui->main_window == NULL)
         return;
     
     gui_clear_ports_list_treeview();    
@@ -705,6 +738,21 @@ static void on_about_activate_cb (GtkMenuItem *menuitem,
              NULL);
 }
 
+static void gui_destroy()
+{
+	g_print("* Destroying GUI...\n");
+	
+	gtk_widget_destroy(gui->add_port_window->window);	
+	g_free(gui->add_port_window);
+	
+	gui_disable();
+	
+	gtk_widget_destroy(gui->main_window);	
+	g_free(gui);
+	
+	gtk_main_quit();
+}
+
 void gui_init()
 {
     GtkBuilder* builder;
@@ -742,10 +790,10 @@ void gui_init()
                          G_CALLBACK(on_about_activate_cb), NULL);
     
     g_signal_connect(gtk_builder_get_object (builder, "menuitem_exit"), "activate",
-                         G_CALLBACK(gtk_main_quit), NULL);
+                         G_CALLBACK(gui_destroy), NULL);
     
-    g_signal_connect(G_OBJECT(gui->main_window), "destroy",
-                         G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(G_OBJECT(gui->main_window), "delete-event",
+                         G_CALLBACK(gui_destroy), NULL);
                              
     gui_create_add_port_window(builder);
     
