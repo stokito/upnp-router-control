@@ -36,7 +36,7 @@ static guint opt_bindport = 0;
 /* Options schema */
 static GOptionEntry entries[] = 
 {
-  { "if", 'i', 0, G_OPTION_ARG_STRING, &opt_bindif, "The network interface to use (autodetect if omitted)", NULL },
+  { "if", 'i', 0, G_OPTION_ARG_STRING, &opt_bindif, "The network interface used (autodetect if omitted)", NULL },
   { "port", 'p', 0, G_OPTION_ARG_INT, &opt_bindport, "Use a specific source port", NULL },
   { "version", 0, 0, G_OPTION_ARG_NONE, &opt_version, "Show version and exit", NULL },
   { "debug", 0, 0, G_OPTION_ARG_NONE, &opt_debug, "Allow debug messages", NULL },
@@ -59,6 +59,7 @@ main(int argc, char** argv)
     bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);  
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
+    setlocale (LC_ALL, "");
      
     /* commandline options */
     context = g_option_context_new ("- A simple program to manage UPnP IGD compliant routers");

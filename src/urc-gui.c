@@ -363,7 +363,7 @@ static void gui_init_treeview()
                                                     renderer,
                                                     "active", i);
                                                     
-                    /* enable/disable port mappign callback */
+                    /* enable/disable port mapping callback */
                     /*g_signal_connect(G_OBJECT(renderer), "toggled",
                          G_CALLBACK(list_enable_toggled_cb),
                          NULL);*/
@@ -620,16 +620,20 @@ void gui_set_router_info (const gchar *router_friendly_name,
     if(gui == NULL || gui->main_window == NULL)
         return;
      
-    str = g_strdup_printf( _("<b>Router name:</b> %s"), router_friendly_name);
+    str = g_strdup_printf( "<b>%s</b> %s", _("Router name:"), router_friendly_name);
     gtk_label_set_markup (GTK_LABEL(gui->router_name_label), str);
     g_free(str);
     
     gtk_widget_set_sensitive(gui->router_name_label, TRUE);
     
-    str = g_strdup_printf( _("<b>Brand:</b> %s\n<b>Brand website:</b> %s\n<b>Model Name:</b> %s\n<b>Model Number:</b> %s"),
+    str = g_strdup_printf( "<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
+                           _("Brand"),
                            router_brand,
+                           _("Brand website:"),
                            router_brand_website,
+                           _("Model Name:"),
                            router_model_name,
+                           _("Model Number:"),
                            router_model_number);
     
     gtk_widget_set_tooltip_markup(gui->router_name_label, str); 
@@ -686,16 +690,24 @@ void gui_disable()
     if(gui == NULL || gui->main_window == NULL)
         return;
     
+    gchar *str;
+    
     gui_clear_ports_list_treeview();    
 
-    gtk_label_set_markup (GTK_LABEL(gui->router_name_label), _("<b>Router name:</b> not available"));
+    str = g_strdup_printf("<b>%s</b> %s", _("Router name:"), _("not available") );
+    gtk_label_set_markup (GTK_LABEL(gui->router_name_label), str);
     gtk_widget_set_sensitive(gui->router_name_label, FALSE);
+    g_free(str);
     
-    gtk_label_set_markup (GTK_LABEL(gui->wan_status_label), _("<b>WAN status:</b> not available"));
+    str = g_strdup_printf("<b>%s</b> %s", _("WAN status:"), _("not available") );
+    gtk_label_set_markup (GTK_LABEL(gui->wan_status_label), str);
     gtk_widget_set_sensitive(gui->wan_status_label, FALSE);
+    g_free(str);
     
-    gtk_label_set_markup (GTK_LABEL(gui->ip_label), _("<b>IP:</b> not available"));
+    str = g_strdup_printf("<b>%s</b> %s", _("IP:"), _("not available") );
+    gtk_label_set_markup (GTK_LABEL(gui->ip_label), str);
     gtk_widget_set_sensitive(gui->ip_label, FALSE);
+    g_free(str);
     
     gtk_label_set_markup (GTK_LABEL(gui->down_rate_label), _("n.a."));
     gtk_widget_set_sensitive(gui->down_rate_label, FALSE);
@@ -730,7 +742,7 @@ static void on_about_activate_cb (GtkMenuItem *menuitem,
              "authors", authors,
 		     "artists", artists,
 		     "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
-             "comments", _("A simple program to manage UPnP compliant routers"),
+             "comments", _("A simple program to manage UPnP IGD compliant routers"),
              "copyright", "Copyright © 2009 Daniele Napolitano \"DnaX\"",
              "version", VERSION,
              "website", "http://launchpad.net/upnp-router-control",

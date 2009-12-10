@@ -76,14 +76,14 @@ gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protoco
     
     if (err == NULL) {
 	    
-	    g_print("\e[36m*** Removed entry:\e[0m Port %d (%s) for External IP %s\n", external_port, protocol, remote_host );
+	    g_print("\e[36m*** Removed entry:\e[0m Port %d (%s)\n", external_port, protocol);
 	    
 	    error = NULL;
 	    return TRUE;
         
     } else {
     
-        g_printerr ("[EE] DeletePortMapping: %s (%i)\n", err->message, err->code);
+        g_printerr ("\e[31m[EE]\e[0m DeletePortMapping: %s (%i)\n", err->message, err->code);
         
         *error = g_error_copy(err);
         g_error_free (err);
@@ -136,7 +136,7 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 	    return TRUE;
         
     } else {
-        g_printerr ("[EE] AddPortMapping: %s (%i)\n", err->message, err->code);
+        g_printerr ("\e[31m[EE]\e[0m AddPortMapping: %s (%i)\n", err->message, err->code);
         
         *error = g_error_copy(err);
         g_error_free (err);
@@ -182,7 +182,7 @@ static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
     if (error) {
         
         if(error->code != 713) {
-            g_printerr ("[EE] GetGenericPortMappingEntry: %s (%i)\n", error->message, error->code);
+            g_printerr ("\e[31m[EE]\e[0m GetGenericPortMappingEntry: %s (%i)\n", error->message, error->code);
             g_error_free (error);
         }
         return NULL;
@@ -206,7 +206,7 @@ void discovery_mapped_ports_list(RouterInfo *router)
     while( (port_info = get_mapped_port(router, index)) != NULL )
     {
         
-        g_print (" * %s [%s]\n", port_info->description, port_info->enabled ? "X" : " " );
+        g_print (" * %s [%s]\n", port_info->description, port_info->enabled ? "enabled" : "disabled" );
 	        
 	    g_print ("   RemoteIP: %s, ExtPort: %d %s, IntPort: %d, IntIP: %s\n",
 	             port_info->remote_host,
@@ -257,7 +257,7 @@ static void get_mapped_ports_list(RouterInfo *router)
 	    
 	    if (port_info != NULL)
 	    {
-	        g_print (" * %s [%s]\n", port_info->description, port_info->enabled ? "X" : " " );
+	        g_print (" * %s [%s]\n", port_info->description, port_info->enabled ? "enabled" : "disabled" );
 	        
 	        g_print ("   RemoteIP: %s, ExtPort: %d %s, IntPort: %d, IntIP: %s\n",
 	                 port_info->remote_host,
@@ -328,7 +328,7 @@ static gboolean get_conn_status (RouterInfo *router)
         
         gui_disable_conn_status();  
         
-        g_printerr ("[EE] GetStatusInfo: %s (%i)\n", error->message, error->code);
+        g_printerr ("\e[31m[EE]\e[0m GetStatusInfo: %s (%i)\n", error->message, error->code);
         g_error_free (error);
         return FALSE;
     }
@@ -375,7 +375,7 @@ static gboolean update_data_rate_cb (gpointer data)
     } else {
         gui_disable_download_speed();
         
-        g_printerr ("[EE] GetTotalBytesReceived: %s (%i)\n", error->message, error->code);
+        g_printerr ("\e[31m[EE]\e[0m GetTotalBytesReceived: %s (%i)\n", error->message, error->code);
         g_error_free (error);
         return FALSE;
     }
@@ -405,7 +405,7 @@ static gboolean update_data_rate_cb (gpointer data)
     } else {
         gui_disable_upload_speed();
 
-        g_printerr ("[EE] GetTotalBytesSent: %s (%i)\n", error->message, error->code);
+        g_printerr ("\e[31m[EE]\e[0m GetTotalBytesSent: %s (%i)\n", error->message, error->code);
         g_error_free (error);
         return FALSE;
     }
@@ -451,7 +451,7 @@ static gboolean get_external_ip (RouterInfo *router)
         
         gui_disable_ext_ip ();
         
-        g_printerr ("[EE] GetExternalIPAddress: %s (%i)\n", error->message, error->code);
+        g_printerr ("\e[31m[EE]\e[0m GetExternalIPAddress: %s (%i)\n", error->message, error->code);
         g_error_free (error);
         return FALSE;
     }
@@ -487,7 +487,7 @@ static gboolean get_nat_rsip_status (RouterInfo *router)
     {
         g_print("\e[1;31mfailed\e[0;0m\n");
         
-        g_printerr ("[EE] GetNATRSIPStatus: %s (%i)\n", error->message, error->code);
+        g_printerr ("\e[31m[EE]\e[0m GetNATRSIPStatus: %s (%i)\n", error->message, error->code);
         g_error_free (error);
         return FALSE;
     }
@@ -688,7 +688,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                 g_free (string_buffer);
         
             } else {
-                g_printerr ("[EE] GetDefaultConnectionService: %s (%i)\n", error->message, error->code);
+                g_printerr ("\e[31m[EE]\e[0m GetDefaultConnectionService: %s (%i)\n", error->message, error->code);
                 g_error_free (error);
             }
 
@@ -830,7 +830,7 @@ gboolean upnp_init(const gchar *interface, const guint port, const gboolean debu
     
     if(error != NULL)
     {
-        g_error("[EE] gupnp_context_new: %s (%i)", error->message, error->code);
+        g_error("\e[31m[EE]\e[0m gupnp_context_new: %s (%i)", error->message, error->code);
         g_error_free (error);
         return FALSE;
     }
