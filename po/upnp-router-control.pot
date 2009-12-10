@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-11-26 17:25+0100\n"
+"POT-Creation-Date: 2009-12-10 04:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,84 +16,92 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/urc-main.c:77 ../data/upnp-router-control.glade.h:21
+#: ../src/urc-main.c:79 ../data/upnp-router-control.glade.h:21
 #: ../data/upnp-router-control.desktop.in.h:2
 msgid "UPnP Router Control"
 msgstr ""
 
-#: ../src/urc-gui.c:281
+#: ../src/urc-gui.c:104
+msgid "Unable to set this port forward"
+msgstr ""
+
+#: ../src/urc-gui.c:267
+msgid "Unable to remove this port forward"
+msgstr ""
+
+#: ../src/urc-gui.c:327
 msgid "Enabled"
 msgstr ""
 
-#: ../src/urc-gui.c:282
+#: ../src/urc-gui.c:328
 msgid "Description"
 msgstr ""
 
-#: ../src/urc-gui.c:283
+#: ../src/urc-gui.c:329
 msgid "Protocol"
 msgstr ""
 
-#: ../src/urc-gui.c:284
+#: ../src/urc-gui.c:330
 msgid "Int. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:285
+#: ../src/urc-gui.c:331
 msgid "Ext. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:286
+#: ../src/urc-gui.c:332
 msgid "Local IP"
 msgstr ""
 
-#: ../src/urc-gui.c:366 ../src/urc-gui.c:405 ../src/urc-gui.c:621
-#: ../src/urc-gui.c:624
+#: ../src/urc-gui.c:412 ../src/urc-gui.c:451 ../src/urc-gui.c:667
+#: ../src/urc-gui.c:670
 msgid "n.a."
 msgstr ""
 
-#: ../src/urc-gui.c:447 ../src/urc-gui.c:449 ../src/urc-gui.c:451
-#: ../src/urc-gui.c:453
+#: ../src/urc-gui.c:493 ../src/urc-gui.c:495 ../src/urc-gui.c:497
+#: ../src/urc-gui.c:499
 msgid "WAN status:"
 msgstr ""
 
-#: ../src/urc-gui.c:447
+#: ../src/urc-gui.c:493
 msgid "Connected"
 msgstr ""
 
-#: ../src/urc-gui.c:449
+#: ../src/urc-gui.c:495
 msgid "Disconnected"
 msgstr ""
 
-#: ../src/urc-gui.c:451
+#: ../src/urc-gui.c:497
 msgid "Connecting"
 msgstr ""
 
-#: ../src/urc-gui.c:453
+#: ../src/urc-gui.c:499
 msgid "Disconnecting"
 msgstr ""
 
-#: ../src/urc-gui.c:465
+#: ../src/urc-gui.c:511
 msgid "<b>WAN status:</b> unknown"
 msgstr ""
 
-#: ../src/urc-gui.c:475
+#: ../src/urc-gui.c:521
 msgid "<b>IP:</b> none"
 msgstr ""
 
-#: ../src/urc-gui.c:477
+#: ../src/urc-gui.c:523
 #, c-format
 msgid "<b>IP:</b> %s"
 msgstr ""
 
-#: ../src/urc-gui.c:490
+#: ../src/urc-gui.c:536
 msgid "<b>IP:</b> unknown"
 msgstr ""
 
-#: ../src/urc-gui.c:544
+#: ../src/urc-gui.c:590
 #, c-format
 msgid "<b>Router name:</b> %s"
 msgstr ""
 
-#: ../src/urc-gui.c:550
+#: ../src/urc-gui.c:596
 #, c-format
 msgid ""
 "<b>Brand:</b> %s\n"
@@ -102,32 +110,32 @@ msgid ""
 "<b>Model Number:</b> %s"
 msgstr ""
 
-#: ../src/urc-gui.c:565
+#: ../src/urc-gui.c:611
 msgid "Open the router config in the default browser"
 msgstr ""
 
-#: ../src/urc-gui.c:612
+#: ../src/urc-gui.c:658
 msgid "<b>Router name:</b> not available"
 msgstr ""
 
-#: ../src/urc-gui.c:615
+#: ../src/urc-gui.c:661
 msgid "<b>WAN status:</b> not available"
 msgstr ""
 
-#: ../src/urc-gui.c:618
+#: ../src/urc-gui.c:664
 msgid "<b>IP:</b> not available"
 msgstr ""
 
-#: ../src/urc-gui.c:627
+#: ../src/urc-gui.c:673
 msgid "not available"
 msgstr ""
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:648
+#: ../src/urc-gui.c:694
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/urc-gui.c:654 ../data/upnp-router-control.desktop.in.h:1
+#: ../src/urc-gui.c:700 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP compliant routers"
 msgstr ""
 
