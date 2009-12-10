@@ -62,6 +62,7 @@ typedef struct
               *router_name_label,
               *router_url_eventbox,
               *router_url_label,
+              *config_label,
               *wan_status_label,
               *ip_label,
               *down_rate_label,
@@ -644,6 +645,7 @@ void gui_set_router_info (const gchar *router_friendly_name,
     g_free(str);
     
     gtk_widget_set_sensitive(gui->router_url_label, TRUE);
+    gtk_widget_set_sensitive(gui->config_label, TRUE);
     
     gtk_widget_set_tooltip_text(gui->router_url_label, _("Open the router config in the default browser"));
     
@@ -682,7 +684,8 @@ void gui_enable()
     gtk_widget_set_sensitive(gui->down_rate_label, TRUE);
     gtk_widget_set_sensitive(gui->up_rate_label, TRUE);
     gtk_widget_set_sensitive(gui->router_url_label, TRUE);
-    gtk_widget_set_sensitive(gui->button_add, TRUE);
+    gtk_widget_set_sensitive(gui->button_add, TRUE);    
+    gtk_widget_set_sensitive(gui->config_label, TRUE);
 }
 
 void gui_disable()
@@ -720,6 +723,8 @@ void gui_disable()
     
     gtk_widget_set_sensitive(gui->button_add, FALSE);
     gtk_widget_set_sensitive(gui->button_remove, FALSE);
+    
+    gtk_widget_set_sensitive(gui->config_label, FALSE);
     
 }
 
@@ -788,6 +793,7 @@ void gui_init()
     
     gui->router_name_label = GTK_WIDGET (gtk_builder_get_object (builder, "router_name_label"));
     gui->router_url_label = GTK_WIDGET (gtk_builder_get_object (builder, "router_url_label"));
+    gui->config_label = GTK_WIDGET (gtk_builder_get_object (builder, "label_config"));
     gui->wan_status_label = GTK_WIDGET (gtk_builder_get_object (builder, "wan_status_label"));
     gui->ip_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip_label"));
     gui->down_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "down_rate_label"));

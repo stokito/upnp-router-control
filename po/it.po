@@ -118,7 +118,7 @@ msgstr "Apri la configurazione del router nel borwser predefinito"
 #: ../src/urc-gui.c:697 ../src/urc-gui.c:702 ../src/urc-gui.c:707
 #: ../src/urc-gui.c:718
 msgid "not available"
-msgstr "not available"
+msgstr "non disponibile"
 
 #. Feel free to put your names here translators :-)
 #: ../src/urc-gui.c:739
