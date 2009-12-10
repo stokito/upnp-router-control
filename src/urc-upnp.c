@@ -102,7 +102,7 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 				   /* IN args */
 				   "NewRemoteHost",
 				   G_TYPE_STRING, port_info->remote_host,
-				   "NewExternalPort2",
+				   "NewExternalPort",
 				   G_TYPE_UINT, port_info->external_port,
 				   "NewProtocol",
 				   G_TYPE_STRING, port_info->protocol,

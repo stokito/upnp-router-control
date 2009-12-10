@@ -260,7 +260,7 @@ static void on_button_remove_clicked (GtkWidget *button,
     {
     	GtkWidget* dialog;
         	
-        dialog = gtk_message_dialog_new(GTK_WINDOW(gui->add_port_window->window),
+        dialog = gtk_message_dialog_new(GTK_WINDOW(gui->main_window),
 				GTK_DIALOG_MODAL,
 				GTK_MESSAGE_ERROR,
 				GTK_BUTTONS_OK,
