@@ -290,7 +290,6 @@ static gboolean get_conn_status (RouterInfo *router)
     
     g_print("\e[36mRequest for connection status info... ");
     
-    /* download speed */
     gupnp_service_proxy_send_action (router->wan_device,
 				   /* Action name and error location */
 				   "GetStatusInfo", &error,
@@ -417,11 +416,10 @@ static gboolean update_data_rate_cb (gpointer data)
 static gboolean get_external_ip (RouterInfo *router)
 {
     GError *error = NULL;
-    gchar* ext_ip_addr;
+    gchar *ext_ip_addr = NULL;
     
     g_print("\e[36mRequest for external IP address... ");
     
-    /* download speed */
     gupnp_service_proxy_send_action (router->wan_device,
 				   /* Action name and error location */
 				   "GetExternalIPAddress", &error,
