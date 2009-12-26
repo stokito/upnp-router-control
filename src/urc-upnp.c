@@ -689,7 +689,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     
         /* Is a IP forwarding service? */
         if( (g_strcmp0 (service_id, "urn:upnp-org:serviceId:Layer3Forwarding1") == 0) ||
-        	(g_strcmp0 (service_id, "urn:upnp-org:serviceId:L3Forwarding:1") == 0))
+        	(g_strcmp0 (service_id, "urn:upnp-org:serviceId:L3Forwarding:1") == 0) ||
+        	(g_strcmp0 (service_id, "urn:upnp-org:serviceId:Layer3Forwarding:11") == 0))
         {
             
             if(opt_debug)
