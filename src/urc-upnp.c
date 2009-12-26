@@ -558,9 +558,6 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     {
         if(level == 0)
         {
-            for(i = 0; i < level; i++)
-                g_print("    ");
-            
             g_print("==> Device Available: \e[31m%s\e[0;0m\n",
                 gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
         }
@@ -579,6 +576,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
         
+        if(opt_debug)
+    	{
+           	g_print("          Model name: %s\n", router->model_name);
+           	g_print("        Model number: %s\n", router->model_number);
+           	g_print("               Brand: %s\n", router->brand);
+           	g_print("    Presentation URL: %s\n", router->http_address);
+        }
+        
         /* workaround for urls like "/login" without base url */        
         if(g_str_has_prefix(router->http_address, "http") == FALSE)
         {
@@ -590,7 +595,11 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);
         	
         	g_strfreev(url_split);
-        }        
+        }  
+        
+        /* workaround for empty <friendlyName> property */
+        if(g_strcmp0(router->friendly_name, "") == 0)
+        	router->friendly_name = g_strdup(router->model_name);
         
         gui_set_router_info (router->friendly_name,
                              router->http_address,
@@ -610,6 +619,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
+        
+        if(opt_debug)
+    	{
+           	g_print("          Model name: %s\n", router->model_name);
+           	g_print("        Model number: %s\n", router->model_number);
+           	g_print("               Brand: %s\n", router->brand);
+           	g_print("    Presentation URL: %s\n", router->http_address);
+        }
         
         /* empty url */
         if(g_strcmp0(router->http_address, "") == 0)
@@ -633,7 +650,9 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);
         	
         	g_strfreev(url_split);
-        }        
+        }
+        
+        router->friendly_name = g_strdup(router->model_name);
         
         gui_set_router_info (router->friendly_name,
                              router->http_address,
@@ -668,6 +687,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                 g_print("    ");
     
             g_print("      \e[32mService:\e[0m %s\n", service_id );
+            
+            for(i = 0; i < level; i++)
+                g_print("    ");
+            g_print("         Type: %s\n", service_type );
             
             /* Introspect current service */
             const GList *actions_list;
