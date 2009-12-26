@@ -43,8 +43,8 @@ typedef struct
     
     guint port_request_timeout;
     
-    GUPnPServiceProxy *wan_service;
-    GUPnPServiceProxy *wan_device;
+    GUPnPServiceProxy *wan_conn_service;
+    GUPnPServiceProxy *wan_common_ifc;
 
 } RouterInfo;
 
@@ -153,7 +153,7 @@ static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
     
     port = g_malloc( sizeof(PortForwardInfo) );    
     
-    gupnp_service_proxy_send_action (router->wan_service,
+    gupnp_service_proxy_send_action (router->wan_conn_service,
 				   /* Action name and error location */
 				   "GetGenericPortMappingEntry", &error,
 				   /* IN args */
@@ -290,7 +290,7 @@ static gboolean get_conn_status (RouterInfo *router)
     
     g_print("\e[36mRequest for connection status info... ");
     
-    gupnp_service_proxy_send_action (router->wan_device,
+    gupnp_service_proxy_send_action (router->wan_conn_service,
 				   /* Action name and error location */
 				   "GetStatusInfo", &error,
 				   /* IN args */
@@ -420,7 +420,7 @@ static gboolean get_external_ip (RouterInfo *router)
     
     g_print("\e[36mRequest for external IP address... ");
     
-    gupnp_service_proxy_send_action (router->wan_device,
+    gupnp_service_proxy_send_action (router->wan_conn_service,
 				   /* Action name and error location */
 				   "GetExternalIPAddress", &error,
 				   /* IN args */
@@ -463,7 +463,7 @@ static gboolean get_nat_rsip_status (RouterInfo *router)
     g_print("\e[36mRequest for NAT and RSIP availability... ");
     
     /* download speed */
-    gupnp_service_proxy_send_action (router->wan_device,
+    gupnp_service_proxy_send_action (router->wan_conn_service,
 				   /* Action name and error location */
 				   "GetNATRSIPStatus", &error,
 				   /* IN args */
@@ -600,6 +600,48 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                              router->model_number);
 
     }
+    /* There is only a WANConnectionDevice? */
+    else if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0 && router->main_device == NULL )
+    {
+    	router->main_device = GUPNP_DEVICE_INFO (proxy);
+        router->friendly_name = gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy));
+        router->brand = gupnp_device_info_get_manufacturer(GUPNP_DEVICE_INFO (proxy));
+        router->http_address = gupnp_device_info_get_presentation_url(GUPNP_DEVICE_INFO (proxy));
+        router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
+        router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
+        router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
+        
+        /* empty url */
+        if(g_strcmp0(router->http_address, "") == 0)
+        {
+        	const gchar* desc_location = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
+        	char** url_split = NULL; 
+        	
+        	url_split = g_strsplit(desc_location, ":", 0); 
+        	
+        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], NULL);
+        	g_strfreev(url_split);
+        }
+        /* workaround for urls like "/login" without base url */
+        else if(g_str_has_prefix(router->http_address, "http") == FALSE)
+        {
+        	const gchar* desc_location = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
+        	char** url_split = NULL;       
+        
+        	url_split = g_strsplit(desc_location, ":", 0);
+        	
+        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);
+        	
+        	g_strfreev(url_split);
+        }        
+        
+        gui_set_router_info (router->friendly_name,
+                             router->http_address,
+                             router->brand,
+                             router->brand_website,
+                             router->model_name,
+                             router->model_number);
+    }
 
   
     /* Enum services */
@@ -695,10 +737,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         /* Is a WAN IFC service? */
         else if(g_strcmp0 (service_id, "urn:upnp-org:serviceId:WANCommonIFC1") == 0)
         {
-            router->wan_device = child->data;
+            router->wan_common_ifc = child->data;
         
             /* Start data rate timer */
-            g_timeout_add_seconds(1, update_data_rate_cb, router->wan_device);
+            g_timeout_add_seconds(1, update_data_rate_cb, router->wan_common_ifc);
             
         } 
         /* Is a WAN IP Connection service or other? */
@@ -706,9 +748,9 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                 g_strcmp0 (service_id, connect_service) == 0 )
         {
         
-            router->wan_service = child->data;
+            router->wan_conn_service = child->data;
             
-            gui_set_ports_buttons_callback_data(router->wan_device);            
+            gui_set_ports_buttons_callback_data(router->wan_conn_service);            
             
             if(opt_debug)
             {
@@ -822,6 +864,8 @@ gboolean upnp_init(const gchar *interface, const guint port, const gboolean debu
     g_print("* Starting UPnP Resource discovery... ");
     
     router = g_malloc( sizeof(RouterInfo) );
+    
+    router->main_device = NULL;
   
     /* Create a new GUPnP Context. */
     context = gupnp_context_new (NULL, interface, port, &error);
