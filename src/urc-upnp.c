@@ -628,28 +628,19 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
            	g_print("    Presentation URL: %s\n", router->http_address);
         }
         
-        /* empty url */
-        if(g_strcmp0(router->http_address, "") == 0)
-        {
-        	const gchar* desc_location = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
-        	char** url_split = NULL; 
-        	
-        	url_split = g_strsplit(desc_location, ":", 0); 
-        	
-        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], NULL);
-        	g_strfreev(url_split);
-        }
-        /* workaround for urls like "/login" without base url */
-        else if(g_str_has_prefix(router->http_address, "http") == FALSE)
+        /* workaround for urls like "/login" without base url or empty url */
+        if(router->http_address == NULL || g_str_has_prefix(router->http_address, "http") == FALSE)
         {
         	const gchar* desc_location = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
         	char** url_split = NULL;       
         
         	url_split = g_strsplit(desc_location, ":", 0);
         	
-        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);
-        	
+        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);        	
         	g_strfreev(url_split);
+        	
+        	if(opt_debug)
+        		g_print("         Rewrite URL: %s\n", router->http_address);
         }
         
         router->friendly_name = g_strdup(router->model_name);
