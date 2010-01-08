@@ -43,6 +43,8 @@ typedef struct
     
     guint port_request_timeout;
     
+    guint data_rate_timer;
+    
     GUPnPServiceProxy *wan_conn_service;
     GUPnPServiceProxy *wan_common_ifc;
 
@@ -754,7 +756,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             router->wan_common_ifc = child->data;
         
             /* Start data rate timer */
-            g_timeout_add_seconds(1, update_data_rate_cb, router->wan_common_ifc);
+            router->data_rate_timer = g_timeout_add_seconds(1, update_data_rate_cb, router->wan_common_ifc);
             
         } 
         /* Is a WAN IP Connection service or other? */
@@ -860,8 +862,11 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
     
     device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
      
-    if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0)
-    	gui_disable();
+    if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0) {
+    	
+    	g_source_remove(router->port_request_timeout);
+    	gui_disable();   	
+    }
 
 }
 
