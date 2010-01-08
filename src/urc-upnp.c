@@ -702,9 +702,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         }
     
         /* Is a IP forwarding service? */
-        if( (g_strcmp0 (service_id, "urn:upnp-org:serviceId:Layer3Forwarding1") == 0) ||
-        	(g_strcmp0 (service_id, "urn:upnp-org:serviceId:L3Forwarding:1") == 0) ||
-        	(g_strcmp0 (service_id, "urn:upnp-org:serviceId:Layer3Forwarding:11") == 0))
+        if( (g_strcmp0 (service_type, "urn:schemas-upnp-org:service:Layer3Forwarding:1") == 0) ||
+        	(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:L3Forwarding:1") == 0) )
         {
             
             if(opt_debug)
@@ -750,7 +749,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 	    
         } 
         /* Is a WAN IFC service? */
-        else if(g_strcmp0 (service_id, "urn:upnp-org:serviceId:WANCommonIFC1") == 0)
+        else if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1") == 0)
         {
             router->wan_common_ifc = child->data;
         
@@ -759,7 +758,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             
         } 
         /* Is a WAN IP Connection service or other? */
-        else if( (connect_service == NULL && g_strcmp0 (service_id, "urn:upnp-org:serviceId:WANIPConn1") == 0) ||
+        else if( (connect_service == NULL && g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANIPConnection:1") == 0) ||
                 g_strcmp0 (service_id, connect_service) == 0 )
         {
         
