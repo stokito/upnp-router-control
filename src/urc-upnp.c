@@ -587,16 +587,18 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         }
         
         /* workaround for urls like "/login" without base url */        
-        if(g_str_has_prefix(router->http_address, "http") == FALSE)
+        if(router->http_address != NULL && g_str_has_prefix(router->http_address, "http") == FALSE)
         {
         	const gchar* desc_location = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
         	char** url_split = NULL;       
         
         	url_split = g_strsplit(desc_location, ":", 0);
         	
-        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);
-        	
+        	router->http_address = g_strconcat(url_split[0], ":", url_split[1], router->http_address, NULL);        	
         	g_strfreev(url_split);
+        	
+        	if(opt_debug)
+        		g_print("         Rewrite URL: %s\n", router->http_address);
         }  
         
         /* workaround for empty <friendlyName> property */
@@ -631,7 +633,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         }
         
         /* workaround for urls like "/login" without base url or empty url */
-        if(router->http_address == NULL || g_str_has_prefix(router->http_address, "http") == FALSE)
+        if(router->http_address != NULL && g_str_has_prefix(router->http_address, "http") == FALSE)
         {
         	const gchar* desc_location = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
         	char** url_split = NULL;       
