@@ -49,7 +49,8 @@ typedef struct
               *add_local_ip,
               *add_local_port,              
               *button_apply,
-              *button_cancel;
+              *button_cancel,
+              *expander;
 
 } AddPortWindow;
 
@@ -122,6 +123,19 @@ static void gui_add_port_window_close(GtkWidget *button,
     
 }
 
+static void gui_add_port_window_on_port_change (GtkSpinButton *spinbutton,
+                                                gpointer       user_data)
+{
+	guint num = 0;
+	
+	// sync values only in "easy" mode
+	if(gtk_expander_get_expanded(GTK_EXPANDER(gui->add_port_window->expander)) == FALSE)
+	{
+		num = (guint) gtk_spin_button_get_value(spinbutton);
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), num);
+	}
+}
+
 static void gui_run_add_port_window(GtkWidget *button,
                                     gpointer   user_data)
 {
@@ -167,6 +181,7 @@ static void gui_create_add_port_window(GtkBuilder* builder)
     add_port_window->add_local_port = GTK_WIDGET (gtk_builder_get_object (builder, "add_local_port"));
     add_port_window->button_apply = GTK_WIDGET (gtk_builder_get_object (builder, "button_apply"));
     add_port_window->button_cancel = GTK_WIDGET (gtk_builder_get_object (builder, "button_cancel"));    
+    add_port_window->expander = GTK_WIDGET (gtk_builder_get_object (builder, "expander1")); 
 
     list_store = gtk_list_store_new (1, G_TYPE_STRING );
     
@@ -182,6 +197,9 @@ static void gui_create_add_port_window(GtkBuilder* builder)
     
     gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "TCP");
     gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "UDP");
+    
+    g_signal_connect(add_port_window->add_ext_port, "value-changed",
+                         G_CALLBACK(gui_add_port_window_on_port_change), NULL);
     
     g_signal_connect(add_port_window->button_cancel, "clicked",
                          G_CALLBACK(gui_add_port_window_close), NULL);
