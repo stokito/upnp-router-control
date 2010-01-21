@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-10 18:26+0100\n"
+"POT-Creation-Date: 2010-01-21 18:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,188 +16,192 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/urc-main.c:80 ../data/upnp-router-control.glade.h:21
+#: ../src/urc-main.c:80 ../data/upnp-router-control.glade.h:22
 #: ../data/upnp-router-control.desktop.in.h:2
 msgid "UPnP Router Control"
 msgstr ""
 
-#: ../src/urc-gui.c:104
+#: ../src/urc-gui.c:106
 msgid "Unable to set this port forward"
 msgstr ""
 
-#: ../src/urc-gui.c:267
+#: ../src/urc-gui.c:286
 msgid "Unable to remove this port forward"
 msgstr ""
 
-#: ../src/urc-gui.c:327
+#: ../src/urc-gui.c:346
 msgid "Enabled"
 msgstr ""
 
-#: ../src/urc-gui.c:328
+#: ../src/urc-gui.c:347
 msgid "Description"
 msgstr ""
 
-#: ../src/urc-gui.c:329
+#: ../src/urc-gui.c:348
 msgid "Protocol"
 msgstr ""
 
-#: ../src/urc-gui.c:330
+#: ../src/urc-gui.c:349
 msgid "Int. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:331
+#: ../src/urc-gui.c:350
 msgid "Ext. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:332
+#: ../src/urc-gui.c:351
 msgid "Local IP"
 msgstr ""
 
-#: ../src/urc-gui.c:415 ../src/urc-gui.c:460 ../src/urc-gui.c:712
-#: ../src/urc-gui.c:715
+#: ../src/urc-gui.c:434 ../src/urc-gui.c:479 ../src/urc-gui.c:733
+#: ../src/urc-gui.c:736
 msgid "n.a."
 msgstr ""
 
-#: ../src/urc-gui.c:508 ../src/urc-gui.c:510 ../src/urc-gui.c:512
-#: ../src/urc-gui.c:514 ../src/urc-gui.c:530 ../src/urc-gui.c:702
+#: ../src/urc-gui.c:527 ../src/urc-gui.c:529 ../src/urc-gui.c:531
+#: ../src/urc-gui.c:533 ../src/urc-gui.c:549 ../src/urc-gui.c:723
 msgid "WAN status:"
 msgstr ""
 
-#: ../src/urc-gui.c:508
+#: ../src/urc-gui.c:527
 msgid "Connected"
 msgstr ""
 
-#: ../src/urc-gui.c:510
+#: ../src/urc-gui.c:529
 msgid "Disconnected"
 msgstr ""
 
-#: ../src/urc-gui.c:512
+#: ../src/urc-gui.c:531
 msgid "Connecting"
 msgstr ""
 
-#: ../src/urc-gui.c:514
+#: ../src/urc-gui.c:533
 msgid "Disconnecting"
 msgstr ""
 
-#: ../src/urc-gui.c:530 ../src/urc-gui.c:566
+#: ../src/urc-gui.c:549 ../src/urc-gui.c:585
 msgid "unknown"
 msgstr ""
 
-#: ../src/urc-gui.c:547 ../src/urc-gui.c:549 ../src/urc-gui.c:566
-#: ../src/urc-gui.c:707
+#: ../src/urc-gui.c:566 ../src/urc-gui.c:568 ../src/urc-gui.c:585
+#: ../src/urc-gui.c:728
 msgid "IP:"
 msgstr ""
 
-#: ../src/urc-gui.c:547
+#: ../src/urc-gui.c:566
 msgid "none"
 msgstr ""
 
-#: ../src/urc-gui.c:623 ../src/urc-gui.c:697
+#: ../src/urc-gui.c:642 ../src/urc-gui.c:718
 msgid "Router name:"
 msgstr ""
 
-#: ../src/urc-gui.c:630
+#: ../src/urc-gui.c:649
 msgid "Brand"
 msgstr ""
 
-#: ../src/urc-gui.c:632
+#: ../src/urc-gui.c:651
 msgid "Brand website:"
 msgstr ""
 
-#: ../src/urc-gui.c:634
+#: ../src/urc-gui.c:653
 msgid "Model Name:"
 msgstr ""
 
-#: ../src/urc-gui.c:636
+#: ../src/urc-gui.c:655
 msgid "Model Number:"
 msgstr ""
 
-#: ../src/urc-gui.c:648
+#: ../src/urc-gui.c:668
 msgid "Open the router config in the default browser"
 msgstr ""
 
-#: ../src/urc-gui.c:697 ../src/urc-gui.c:702 ../src/urc-gui.c:707
-#: ../src/urc-gui.c:718
+#: ../src/urc-gui.c:718 ../src/urc-gui.c:723 ../src/urc-gui.c:728
+#: ../src/urc-gui.c:739
 msgid "not available"
 msgstr ""
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:739
+#: ../src/urc-gui.c:762
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/urc-gui.c:745 ../data/upnp-router-control.desktop.in.h:1
+#: ../src/urc-gui.c:768 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP IGD compliant routers"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:1
-msgid "<b>Config:</b>"
+msgid "<b>Advanced parameters</b>"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:2
+msgid "<b>Config:</b>"
+msgstr ""
+
+#: ../data/upnp-router-control.glade.h:3
 msgid "<i>Insert here a short description for this port</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:4
+#: ../data/upnp-router-control.glade.h:5
 msgid ""
 "<i>Insert here the local IP where forward packets,\n"
 "usually IP of this computer</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:7
+#: ../data/upnp-router-control.glade.h:8
 msgid "<i>Insert here the port exposed by the router to Internet</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:9
+#: ../data/upnp-router-control.glade.h:10
 msgid ""
 "<i>Insert the the local port where forward the packets from router to your "
 "computer</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:11
+#: ../data/upnp-router-control.glade.h:12
 msgid "<i>Select here the protocol used, usually TCP</i>\n"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:13
+#: ../data/upnp-router-control.glade.h:14
 msgid "Add new port forward"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:14
+#: ../data/upnp-router-control.glade.h:15
 msgid "Click for map a new port"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:15
+#: ../data/upnp-router-control.glade.h:16
 msgid "Click for remove a port mapping"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:16
+#: ../data/upnp-router-control.glade.h:17
 msgid "Description:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:17
+#: ../data/upnp-router-control.glade.h:18
 msgid "External port:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:18
+#: ../data/upnp-router-control.glade.h:19
 msgid "Local IP:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:19
+#: ../data/upnp-router-control.glade.h:20
 msgid "Local port:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:20
+#: ../data/upnp-router-control.glade.h:21
 msgid "Protocol:"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:22
+#: ../data/upnp-router-control.glade.h:23
 msgid "_File"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:23
+#: ../data/upnp-router-control.glade.h:24
 msgid "_Help"
 msgstr ""
 
-#: ../data/upnp-router-control.glade.h:24
+#: ../data/upnp-router-control.glade.h:25
 msgid "_Switch router"
 msgstr ""
