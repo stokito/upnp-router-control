@@ -83,7 +83,7 @@ main(int argc, char** argv)
 			    DATADIR G_DIR_SEPARATOR_S "icons");
         
         /* Required initialisation */
-        g_thread_init (NULL);
+        if (!g_thread_supported ()) g_thread_init (NULL);
         g_type_init ();
         
         /* Initialize the GUI */
