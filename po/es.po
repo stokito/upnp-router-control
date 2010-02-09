@@ -1,0 +1,214 @@
+# Spanish translation for upnp-router-control
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the upnp-router-control package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: upnp-router-control\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-12-10 18:26+0100\n"
+"PO-Revision-Date: 2009-12-23 20:53+0000\n"
+"Last-Translator: Launchpad Translations Administrators "
+"<rosetta@launchpad.net>\n"
+"Language-Team: Spanish <es@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2010-01-21 16:52+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ../src/urc-main.c:80 ../data/upnp-router-control.glade.h:21
+#: ../data/upnp-router-control.desktop.in.h:2
+msgid "UPnP Router Control"
+msgstr "UPnP Router Control"
+
+#: ../src/urc-gui.c:104
+msgid "Unable to set this port forward"
+msgstr ""
+
+#: ../src/urc-gui.c:267
+msgid "Unable to remove this port forward"
+msgstr ""
+
+#: ../src/urc-gui.c:327
+msgid "Enabled"
+msgstr "Activado"
+
+#: ../src/urc-gui.c:328
+msgid "Description"
+msgstr "Descripción"
+
+#: ../src/urc-gui.c:329
+msgid "Protocol"
+msgstr "Protocolo"
+
+#: ../src/urc-gui.c:330
+msgid "Int. Port"
+msgstr "Puerto Interno"
+
+#: ../src/urc-gui.c:331
+msgid "Ext. Port"
+msgstr "Puerto Externo"
+
+#: ../src/urc-gui.c:332
+msgid "Local IP"
+msgstr "IP local"
+
+#: ../src/urc-gui.c:415 ../src/urc-gui.c:460 ../src/urc-gui.c:712
+#: ../src/urc-gui.c:715
+msgid "n.a."
+msgstr "n. d."
+
+#: ../src/urc-gui.c:508 ../src/urc-gui.c:510 ../src/urc-gui.c:512
+#: ../src/urc-gui.c:514 ../src/urc-gui.c:530 ../src/urc-gui.c:702
+msgid "WAN status:"
+msgstr "Estado WAN:"
+
+#: ../src/urc-gui.c:508
+msgid "Connected"
+msgstr "Conectado"
+
+#: ../src/urc-gui.c:510
+msgid "Disconnected"
+msgstr "Desconectado"
+
+#: ../src/urc-gui.c:512
+msgid "Connecting"
+msgstr "Conectando"
+
+#: ../src/urc-gui.c:514
+msgid "Disconnecting"
+msgstr "Desconectando"
+
+#: ../src/urc-gui.c:530 ../src/urc-gui.c:566
+msgid "unknown"
+msgstr ""
+
+#: ../src/urc-gui.c:547 ../src/urc-gui.c:549 ../src/urc-gui.c:566
+#: ../src/urc-gui.c:707
+msgid "IP:"
+msgstr ""
+
+#: ../src/urc-gui.c:547
+msgid "none"
+msgstr ""
+
+#: ../src/urc-gui.c:623 ../src/urc-gui.c:697
+msgid "Router name:"
+msgstr ""
+
+#: ../src/urc-gui.c:630
+msgid "Brand"
+msgstr ""
+
+#: ../src/urc-gui.c:632
+msgid "Brand website:"
+msgstr ""
+
+#: ../src/urc-gui.c:634
+msgid "Model Name:"
+msgstr ""
+
+#: ../src/urc-gui.c:636
+msgid "Model Number:"
+msgstr ""
+
+#: ../src/urc-gui.c:648
+msgid "Open the router config in the default browser"
+msgstr "Abrir la configuración del router en el navegador predeterminado"
+
+#: ../src/urc-gui.c:697 ../src/urc-gui.c:702 ../src/urc-gui.c:707
+#: ../src/urc-gui.c:718
+msgid "not available"
+msgstr "no disponible"
+
+#. Feel free to put your names here translators :-)
+#: ../src/urc-gui.c:739
+msgid "translator-credits"
+msgstr ""
+"Launchpad Contributions:\n"
+"  DiegoJ https://launchpad.net/~diegojromerolopez\n"
+"  Federico Vera https://launchpad.net/~fedevera\n"
+"  Nicolás M. Zahlut https://launchpad.net/~nzahlut\n"
+"  Pablo Zubiaurre https://launchpad.net/~pablozub89"
+
+#: ../src/urc-gui.c:745 ../data/upnp-router-control.desktop.in.h:1
+msgid "A simple program to manage UPnP IGD compliant routers"
+msgstr ""
+
+#: ../data/upnp-router-control.glade.h:1
+msgid "<b>Config:</b>"
+msgstr "<b>Configuración:</b>"
+
+#: ../data/upnp-router-control.glade.h:2
+msgid "<i>Insert here a short description for this port</i>\n"
+msgstr "<i>Introduzca aquí una somera descripción para este puerto</i>\n"
+
+#: ../data/upnp-router-control.glade.h:4
+msgid ""
+"<i>Insert here the local IP where forward packets,\n"
+"usually IP of this computer</i>\n"
+msgstr ""
+"<i>Introduzca aquí la IP local adonde se redireccionan los paquetes,\n"
+"normalmente la IP de este equipo</i>\n"
+
+#: ../data/upnp-router-control.glade.h:7
+msgid "<i>Insert here the port exposed by the router to Internet</i>\n"
+msgstr "<i>Introduzca aquí el puerto que expondrá el router a internet</i>\n"
+
+#: ../data/upnp-router-control.glade.h:9
+msgid ""
+"<i>Insert the the local port where forward the packets from router to your "
+"computer</i>\n"
+msgstr ""
+"<i>Introduzca el puerto local adonde redireccionar los paquetes del router a "
+"su equipo</i>\n"
+
+#: ../data/upnp-router-control.glade.h:11
+msgid "<i>Select here the protocol used, usually TCP</i>\n"
+msgstr "<i>Seleccione aquí el protocolo usado, normalmente será TCP</i>\n"
+
+#: ../data/upnp-router-control.glade.h:13
+msgid "Add new port forward"
+msgstr "Añadir una nueva redirección de puerto"
+
+#: ../data/upnp-router-control.glade.h:14
+msgid "Click for map a new port"
+msgstr "Haz clic para mapear un nuvo puerto"
+
+#: ../data/upnp-router-control.glade.h:15
+msgid "Click for remove a port mapping"
+msgstr "Clickee para remover el mapeo a un puerto"
+
+#: ../data/upnp-router-control.glade.h:16
+msgid "Description:"
+msgstr "Descripción:"
+
+#: ../data/upnp-router-control.glade.h:17
+msgid "External port:"
+msgstr "Puerto externo:"
+
+#: ../data/upnp-router-control.glade.h:18
+msgid "Local IP:"
+msgstr "IP local:"
+
+#: ../data/upnp-router-control.glade.h:19
+msgid "Local port:"
+msgstr "Puerto local:"
+
+#: ../data/upnp-router-control.glade.h:20
+msgid "Protocol:"
+msgstr "Protocolo:"
+
+#: ../data/upnp-router-control.glade.h:22
+msgid "_File"
+msgstr "_Archivo"
+
+#: ../data/upnp-router-control.glade.h:23
+msgid "_Help"
+msgstr "_Ayuda"
+
+#: ../data/upnp-router-control.glade.h:24
+msgid "_Switch router"
+msgstr "_Cambiar router"
