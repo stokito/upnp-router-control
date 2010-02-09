@@ -442,8 +442,7 @@ void gui_set_download_speed(const gdouble down_speed)
     gfloat value;
     /* Method of divisions is too expensive? */
     
-    if(gui->down_rate_label == NULL)
-    	return;
+    
         
     /* Down speed */
     if(down_speed >= 1024)
@@ -463,6 +462,10 @@ void gui_set_download_speed(const gdouble down_speed)
     }
     str = g_strdup_printf("%0.1f %s", value, unit);
     g_free(unit);
+    
+    if(gui->down_rate_label == NULL)
+    	return;
+    	
     gtk_label_set_text (GTK_LABEL(gui->down_rate_label), str);
     g_free(str);
     
@@ -487,9 +490,6 @@ void gui_set_upload_speed(const gdouble up_speed)
     gfloat value;
     /* Method of divisions is too expensive? */
     
-    if(gui->up_rate_label == NULL)
-    	return;
-    
     /* Up speed */     
     if(up_speed >= 1024)
     {
@@ -508,6 +508,10 @@ void gui_set_upload_speed(const gdouble up_speed)
     }
     str = g_strdup_printf("%0.1f %s", value, unit);
     g_free(unit);
+    
+    if(gui->up_rate_label == NULL)
+    	return;
+    
     gtk_label_set_text (GTK_LABEL(gui->up_rate_label), str);
     g_free(str);
     
