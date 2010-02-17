@@ -346,6 +346,16 @@
             <property name="position">2</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkDrawingArea" id="network_graph">
+            <property name="height_request">100</property>
+            <property name="visible">True</property>
+            <property name="app_paintable">True</property>
+          </object>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
       </object>
     </child>
   </object>

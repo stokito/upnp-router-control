@@ -69,13 +69,17 @@ typedef struct
               *down_rate_label,
               *up_rate_label,
               *button_remove,
-              *button_add;
+              *button_add,
+              *network_drawing_area;
               
     AddPortWindow* add_port_window;
 
 } GuiContext;
 
 static GuiContext* gui;
+
+static GArray *downspeed_array;
+static GArray *upspeed_array;
 
 static void gui_add_port_window_close(GtkWidget *button,
                                       gpointer   user_data)
@@ -489,6 +493,13 @@ void gui_set_upload_speed(const gdouble up_speed)
     gchar* unit;
     gfloat value;
     /* Method of divisions is too expensive? */
+
+    upspeed_array = g_array_prepend_val(upspeed_array, up_speed);
+
+    //if(g_array_index(upspeed_array, gdouble, 60) >= 0)
+    //    upspeed_array = g_array_remove_index_fast(upspeed_array, 60);
+
+    gtk_widget_queue_draw(gui->network_drawing_area);
     
     /* Up speed */     
     if(up_speed >= 1024)
@@ -792,6 +803,108 @@ static void gui_destroy()
 	gtk_main_quit();
 }
 
+static gboolean
+on_drawing_area_expose_event (GtkWidget      *widget,
+                              GdkEventExpose *event,
+                              gpointer        user_data)
+{
+    gdouble width, height;
+    int bearing = 20;
+    int i;
+    
+    cairo_t *cr;
+    double dash[2] = { 1.0, 2.0 };
+
+    int x_frame_count = 6;
+    int y_frame_count = 3;
+
+    double x_frame_size;
+    double y_frame_size;
+
+    width = widget->allocation.width;
+    height = widget->allocation.height;
+
+    
+
+    cr = gdk_cairo_create (widget->window);
+
+    cairo_select_font_face (cr, "sans",
+                                CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size (cr, 8.0);
+    cairo_set_line_width (cr, 1.0);
+
+    cairo_rectangle (cr,
+                         event->area.x, event->area.y,
+                         event->area.width, event->area.height);
+    cairo_clip (cr);
+
+    cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+    //cairo_paint(cr);
+
+    cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+    cairo_set_line_width (cr, 1);
+
+    cairo_rectangle (cr,
+                         20, 20,
+                         width-40, height-40);
+    //cairo_set_source_rgb (cr, 0.75, 0.5, 0.5);
+    cairo_fill(cr);
+
+    
+	cairo_set_dash (cr, dash, 2, 0);
+
+    cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+    
+    // drawing vertical grid    
+    x_frame_size = (width - 40) / x_frame_count;    
+    for(i = 0; i <= x_frame_count; i++) {
+        
+        cairo_move_to (cr, bearing + (x_frame_size * i), bearing);
+        cairo_line_to (cr, bearing + (x_frame_size * i), height - 15.0);
+
+
+    }
+    
+    // drawing horizontal grid
+    y_frame_size = (height - 40) / y_frame_count;    
+    for(i = 0; i <= y_frame_size; i++) {
+        
+        cairo_move_to (cr, bearing - 5, bearing + (y_frame_size * i));
+        cairo_line_to (cr, width - bearing, bearing + (y_frame_size * i));
+        
+    }
+    cairo_stroke(cr);
+    
+    double y_pos;
+    double x_pos;
+
+    cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
+    cairo_set_source_rgb (cr, 0.25, 0.25, 0.75);
+    cairo_set_dash (cr, NULL, 0, 0);
+     cairo_set_line_width (cr, 1.5);
+
+    y_pos = height - bearing - g_array_index(upspeed_array, gdouble, 0) * (height - 40) / 100;
+    x_pos = bearing;
+
+    cairo_move_to (cr, x_pos, y_pos);
+    
+    for(i = 0; i <= 120; i++) {
+        
+        y_pos = height - 20 - g_array_index(upspeed_array, gdouble, i) * (height - 40) / 100;
+        x_pos = bearing + ((width - 40) / 120) * i;
+        
+        cairo_line_to (cr, x_pos, y_pos);
+        
+    }
+    cairo_set_line_join (cr, CAIRO_LINE_JOIN_ROUND);
+
+    cairo_stroke(cr);
+
+    cairo_destroy (cr);
+    /* propagate event further */
+    return FALSE;
+}
+
 void gui_init()
 {
     GtkBuilder* builder;
@@ -821,10 +934,12 @@ void gui_init()
     gui->down_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "down_rate_label"));
     gui->up_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "up_rate_label"));
     gui->router_url_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "router_url_eventbox"));
+    gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "network_graph"));
     
     gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
     
+    upspeed_array = g_array_sized_new(FALSE, TRUE, sizeof(gdouble), 61);
     
     g_signal_connect(gtk_builder_get_object (builder, "menuitem_about"), "activate",
                          G_CALLBACK(on_about_activate_cb), NULL);
@@ -834,6 +949,9 @@ void gui_init()
     
     g_signal_connect(G_OBJECT(gui->main_window), "delete-event",
                          G_CALLBACK(gui_destroy), NULL);
+
+    g_signal_connect(G_OBJECT(gui->network_drawing_area), "expose-event",
+                         G_CALLBACK(on_drawing_area_expose_event), NULL);
                              
     gui_create_add_port_window(builder);
     
