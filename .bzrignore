@@ -1,0 +1,16 @@
+_build_
+aclocal.m4
+missing
+Makefile.in
+.lock-wscript
+.waf-1.5.8-82618d9ddb24b59a4b121a86ef888bbb
+configure
+INSTALL
+depcomp
+config.h.in
+data/Makefile.in
+data/apps_scalable2_upnp-router-control.svg
+src/Makefile.in
+autom4te.cache
+install-sh
+NEWS
