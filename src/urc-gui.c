@@ -842,33 +842,26 @@ on_drawing_area_expose_event (GtkWidget      *widget,
                               gpointer        user_data)
 {
     cairo_t *cr;
+    cairo_pattern_t *pat;
+    cairo_text_extents_t extents;
 
     double draw_width, draw_height;
+    
     const double fontsize = 8.0;
     const double rmargin = 3.5 * fontsize;
-	const double indent = 24.0;
-    
-    gint i;    
-    
+	const guint indent = 24;
+	const guint x_frame_count = 6;
+	guint y_frame_count = 3;    
     double dash[2] = { 1.0, 2.0 };
-
-    const guint x_frame_count = 6;
-    gint y_frame_count = 3;
-
     double x_frame_size;
     double y_frame_size;
-
     double x;
     double y;
-
-    guint net_max = 100;
-
+    gint i;  
     GList *list;
+    guint net_max = 100;
     SpeedValue *speed_value;
-
     gchar *label;
-
-    cairo_text_extents_t extents;
 
     draw_width = widget->allocation.width - 2 * FRAME_WIDTH;
     draw_height = widget->allocation.height - 2 * FRAME_WIDTH;
@@ -908,11 +901,17 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (cr, 1);
 
-    // white background
-    cairo_rectangle (cr, rmargin + indent, 0, draw_width - rmargin - indent, draw_height - 15.0);    
-    cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+    // white to gray faded background
+    pat = cairo_pattern_create_linear (0.0, 0.0,  0.0, draw_height - 15.0);
+    cairo_pattern_add_color_stop_rgb (pat, 0, 1, 1, 1);
+    cairo_pattern_add_color_stop_rgb (pat, 1, 0.9, 0.9, 0.9);
+    cairo_rectangle (cr, rmargin + indent, 0, draw_width - rmargin - indent, draw_height - 15.0);
+    cairo_set_source (cr, pat);
     cairo_fill(cr);
+
+    cairo_pattern_destroy (pat);
     
+    // draw grid
 	cairo_set_dash (cr, dash, 2, 0);
 	cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.75);
     
@@ -968,7 +967,7 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     if(speed_value->valid == TRUE) {
         y = draw_height - 15 - speed_value->speed * (draw_height - 15) / net_max;
         x = draw_width;
-        cairo_move_to (cr, x, y);
+        cairo_move_to (cr, x, y + 0.5);
     }    
     
     for(i = GRAPH_POINTS; i >= 0; i--) {
@@ -979,7 +978,7 @@ on_drawing_area_expose_event (GtkWidget      *widget,
             y = draw_height  - 15 - speed_value->speed * (draw_height - 15) / net_max;
             x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
         
-            cairo_line_to (cr, x, y);
+            cairo_line_to (cr, x, y + 0.5);
         }
 
         list = list->next;        
@@ -995,7 +994,7 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     if(speed_value->valid == TRUE) {
         y = draw_height - 15 - speed_value->speed * (draw_height - 15) / 100;
         x = draw_width;
-        cairo_move_to (cr, x, y);
+        cairo_move_to (cr, x, y + 0.5);
     }    
     
     for(i = GRAPH_POINTS; i >= 0; i--) {
@@ -1006,7 +1005,7 @@ on_drawing_area_expose_event (GtkWidget      *widget,
             y = draw_height  - 15 - speed_value->speed * (draw_height - 15) / 100;
             x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
         
-            cairo_line_to (cr, x, y);
+            cairo_line_to (cr, x, y + 0.5);
         }
 
         list = list->next;        
