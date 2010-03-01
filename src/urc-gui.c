@@ -81,6 +81,9 @@ static GuiContext* gui;
 static GList *downspeed_values = NULL;
 static GList *upspeed_values = NULL;
 
+#define GRAPH_POINTS 90
+
+
 typedef struct
 {
     gdouble  speed;
@@ -460,7 +463,7 @@ void gui_set_download_speed(const gdouble down_speed)
 
     downspeed_values = g_list_prepend(downspeed_values, speed);
 
-    tmp_elem = g_list_nth(downspeed_values, 120);
+    tmp_elem = g_list_nth(downspeed_values, GRAPH_POINTS+1);
     if(tmp_elem) {
         g_free(tmp_elem->data);
         downspeed_values = g_list_delete_link(downspeed_values, tmp_elem);
@@ -522,7 +525,7 @@ void gui_set_upload_speed(const gdouble up_speed)
 
     upspeed_values = g_list_prepend(upspeed_values, speed);
 
-    tmp_elem = g_list_nth(upspeed_values, 120);
+    tmp_elem = g_list_nth(upspeed_values, GRAPH_POINTS+1);
     if(tmp_elem) {
         g_free(tmp_elem->data);
         upspeed_values = g_list_delete_link(upspeed_values, tmp_elem);
@@ -832,105 +835,154 @@ static void gui_destroy()
 	
 	gtk_main_quit();
 }
-
+#define FRAME_WIDTH 4
 static gboolean
 on_drawing_area_expose_event (GtkWidget      *widget,
                               GdkEventExpose *event,
                               gpointer        user_data)
 {
-    gdouble width, height;
-    const guint bearing = 20;
-    int i;
-    
     cairo_t *cr;
+
+    double draw_width, draw_height;
+    const double fontsize = 8.0;
+    const double rmargin = 3.5 * fontsize;
+	const double indent = 24.0;
+    
+    gint i;    
+    
     double dash[2] = { 1.0, 2.0 };
 
-    int x_frame_count = 6;
-    int y_frame_count = 3;
+    const guint x_frame_count = 6;
+    gint y_frame_count = 3;
 
     double x_frame_size;
     double y_frame_size;
 
-    double y_pos;
-    double x_pos;
+    double x;
+    double y;
 
-    width = widget->allocation.width;
-    height = widget->allocation.height;
+    guint net_max = 100;
+
+    GList *list;
+    SpeedValue *speed_value;
+
+    gchar *label;
+
+    cairo_text_extents_t extents;
+
+    draw_width = widget->allocation.width - 2 * FRAME_WIDTH;
+    draw_height = widget->allocation.height - 2 * FRAME_WIDTH;
 
     cr = gdk_cairo_create (widget->window);
-
-    cairo_select_font_face (cr, "sans",
-                                CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
-    cairo_set_font_size (cr, 8.0);
-    cairo_set_line_width (cr, 1.0);
 
     cairo_rectangle (cr,
                          event->area.x, event->area.y,
                          event->area.width, event->area.height);
     cairo_clip (cr);
 
+    /* draw frame */
+	cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);	
+
+	switch ( (int) (draw_height) / 30 ) 
+	{
+	    case 0:
+	    case 1:
+		    y_frame_count = 1;
+		    break;
+	    case 2:
+	    case 3:
+		    y_frame_count = 2;
+		    break;
+	    case 4:
+		    y_frame_count = 4;
+		    break;
+	    default:
+		    y_frame_count = 5;
+		    
+	}
+
+	cairo_select_font_face (cr, "sans",
+                                CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size (cr, fontsize);
+
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (cr, 1);
 
-    cairo_rectangle (cr, bearing, bearing, width-(bearing*2), height-(bearing*2));
-    
+    // white background
+    cairo_rectangle (cr, rmargin + indent, 0, draw_width - rmargin - indent, draw_height - 15.0);    
     cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
     cairo_fill(cr);
     
 	cairo_set_dash (cr, dash, 2, 0);
-
+	cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.75);
+    
     // drawing vertical grid    
-    x_frame_size = (width - 40) / x_frame_count;    
+    x_frame_size = (draw_width - rmargin - indent) / x_frame_count;    
     for(i = 0; i <= x_frame_count; i++) {
         
-        cairo_move_to (cr, bearing + (x_frame_size * i), bearing);
-        cairo_line_to (cr, bearing + (x_frame_size * i), height - 15.0);
+        x = rmargin + indent + (x_frame_size * i);
+
+        if(i == 0)
+            label = g_strdup_printf("%u seconds", GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
+        
+        else
+            label = g_strdup_printf("%u", GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
+        
+        cairo_text_extents (cr, label, &extents);
+		cairo_move_to (cr, x - extents.width/2 , draw_height+2);
+		cairo_show_text (cr, label);
+		g_free(label);
+
+		cairo_move_to (cr, x, 0);
+        cairo_line_to (cr, x, draw_height - 10.0);
 
     }
     
     // drawing horizontal grid
-    y_frame_size = (height - 40) / y_frame_count;    
-    for(i = 0; i <= y_frame_size; i++) {
+    y_frame_size = (draw_height - 15.0) / y_frame_count;    
+    for(i = 0; i <= y_frame_count; i++) {
+        y = y_frame_size * i;
+
+        label = g_strdup_printf("%u KiB/s", net_max - net_max / y_frame_count * i);
+        cairo_text_extents (cr, label, &extents);
+		cairo_move_to (cr, rmargin + indent - extents.width - 10 , y + extents.height/2);
+		cairo_show_text (cr, label);
+		g_free(label);
         
-        cairo_move_to (cr, bearing - 5, bearing + (y_frame_size * i));
-        cairo_line_to (cr, width - bearing, bearing + (y_frame_size * i));
+        cairo_move_to (cr, rmargin + indent - 5, y);
+        cairo_line_to (cr, draw_width - rmargin + indent + 5, y);
         
     }
 
-    cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
     cairo_stroke(cr);
 
     /* draw load lines */
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
     cairo_set_dash (cr, NULL, 0, 0);
-    cairo_set_line_width (cr, 1.25);
-
-    GList *list;
-    SpeedValue *speed_value;
+    cairo_set_line_width (cr, 1.00);
 
     /* upload speed */
     list = upspeed_values;    
     speed_value = list->data;
 
     if(speed_value->valid == TRUE) {
-        y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
-        x_pos = width - bearing;
-        cairo_move_to (cr, x_pos, y_pos);
+        y = draw_height - 15 - speed_value->speed * (draw_height - 15) / net_max;
+        x = draw_width;
+        cairo_move_to (cr, x, y);
     }    
     
-    for(i = 120; i >= 0; i--) {
+    for(i = GRAPH_POINTS; i >= 0; i--) {
         
         speed_value = list->data;
 
         if(speed_value->valid == TRUE) {
-            y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
-            x_pos = bearing + ((width - 40) / 120) * i;
+            y = draw_height  - 15 - speed_value->speed * (draw_height - 15) / net_max;
+            x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
         
-            cairo_line_to (cr, x_pos, y_pos);
+            cairo_line_to (cr, x, y);
         }
 
-        list = list->next;
-        
+        list = list->next;        
     }
     
     cairo_set_source_rgb (cr, 0.52, 0.28, 0.60);
@@ -941,24 +993,23 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     speed_value = list->data;
 
     if(speed_value->valid == TRUE) {
-        y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
-        x_pos = width - bearing;
-        cairo_move_to (cr, x_pos, y_pos);
+        y = draw_height - 15 - speed_value->speed * (draw_height - 15) / 100;
+        x = draw_width;
+        cairo_move_to (cr, x, y);
     }    
     
-    for(i = 120; i >= 0; i--) {
+    for(i = GRAPH_POINTS; i >= 0; i--) {
         
         speed_value = list->data;
 
         if(speed_value->valid == TRUE) {
-            y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
-            x_pos = bearing + ((width - 40) / 120) * i;
+            y = draw_height  - 15 - speed_value->speed * (draw_height - 15) / 100;
+            x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
         
-            cairo_line_to (cr, x_pos, y_pos);
+            cairo_line_to (cr, x, y);
         }
 
-        list = list->next;
-        
+        list = list->next;        
     }
     
     cairo_set_source_rgb (cr, 0.18, 0.49, 0.70);
@@ -1006,14 +1057,14 @@ void gui_init()
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
     
     // fill speed graph lists
-    for(i = 0; i <= 120; i++) {
+    for(i = 0; i <= GRAPH_POINTS; i++) {
         speed = g_malloc(sizeof(SpeedValue));
         speed->speed = 0;
         speed->valid = FALSE;
         upspeed_values = g_list_prepend(upspeed_values, speed);
     }
 
-    for(i = 0; i <= 120; i++) {
+    for(i = 0; i <= GRAPH_POINTS; i++) {
         speed = g_malloc(sizeof(SpeedValue));
         speed->speed = 0;
         speed->valid = FALSE;
