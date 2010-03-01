@@ -78,8 +78,14 @@ typedef struct
 
 static GuiContext* gui;
 
-static GArray *downspeed_array;
-static GArray *upspeed_array;
+static GList *downspeed_values = NULL;
+static GList *upspeed_values = NULL;
+
+typedef struct
+{
+    gdouble  speed;
+    gboolean valid;
+} SpeedValue;
 
 static void gui_add_port_window_close(GtkWidget *button,
                                       gpointer   user_data)
@@ -444,10 +450,24 @@ void gui_set_download_speed(const gdouble down_speed)
     gchar* str;
     gchar* unit;
     gfloat value;
-    /* Method of divisions is too expensive? */
-    
-    
-        
+    GList *tmp_elem;
+    SpeedValue *speed;
+
+    speed = g_malloc (sizeof(SpeedValue));
+
+    speed->speed = down_speed;
+    speed->valid = TRUE;
+
+    downspeed_values = g_list_prepend(downspeed_values, speed);
+
+    tmp_elem = g_list_nth(downspeed_values, 120);
+    if(tmp_elem) {
+        g_free(tmp_elem->data);
+        downspeed_values = g_list_delete_link(downspeed_values, tmp_elem);
+    }
+
+
+    /* Method of divisions is too expensive? */       
     /* Down speed */
     if(down_speed >= 1024)
     {
@@ -492,15 +512,25 @@ void gui_set_upload_speed(const gdouble up_speed)
     gchar* str;
     gchar* unit;
     gfloat value;
-    /* Method of divisions is too expensive? */
+    GList *tmp_elem;
+    SpeedValue *speed;
 
-    upspeed_array = g_array_prepend_val(upspeed_array, up_speed);
+    speed = g_malloc (sizeof(SpeedValue));
 
-    //if(g_array_index(upspeed_array, gdouble, 60) >= 0)
-    //    upspeed_array = g_array_remove_index_fast(upspeed_array, 60);
+    speed->speed = up_speed;
+    speed->valid = TRUE;
+
+    upspeed_values = g_list_prepend(upspeed_values, speed);
+
+    tmp_elem = g_list_nth(upspeed_values, 120);
+    if(tmp_elem) {
+        g_free(tmp_elem->data);
+        upspeed_values = g_list_delete_link(upspeed_values, tmp_elem);
+    }
 
     gtk_widget_queue_draw(gui->network_drawing_area);
-    
+
+    /* Method of divisions is too expensive? */
     /* Up speed */     
     if(up_speed >= 1024)
     {
@@ -809,7 +839,7 @@ on_drawing_area_expose_event (GtkWidget      *widget,
                               gpointer        user_data)
 {
     gdouble width, height;
-    int bearing = 20;
+    const guint bearing = 20;
     int i;
     
     cairo_t *cr;
@@ -821,10 +851,11 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     double x_frame_size;
     double y_frame_size;
 
+    double y_pos;
+    double x_pos;
+
     width = widget->allocation.width;
     height = widget->allocation.height;
-
-    
 
     cr = gdk_cairo_create (widget->window);
 
@@ -838,30 +869,22 @@ on_drawing_area_expose_event (GtkWidget      *widget,
                          event->area.width, event->area.height);
     cairo_clip (cr);
 
-    cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
-    //cairo_paint(cr);
-
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (cr, 1);
 
-    cairo_rectangle (cr,
-                         20, 20,
-                         width-40, height-40);
-    //cairo_set_source_rgb (cr, 0.75, 0.5, 0.5);
+    cairo_rectangle (cr, bearing, bearing, width-(bearing*2), height-(bearing*2));
+    
+    cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
     cairo_fill(cr);
-
     
 	cairo_set_dash (cr, dash, 2, 0);
 
-    cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
-    
     // drawing vertical grid    
     x_frame_size = (width - 40) / x_frame_count;    
     for(i = 0; i <= x_frame_count; i++) {
         
         cairo_move_to (cr, bearing + (x_frame_size * i), bearing);
         cairo_line_to (cr, bearing + (x_frame_size * i), height - 15.0);
-
 
     }
     
@@ -873,31 +896,72 @@ on_drawing_area_expose_event (GtkWidget      *widget,
         cairo_line_to (cr, width - bearing, bearing + (y_frame_size * i));
         
     }
+
+    cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
     cairo_stroke(cr);
-    
-    double y_pos;
-    double x_pos;
 
+    /* draw load lines */
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
-    cairo_set_source_rgb (cr, 0.25, 0.25, 0.75);
     cairo_set_dash (cr, NULL, 0, 0);
-     cairo_set_line_width (cr, 1.5);
+    cairo_set_line_width (cr, 1.25);
 
-    y_pos = height - bearing - g_array_index(upspeed_array, gdouble, 0) * (height - 40) / 100;
-    x_pos = bearing;
+    GList *list;
+    SpeedValue *speed_value;
 
-    cairo_move_to (cr, x_pos, y_pos);
+    /* upload speed */
+    list = upspeed_values;    
+    speed_value = list->data;
+
+    if(speed_value->valid == TRUE) {
+        y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
+        x_pos = width - bearing;
+        cairo_move_to (cr, x_pos, y_pos);
+    }    
     
-    for(i = 0; i <= 120; i++) {
+    for(i = 120; i >= 0; i--) {
         
-        y_pos = height - 20 - g_array_index(upspeed_array, gdouble, i) * (height - 40) / 100;
-        x_pos = bearing + ((width - 40) / 120) * i;
+        speed_value = list->data;
+
+        if(speed_value->valid == TRUE) {
+            y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
+            x_pos = bearing + ((width - 40) / 120) * i;
         
-        cairo_line_to (cr, x_pos, y_pos);
+            cairo_line_to (cr, x_pos, y_pos);
+        }
+
+        list = list->next;
         
     }
-    cairo_set_line_join (cr, CAIRO_LINE_JOIN_ROUND);
+    
+    cairo_set_source_rgb (cr, 0.52, 0.28, 0.60);
+    cairo_stroke(cr);
 
+    /* download speed */
+    list = downspeed_values;    
+    speed_value = list->data;
+
+    if(speed_value->valid == TRUE) {
+        y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
+        x_pos = width - bearing;
+        cairo_move_to (cr, x_pos, y_pos);
+    }    
+    
+    for(i = 120; i >= 0; i--) {
+        
+        speed_value = list->data;
+
+        if(speed_value->valid == TRUE) {
+            y_pos = height - bearing - speed_value->speed * (height - 40) / 100;
+            x_pos = bearing + ((width - 40) / 120) * i;
+        
+            cairo_line_to (cr, x_pos, y_pos);
+        }
+
+        list = list->next;
+        
+    }
+    
+    cairo_set_source_rgb (cr, 0.18, 0.49, 0.70);
     cairo_stroke(cr);
 
     cairo_destroy (cr);
@@ -909,6 +973,8 @@ void gui_init()
 {
     GtkBuilder* builder;
     GError* error = NULL;
+    SpeedValue *speed;
+    gint i;
     
     g_print("* Initializing GUI...\n");
     
@@ -939,7 +1005,20 @@ void gui_init()
     gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
     
-    upspeed_array = g_array_sized_new(FALSE, TRUE, sizeof(gdouble), 61);
+    // fill speed graph lists
+    for(i = 0; i <= 120; i++) {
+        speed = g_malloc(sizeof(SpeedValue));
+        speed->speed = 0;
+        speed->valid = FALSE;
+        upspeed_values = g_list_prepend(upspeed_values, speed);
+    }
+
+    for(i = 0; i <= 120; i++) {
+        speed = g_malloc(sizeof(SpeedValue));
+        speed->speed = 0;
+        speed->valid = FALSE;
+        downspeed_values = g_list_prepend(downspeed_values, speed);
+    }
     
     g_signal_connect(gtk_builder_get_object (builder, "menuitem_about"), "activate",
                          G_CALLBACK(on_about_activate_cb), NULL);
