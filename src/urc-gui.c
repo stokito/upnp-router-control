@@ -835,16 +835,33 @@ static void gui_destroy()
 	
 	gtk_main_quit();
 }
+
 #define FRAME_WIDTH 4
-static gboolean
-on_drawing_area_expose_event (GtkWidget      *widget,
-                              GdkEventExpose *event,
-                              gpointer        user_data)
+
+cairo_surface_t *background;
+
+void clear_graph_background()
+{
+    if (background) {
+		cairo_surface_destroy(background);
+		background = NULL;
+	}
+}
+
+void
+speed_graph_draw (GtkWidget *widget)
+{
+	/* repaint */
+	gtk_widget_queue_draw (widget);
+}
+
+void
+speed_graph_draw_background (GtkWidget *widget)
 {
     cairo_t *cr;
     cairo_pattern_t *pat;
     cairo_text_extents_t extents;
-
+    gchar *label;
     double draw_width, draw_height;
     
     const double fontsize = 8.0;
@@ -853,29 +870,22 @@ on_drawing_area_expose_event (GtkWidget      *widget,
 	const guint x_frame_count = 6;
 	guint y_frame_count = 3;    
     double dash[2] = { 1.0, 2.0 };
-    double x_frame_size;
-    double y_frame_size;
-    double x;
-    double y;
+    double x_frame_size, y_frame_size;
+    double x, y;
     gint i;  
-    GList *list;
     guint net_max = 100;
-    SpeedValue *speed_value;
-    gchar *label;
+
+	background = cairo_image_surface_create( CAIRO_FORMAT_ARGB32,
+	                                         widget->allocation.width,
+					                         widget->allocation.height);
+	cr = cairo_create(background);	
 
     draw_width = widget->allocation.width - 2 * FRAME_WIDTH;
     draw_height = widget->allocation.height - 2 * FRAME_WIDTH;
-
-    cr = gdk_cairo_create (widget->window);
-
-    cairo_rectangle (cr,
-                         event->area.x, event->area.y,
-                         event->area.width, event->area.height);
-    cairo_clip (cr);
-
-    /* draw frame */
+    
 	cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);	
 
+    // determines the number of grids based on height
 	switch ( (int) (draw_height) / 30 ) 
 	{
 	    case 0:
@@ -908,7 +918,6 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     cairo_rectangle (cr, rmargin + indent, 0, draw_width - rmargin - indent, draw_height - 15.0);
     cairo_set_source (cr, pat);
     cairo_fill(cr);
-
     cairo_pattern_destroy (pat);
     
     // draw grid
@@ -954,7 +963,57 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     }
 
     cairo_stroke(cr);
+}
 
+static gboolean
+on_drawing_area_configure_event (GtkWidget         *widget,
+		                         GdkEventConfigure *event,
+		                         gpointer           data_ptr)
+{
+    clear_graph_background();
+
+	speed_graph_draw (widget);
+
+	return TRUE;
+}
+
+
+static gboolean
+on_drawing_area_expose_event (GtkWidget      *widget,
+                              GdkEventExpose *event,
+                              gpointer        user_data)
+{
+    cairo_t *cr;    
+
+    double draw_width, draw_height;    
+    const double fontsize = 8.0;
+    const double rmargin = 3.5 * fontsize;
+	const guint indent = 24;
+    double x, y;
+    gint i;  
+    GList *list;
+    guint net_max = 100;
+    SpeedValue *speed_value;
+
+    if(background == NULL)
+        speed_graph_draw_background (widget);
+
+    draw_width = widget->allocation.width - 2 * FRAME_WIDTH;
+    draw_height = widget->allocation.height - 2 * FRAME_WIDTH;
+
+    cr = gdk_cairo_create (widget->window);	
+
+    cairo_rectangle (cr,
+                         event->area.x, event->area.y,
+                         event->area.width, event->area.height);
+    cairo_clip (cr);
+
+    // draw background
+    cairo_set_source_surface(cr, background, 0.0, 0.0);
+    cairo_paint(cr);
+
+    cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);
+    
     /* draw load lines */
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
     cairo_set_dash (cr, NULL, 0, 0);
@@ -1015,9 +1074,10 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     cairo_stroke(cr);
 
     cairo_destroy (cr);
-    /* propagate event further */
+    
     return FALSE;
 }
+
 
 void gui_init()
 {
@@ -1081,6 +1141,8 @@ void gui_init()
 
     g_signal_connect(G_OBJECT(gui->network_drawing_area), "expose-event",
                          G_CALLBACK(on_drawing_area_expose_event), NULL);
+    g_signal_connect(G_OBJECT(gui->network_drawing_area), "configure-event",
+                         G_CALLBACK(on_drawing_area_configure_event), NULL);
                              
     gui_create_add_port_window(builder);
     
