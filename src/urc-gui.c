@@ -908,6 +908,8 @@ speed_graph_draw_background (GtkWidget *widget)
                                 CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size (cr, fontsize);
 
+    GtkStyle *style = gtk_widget_get_style (gui->main_window);
+
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (cr, 1);
 
@@ -922,7 +924,7 @@ speed_graph_draw_background (GtkWidget *widget)
     
     // draw grid
 	cairo_set_dash (cr, dash, 2, 0);
-	cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.75);
+	gdk_cairo_set_source_color (cr, &style->fg[GTK_STATE_NORMAL]);	
     
     // drawing vertical grid    
     x_frame_size = (draw_width - rmargin - indent) / x_frame_count;    
@@ -961,7 +963,7 @@ speed_graph_draw_background (GtkWidget *widget)
         cairo_line_to (cr, draw_width - rmargin + indent + 5, y);
         
     }
-
+    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.75);
     cairo_stroke(cr);
 }
 
