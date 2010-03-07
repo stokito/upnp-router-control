@@ -965,6 +965,8 @@ speed_graph_draw_background (GtkWidget *widget)
     }
     cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.75);
     cairo_stroke(cr);
+
+    cairo_destroy (cr);
 }
 
 static gboolean
