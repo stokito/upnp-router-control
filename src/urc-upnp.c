@@ -340,6 +340,11 @@ static gboolean update_data_rate_cb (gpointer data)
 {
     GError *error = NULL;
     GUPnPServiceProxy *wan_device;
+    GTimeVal begin_time;
+    GTimeVal end_time;
+    static GTimeVal timer_start_time;
+    /*GTimeVal timer_stop_time;*/
+    gdouble duration_secs;
     
     static guint old_total_bytes_received = 0;
     guint current_total_bytes_received;
@@ -350,7 +355,8 @@ static gboolean update_data_rate_cb (gpointer data)
     double data_rate_up;
     
     wan_device = (GUPnPServiceProxy *) data;
-    
+
+    g_get_current_time (&begin_time);
     /* download speed */
     gupnp_service_proxy_send_action (wan_device,
 				   /* Action name and error location */
@@ -361,13 +367,22 @@ static gboolean update_data_rate_cb (gpointer data)
 				   "NewTotalBytesReceived",
 				   G_TYPE_UINT, &current_total_bytes_received,
 				   NULL);
-	    
+				   
+	g_get_current_time (&end_time);
+	
 	if (error == NULL) {	    
 	       
         if(old_total_bytes_received == 0)
 	        data_rate_down = 0.0;
-	    else
-	        data_rate_down = (current_total_bytes_received - old_total_bytes_received) / 1024.0;
+	    else {
+
+            duration_secs = ((end_time.tv_sec * G_USEC_PER_SEC + end_time.tv_usec) - (begin_time.tv_sec * G_USEC_PER_SEC
+                                                                                + begin_time.tv_usec)) / ((gdouble) G_USEC_PER_SEC);
+            duration_secs += ((begin_time.tv_sec * G_USEC_PER_SEC + begin_time.tv_usec) - (timer_start_time.tv_sec * G_USEC_PER_SEC
+                                                                                + timer_start_time.tv_usec)) / ((gdouble) G_USEC_PER_SEC);
+	        g_print("GetTotalBytesReceived() duration: %f\n", duration_secs);
+	        data_rate_down = ((current_total_bytes_received - old_total_bytes_received) / (duration_secs)  ) / 1024.0;
+	    }
 	        
         gui_set_download_speed(data_rate_down);
         
@@ -380,7 +395,7 @@ static gboolean update_data_rate_cb (gpointer data)
         g_error_free (error);
         return FALSE;
     }
-    
+    g_get_current_time (&begin_time);
     /* upload speed */
     gupnp_service_proxy_send_action (wan_device,
 				   /* Action name and error location */
@@ -391,14 +406,20 @@ static gboolean update_data_rate_cb (gpointer data)
 				   "NewTotalBytesSent",
 				   G_TYPE_UINT, &current_total_bytes_sent,
 				   NULL);
-	    
+				   
+	g_get_current_time (&end_time);
+	
 	if (error == NULL) {
 	    
 	    if(old_total_bytes_sent == 0)
 	        data_rate_up = 0.0;
-	    else
-	        data_rate_up = (current_total_bytes_sent - old_total_bytes_sent) / 1024.0;
+	    else {
+	        duration_secs = ((end_time.tv_sec * G_USEC_PER_SEC + end_time.tv_usec) - (begin_time.tv_sec * G_USEC_PER_SEC
+                                                                                + begin_time.tv_usec)) / ((gdouble) G_USEC_PER_SEC);
+	        g_print("GetTotalBytesSent() duration:     %f\n", duration_secs);
 	        
+	        data_rate_up = (current_total_bytes_sent - old_total_bytes_sent) / (duration_secs + 1) / 1024.0;
+	    }    
         gui_set_upload_speed(data_rate_up);
         
         old_total_bytes_sent = current_total_bytes_sent;
@@ -410,9 +431,12 @@ static gboolean update_data_rate_cb (gpointer data)
         g_error_free (error);
         return FALSE;
     }
-        
-    return TRUE;
+    g_get_current_time (&timer_start_time);
+    g_timeout_add_seconds_full(G_PRIORITY_HIGH, 1, update_data_rate_cb, data, NULL);
+    
+    return FALSE;
 }
+
 
 /* Retrive external IP address */
 static gboolean get_external_ip (RouterInfo *router)
@@ -762,7 +786,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             router->wan_common_ifc = child->data;
         
             /* Start data rate timer */
-            router->data_rate_timer = g_timeout_add_seconds(1, update_data_rate_cb, router->wan_common_ifc);
+            update_data_rate_cb (router->wan_common_ifc);
+            //router->data_rate_timer = g_timeout_add_seconds_full(G_PRIORITY_HIGH, 1, update_data_rate_cb, router->wan_common_ifc, NULL);
             
         } 
         /* Is a WAN IP Connection service or other? */
