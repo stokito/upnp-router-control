@@ -35,13 +35,7 @@ void
 update_upload_graph(SpeedValue *speed);
 
 void
-clear_graph_background();
-
-void
-speed_graph_draw (GtkWidget *widget);
-
-void
-speed_graph_draw_background (GtkWidget *widget);
+request_graph_update();
 
 gboolean
 on_drawing_area_configure_event (GtkWidget         *widget,

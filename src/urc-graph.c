@@ -19,6 +19,7 @@
 
 #include "config.h"
 
+#include <math.h>
 #include <gtk/gtk.h>
 
 #include "urc-graph.h"
@@ -26,10 +27,13 @@
 #define GRAPH_POINTS 90
 #define FRAME_WIDTH 4
 
-cairo_surface_t *background;
+cairo_surface_t *background = NULL;
+cairo_surface_t *graph = NULL;
 
 static GList *downspeed_values = NULL;
 static GList *upspeed_values = NULL;
+
+static guint net_max = 10;
 
 void init_graph()
 {
@@ -52,6 +56,23 @@ void init_graph()
     }
 }
 
+static void
+clear_graph_background()
+{
+    if (background) {
+		cairo_surface_destroy(background);
+		background = NULL;
+	}
+}
+
+static void
+clear_graph_data()
+{
+    if (graph) {
+		cairo_surface_destroy(graph);
+		graph = NULL;
+	}
+}
 
 void update_download_graph(SpeedValue *speed)
 {
@@ -64,6 +85,8 @@ void update_download_graph(SpeedValue *speed)
         g_free(tmp_elem->data);
         downspeed_values = g_list_delete_link(downspeed_values, tmp_elem);
     }
+
+    clear_graph_data();
 }
 
 void update_upload_graph(SpeedValue *speed)
@@ -77,24 +100,11 @@ void update_upload_graph(SpeedValue *speed)
         g_free(tmp_elem->data);
         upspeed_values = g_list_delete_link(upspeed_values, tmp_elem);
     }
+
+    clear_graph_data();
 }
 
-void clear_graph_background()
-{
-    if (background) {
-		cairo_surface_destroy(background);
-		background = NULL;
-	}
-}
-
-void
-speed_graph_draw (GtkWidget *widget)
-{
-	/* repaint */
-	gtk_widget_queue_draw (widget);
-}
-
-void
+static void
 speed_graph_draw_background (GtkWidget *widget)
 {
     cairo_t *cr;
@@ -112,7 +122,6 @@ speed_graph_draw_background (GtkWidget *widget)
     double x_frame_size, y_frame_size;
     double x, y;
     gint i;
-    guint net_max = 100;
 
 	background = cairo_image_surface_create( CAIRO_FORMAT_ARGB32,
 	                                         widget->allocation.width,
@@ -208,26 +217,10 @@ speed_graph_draw_background (GtkWidget *widget)
     cairo_destroy (cr);
 }
 
-gboolean
-on_drawing_area_configure_event (GtkWidget         *widget,
-		                         GdkEventConfigure *event,
-		                         gpointer           data_ptr)
-{
-    clear_graph_background();
-
-	speed_graph_draw (widget);
-
-	return TRUE;
-}
-
-
-gboolean
-on_drawing_area_expose_event (GtkWidget      *widget,
-                              GdkEventExpose *event,
-                              gpointer        user_data)
+static void
+speed_graph_draw_data (GtkWidget *widget)
 {
     cairo_t *cr;
-
     double draw_width, draw_height;
     const double fontsize = 8.0;
     const double rmargin = 3.5 * fontsize;
@@ -235,25 +228,16 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     double x, y;
     gint i;
     GList *list;
-    guint net_max = 100;
     SpeedValue *speed_value;
+    guint tmp_net_max = 10;
 
-    if(background == NULL)
-        speed_graph_draw_background (widget);
+	graph = cairo_image_surface_create( CAIRO_FORMAT_ARGB32,
+	                                         widget->allocation.width,
+					                         widget->allocation.height);
+	cr = cairo_create(graph);
 
     draw_width = widget->allocation.width - 2 * FRAME_WIDTH;
     draw_height = widget->allocation.height - 2 * FRAME_WIDTH;
-
-    cr = gdk_cairo_create (widget->window);
-
-    cairo_rectangle (cr,
-                         event->area.x, event->area.y,
-                         event->area.width, event->area.height);
-    cairo_clip (cr);
-
-    // draw background
-    cairo_set_source_surface(cr, background, 0.0, 0.0);
-    cairo_paint(cr);
 
     cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);
 
@@ -281,6 +265,10 @@ on_drawing_area_expose_event (GtkWidget      *widget,
             x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
 
             cairo_line_to (cr, x, y + 0.5);
+
+            if(tmp_net_max < speed_value->speed)
+                tmp_net_max = speed_value->speed;
+
         }
 
         list = list->next;
@@ -308,6 +296,9 @@ on_drawing_area_expose_event (GtkWidget      *widget,
             x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
 
             cairo_line_to (cr, x, y + 0.5);
+
+            if(tmp_net_max < speed_value->speed)
+                tmp_net_max = speed_value->speed;
         }
 
         list = list->next;
@@ -315,6 +306,63 @@ on_drawing_area_expose_event (GtkWidget      *widget,
 
     cairo_set_source_rgb (cr, 0.18, 0.49, 0.70);
     cairo_stroke(cr);
+
+    cairo_destroy (cr);
+
+
+    if(net_max != ceil(tmp_net_max))
+    {
+        if(tmp_net_max <= 10)
+            net_max = 10;
+        else
+            net_max = ceil(tmp_net_max);
+
+        clear_graph_background();
+        speed_graph_draw_background(widget);
+    }
+
+}
+
+gboolean
+on_drawing_area_configure_event (GtkWidget         *widget,
+		                         GdkEventConfigure *event,
+		                         gpointer           data_ptr)
+{
+    clear_graph_background();
+
+	clear_graph_data ();
+
+	return TRUE;
+}
+
+
+gboolean
+on_drawing_area_expose_event (GtkWidget      *widget,
+                              GdkEventExpose *event,
+                              gpointer        user_data)
+{
+    cairo_t *cr;
+
+    if(background == NULL)
+        speed_graph_draw_background (widget);
+
+    if(graph == NULL)
+        speed_graph_draw_data (widget);
+
+    cr = gdk_cairo_create (widget->window);
+
+    cairo_rectangle (cr,
+                         event->area.x, event->area.y,
+                         event->area.width, event->area.height);
+    cairo_clip (cr);
+
+    // draw background
+    cairo_set_source_surface(cr, background, 0.0, 0.0);
+    cairo_paint(cr);
+
+    // draw graph data
+    cairo_set_source_surface(cr, graph, 0.0, 0.0);
+    cairo_paint(cr);
 
     cairo_destroy (cr);
 

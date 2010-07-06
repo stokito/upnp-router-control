@@ -453,6 +453,8 @@ void gui_set_download_speed(const gdouble down_speed)
 
     update_download_graph(speed);
 
+    gtk_widget_queue_draw(gui->network_drawing_area);
+
     /* Method of divisions is too expensive? */
     /* Down speed */
     if(down_speed >= 1024)
