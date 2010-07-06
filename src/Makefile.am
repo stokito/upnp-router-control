@@ -3,7 +3,7 @@ INCLUDES =                                                  \
        -DPREFIX=\""$(prefix)"\" 			                \
 	   -DPACKAGE_DATADIR=\""$(datadir)/upnp-router-control"\"  \
 	   -DLOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
-	   
+
 AM_CFLAGS = 						\
 	@GTK_CFLAGS@					\
 	@GUPNP_CFLAGS@
@@ -15,7 +15,9 @@ upnp_router_control_SOURCES = \
        urc-gui.c \
        urc-gui.h \
        urc-upnp.c \
-       urc-upnp.h
+       urc-upnp.h \
+       urc-graph.c \
+       urc-graph.h
 
 upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GUPNP_LIBS@
 
