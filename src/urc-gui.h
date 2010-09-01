@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
- 
+
 #ifndef __URC_GUI_H__
 #define __URC_GUI_H__
 
@@ -37,7 +37,7 @@ void gui_set_router_info (const gchar *router_friendly_name,
                           const gchar *router_brand_website,
                           const gchar *router_model_name,
                           const gchar *router_model_number);
-                          
+
 void gui_set_ext_ip(const gchar *ip);
 
 void gui_disable_ext_ip();
@@ -57,7 +57,7 @@ void gui_set_download_speed(const gdouble down_speed);
 void gui_set_upload_speed(const gdouble up_speed);
 
 void gui_add_mapped_port(const PortForwardInfo* port_info);
-                         
+
 void gui_clear_ports_list_treeview(void);
 
 #endif /* __URC_GUI_H__ */

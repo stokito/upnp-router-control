@@ -810,12 +810,12 @@ static void gui_destroy()
 	gui_disable();
 
 	gtk_widget_destroy(gui->main_window);
-	
+
 	gui->down_rate_label = NULL;
 	gui->up_rate_label = NULL;
 	gui->wan_status_label = NULL;
 	gui->ip_label = NULL;
-	
+
 	g_free(gui);
 
 	gtk_main_quit();
