@@ -29,13 +29,10 @@ void
 init_graph();
 
 void
-update_download_graph(SpeedValue *speed);
+update_download_graph_data(SpeedValue *speed);
 
 void
-update_upload_graph(SpeedValue *speed);
-
-void
-request_graph_update();
+update_upload_graph_data(SpeedValue *speed);
 
 gboolean
 on_drawing_area_configure_event (GtkWidget         *widget,

@@ -74,7 +74,7 @@ clear_graph_data()
 	}
 }
 
-void update_download_graph(SpeedValue *speed)
+void update_download_graph_data(SpeedValue *speed)
 {
     GList *tmp_elem;
 
@@ -89,7 +89,7 @@ void update_download_graph(SpeedValue *speed)
     clear_graph_data();
 }
 
-void update_upload_graph(SpeedValue *speed)
+void update_upload_graph_data(SpeedValue *speed)
 {
     GList *tmp_elem;
 

@@ -451,9 +451,7 @@ void gui_set_download_speed(const gdouble down_speed)
     speed->speed = down_speed;
     speed->valid = TRUE;
 
-    update_download_graph(speed);
-
-    gtk_widget_queue_draw(gui->network_drawing_area);
+    update_download_graph_data(speed);
 
     /* Method of divisions is too expensive? */
     /* Down speed */
@@ -507,9 +505,7 @@ void gui_set_upload_speed(const gdouble up_speed)
     speed->speed = up_speed;
     speed->valid = TRUE;
 
-    update_upload_graph(speed);
-
-    gtk_widget_queue_draw(gui->network_drawing_area);
+    update_upload_graph_data(speed);
 
     /* Method of divisions is too expensive? */
     /* Up speed */
@@ -539,6 +535,11 @@ void gui_set_upload_speed(const gdouble up_speed)
 
     gtk_widget_set_sensitive(gui->up_rate_label, TRUE);
 
+}
+
+void gui_update_graph()
+{
+    gtk_widget_queue_draw(gui->network_drawing_area);
 }
 
 /* Set WAN state label */

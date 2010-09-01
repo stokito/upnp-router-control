@@ -44,6 +44,8 @@ void gui_disable_ext_ip();
 
 void gui_set_conn_status(const gchar *state);
 
+void gui_update_graph();
+
 void gui_disable_conn_status();
 
 void gui_disable_download_speed(void);
