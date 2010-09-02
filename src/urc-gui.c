@@ -685,25 +685,33 @@ void gui_set_router_info (const gchar *router_friendly_name,
     gtk_widget_set_tooltip_markup(gui->router_name_label, str);
     g_free(str);
 
-    str = g_strdup_printf( "<span color=\"blue\"><u>%s</u></span>", router_conf_url);
-    gtk_label_set_markup (GTK_LABEL(gui->router_url_label), str);
-    g_free(str);
+    if(router_conf_url != NULL) {
 
-    gtk_widget_set_sensitive(gui->router_url_label, TRUE);
-    gtk_widget_set_sensitive(gui->config_label, TRUE);
+        str = g_strdup_printf( "<span color=\"blue\"><u>%s</u></span>", router_conf_url);
+        gtk_label_set_markup (GTK_LABEL(gui->router_url_label), str);
+        g_free(str);
 
-    gtk_widget_set_tooltip_text(gui->router_url_label, _("Open the router config in the default browser"));
+        gtk_widget_set_sensitive(gui->router_url_label, TRUE);
+        gtk_widget_set_sensitive(gui->config_label, TRUE);
 
-    gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "enter-notify-event",
-		    		     GTK_SIGNAL_FUNC(on_mouseover_cb), NULL
-		               );
-	gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "leave-notify-event",
-		    		     GTK_SIGNAL_FUNC(on_mouseout_cb), NULL
-		               );
+        gtk_widget_set_tooltip_text(gui->router_url_label, _("Open the router config in the default browser"));
 
-	gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "button-release-event",
-		    		     GTK_SIGNAL_FUNC(on_mousepress_cb), (gchar *) router_conf_url
-		               );
+        gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "enter-notify-event",
+		    		         GTK_SIGNAL_FUNC(on_mouseover_cb), NULL
+		                   );
+	    gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "leave-notify-event",
+		    		         GTK_SIGNAL_FUNC(on_mouseout_cb), NULL
+		                   );
+
+	    gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "button-release-event",
+		    		         GTK_SIGNAL_FUNC(on_mousepress_cb), (gchar *) router_conf_url
+		                   );
+
+	} else {
+
+	    gtk_label_set_label(GTK_LABEL(gui->router_url_label), _("not available"));
+        gtk_widget_set_sensitive(gui->config_label, FALSE);
+    }
 
 }
 
