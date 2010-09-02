@@ -7,6 +7,7 @@ obj.includes= ['.', '../']
 obj.env['CPPFLAGS'] = ['-Wall', '-g', '-O2']
 #obj.env['CPPFLAGS'] = ['-march=pentium4', '-pipe', '-fomit-frame-pointer']
 #obj.env['LINKFLAGS'] = ['-export-dynamic']
+obj.env['LINKFLAGS'] = '-ldownload'
 obj.find_sources_in_dirs('.')
 obj.uselib = 'GTK GUPNP'
 obj.target = 'upnp-router-control'

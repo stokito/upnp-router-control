@@ -60,4 +60,6 @@ void gui_add_mapped_port(const PortForwardInfo* port_info);
 
 void gui_clear_ports_list_treeview(void);
 
+void gui_set_router_icon(gchar *image_path);
+
 #endif /* __URC_GUI_H__ */

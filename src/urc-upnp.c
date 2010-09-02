@@ -19,6 +19,7 @@
 
 #include <glib.h>
 #include <libgupnp/gupnp-control-point.h>
+#include <download.h>
 
 #include "urc-gui.h"
 #include "urc-upnp.h"
@@ -32,6 +33,7 @@ typedef struct
     gchar* model_name;
     gchar* model_number;
     gchar* http_address;
+    gchar* upc;
 
     guint PortMappingNumberOfEntries;
 
@@ -565,6 +567,50 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
     	g_print("\e[33mEvent:\e[0;0m %s [Not managed]", variable);
 }
 
+gpointer download_router_icon (gpointer data)
+{
+    FILE *remote_file, *local_file;
+    gchar *filename;
+    char buf[8192];
+    int r, w = 0;
+
+    if(data == NULL)
+        return 0;
+
+    filename = g_strconcat(g_get_user_cache_dir(), "/router_icon", NULL);
+
+    local_file = fopen(filename, "w");
+
+    g_print("\e[36mDownloading router icon... ");
+
+    remote_file = downloadGetURL((char*)data, NULL);
+
+    if(remote_file == NULL)
+        g_print("\e[31m[EE]\e[0m Error downloading icon of the router: %s\n", downloadLastErrString);
+
+    else {
+        for (;;) {
+
+            if ((r = fread(buf, 1, sizeof buf, remote_file)) < 1)
+                break;
+            if ((w = fwrite(buf, 1, sizeof buf, local_file)) != r)
+                break;
+        }
+        g_print("\e[32msuccessful\e[0;0m\n");
+
+        gui_set_router_icon(filename);
+
+    }
+
+    if(remote_file)
+        fclose(remote_file);
+
+    fclose(local_file);
+    g_free(filename);
+    g_free(data);
+
+    return 0;
+}
 
 /* Device available callback */
 static void device_proxy_available_cb (GUPnPControlPoint *cp,
@@ -580,6 +626,9 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     const char *service_type = NULL;
     const char *service_id = NULL;
     const char *device_type = NULL;
+
+    gchar *router_icon_url, *icon_mime_type;
+    int icon_depth, icon_width, icon_height;
 
     static int level = 0;
     int i;
@@ -605,6 +654,12 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
+        router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
+
+        router_icon_url = gupnp_device_info_get_icon_url(GUPNP_DEVICE_INFO (proxy),
+                                       NULL, -1, -1, -1, FALSE,
+                                       &icon_mime_type, &icon_depth,
+                                       &icon_width, &icon_height);
 
         if(opt_debug)
     	{
@@ -612,7 +667,21 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
            	g_print("        Model number: %s\n", router->model_number);
            	g_print("               Brand: %s\n", router->brand);
            	g_print("    Presentation URL: %s\n", router->http_address);
+           	g_print("                 UPC: %s\n", router->upc);
+
+           	if(router_icon_url != NULL) {
+           	    g_print("            Icon URL: %s\n", router_icon_url);
+                g_print("      Icon mime/type: %s\n", icon_mime_type);
+                g_print("          Icon depth: %d\n", icon_depth);
+                g_print("          Icon width: %d\n", icon_width);
+                g_print("         Icon height: %d\n", icon_height);
+
+                g_free(icon_mime_type);
+            }
         }
+
+        // start the download in a separate thread
+        g_thread_create(download_router_icon, router_icon_url, TRUE, NULL);
 
         /* workaround for urls like "/login" without base url */
         if(router->http_address != NULL && g_str_has_prefix(router->http_address, "http") == FALSE)
@@ -651,6 +720,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
+        router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
 
         if(opt_debug)
     	{
@@ -658,6 +728,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
            	g_print("        Model number: %s\n", router->model_number);
            	g_print("               Brand: %s\n", router->brand);
            	g_print("    Presentation URL: %s\n", router->http_address);
+           	g_print("                 UPC: %s\n", router->upc);
         }
 
         /* workaround for urls like "/login" without base url or empty url */
@@ -897,10 +968,13 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 
     device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
 
-    if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0) {
+    if( (g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0) ||
+        (g_strcmp0(device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0) ) {
 
     	g_source_remove(router->port_request_timeout);
+    	gui_set_router_icon(NULL);
     	gui_disable();
+    	router->main_device = NULL;
     }
 
 }
