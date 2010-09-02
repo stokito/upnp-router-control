@@ -290,7 +290,6 @@ static void on_button_remove_clicked (GtkWidget *button,
     	return;
     }
 
-
     gtk_tree_model_get(model, &iter,
                        UPNP_COLUMN_PROTOCOL, &protocol,
                        UPNP_COLUMN_EXT_PORT, &external_port,
@@ -313,6 +312,9 @@ static void on_button_remove_clicked (GtkWidget *button,
 		gtk_widget_destroy(dialog);
 		g_error_free (error);
 	}
+	
+	// delete row from the local list
+	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 
 }
 
