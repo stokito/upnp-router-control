@@ -715,24 +715,24 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                 g_print("    ");
             g_print("         Type: %s\n", service_type );
 
-            // seems that this cause a segfault, bug in libgupnp?
-            if(g_strcmp0(service_id, "urn:microsoft-com:serviceId:OSInfo1") != 0)
-            {
-            	/* Introspect current service */
-            	const GList *actions_list;
-            	GUPnPServiceIntrospection *service_introspect;
 
-            	service_introspect = gupnp_service_info_get_introspection(child->data, NULL);
-            	actions_list = gupnp_service_introspection_list_action_names(service_introspect);
+            /* Introspect current service */
+            const GList *actions_list;
+            GUPnPServiceIntrospection *service_introspect;
 
-            	do
-            	{
-            		for(i = 0; i < level; i++)
-                	g_print("    ");
+            service_introspect = gupnp_service_info_get_introspection(child->data, NULL);
 
-            		g_print("               > %s\n", (gchar*) actions_list->data);
-            	}
-            	while((actions_list = actions_list->next));
+            if(service_introspect != NULL) {
+
+                actions_list = gupnp_service_introspection_list_action_names(service_introspect);
+
+                do {
+                    for(i = 0; i < level; i++)
+                        g_print("    ");
+                    g_print("               > %s\n", (gchar*) actions_list->data);
+
+                } while((actions_list = actions_list->next));
+
             }
 
         }
