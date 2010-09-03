@@ -111,6 +111,7 @@ speed_graph_draw_background (GtkWidget *widget)
     cairo_pattern_t *pat;
     cairo_text_extents_t extents;
     gchar *label;
+    GtkStyle *style;
     double draw_width, draw_height;
 
     const double fontsize = 8.0;
@@ -152,11 +153,11 @@ speed_graph_draw_background (GtkWidget *widget)
 
 	}
 
-	cairo_select_font_face (cr, "sans",
+    style = gtk_widget_get_style (widget);
+
+	cairo_select_font_face (cr, pango_font_description_get_family(style->font_desc),
                                 CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
     cairo_set_font_size (cr, fontsize);
-
-    GtkStyle *style = gtk_widget_get_style (widget);
 
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (cr, 1);
