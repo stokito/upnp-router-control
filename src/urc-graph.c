@@ -21,6 +21,7 @@
 
 #include <math.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n-lib.h>
 
 #include "urc-graph.h"
 
@@ -152,7 +153,7 @@ graph_draw_background (GtkWidget *widget)
         x = rmargin + indent + (x_frame_size * i);
 
         if(i == 0)
-            label = g_strdup_printf("%u seconds", GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
+            label = g_strdup_printf(_("%u seconds"), GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
 
         else
             label = g_strdup_printf("%u", GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
