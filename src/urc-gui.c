@@ -569,16 +569,16 @@ void gui_set_download_speed(const gdouble down_speed)
 
     /* Method of divisions is too expensive? */
     /* Down speed */
-    if(down_speed >= 1024)
-    {
-        value = down_speed / 1024.0;
-        unit = g_strdup("MiB/s");
-    }
-    else if(down_speed >= 1048576)
+    if(down_speed >= 1048576)
     {
         value = down_speed / 1048576.0;
         unit = g_strdup("GiB/s");
     }
+    else if(down_speed >= 1024)
+    {
+        value = down_speed / 1024.0;
+        unit = g_strdup("MiB/s");
+    }    
     else
     {
         value = down_speed;
@@ -623,15 +623,15 @@ void gui_set_upload_speed(const gdouble up_speed)
 
     /* Method of divisions is too expensive? */
     /* Up speed */
-    if(up_speed >= 1024)
-    {
-        value = up_speed / 1024.0;
-        unit = g_strdup("MiB/s");
-    }
-    else if(up_speed >= 1048576)
+    if(up_speed >= 1048576)
     {
         value = up_speed / 1048576.0;
         unit = g_strdup("GiB/s");
+    }
+    else  if(up_speed >= 1024)
+    {
+        value = up_speed / 1024.0;
+        unit = g_strdup("MiB/s");
     }
     else
     {
