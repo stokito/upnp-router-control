@@ -11,7 +11,6 @@
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkMenuBar" id="menubar1">
             <property name="visible">True</property>
@@ -302,7 +301,6 @@
             <child>
               <object class="GtkVButtonBox" id="vbuttonbox1">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">start</property>
                 <child>
@@ -347,13 +345,63 @@
           </packing>
         </child>
         <child>
-          <object class="GtkDrawingArea" id="network_graph">
-            <property name="height_request">100</property>
+          <object class="GtkLabel" id="label_history">
             <property name="visible">True</property>
-            <property name="app_paintable">True</property>
+            <property name="xalign">0</property>
+            <property name="xpad">6</property>
+            <property name="ypad">3</property>
+            <property name="label" translatable="yes">Network history</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
           </object>
           <packing>
             <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment" id="alignment_graph">
+            <property name="visible">True</property>
+            <property name="bottom_padding">6</property>
+            <property name="left_padding">18</property>
+            <property name="right_padding">6</property>
+            <child>
+              <object class="GtkDrawingArea" id="network_graph">
+                <property name="height_request">100</property>
+                <property name="visible">True</property>
+                <property name="app_paintable">True</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <property name="border_width">6</property>
+            <child>
+              <object class="GtkLabel" id="total_received_label">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Total received:</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="total_sent_label">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Total sent:</property>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>
@@ -370,7 +418,6 @@
     <child>
       <object class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkTable" id="table2">

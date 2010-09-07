@@ -69,6 +69,8 @@ typedef struct
               *ip_label,
               *down_rate_label,
               *up_rate_label,
+              *total_received_label,
+              *total_sent_label,
               *button_remove,
               *button_add,
               *router_icon,
@@ -447,6 +449,98 @@ static void gui_init_treeview()
 
         gtk_tree_selection_set_select_function(selection, gui_on_treeview_selection, NULL, NULL);
 
+}
+
+void gui_disable_total_received()
+{
+   if(gui->total_received_label == NULL)
+    	return;
+
+    gtk_widget_set_sensitive(gui->total_received_label, FALSE); 
+}
+
+void gui_set_total_received (const unsigned int total_received)
+{
+    gchar* str;
+    gchar* unit;
+    float value;
+    
+    if(total_received >= 1073741824)
+    {
+        value = total_received / 1073741824.0;
+        unit = g_strdup("GiB");
+    }
+    if(total_received >= 1048576)
+    {
+        value = total_received / 1048576.0;
+        unit = g_strdup("MiB");
+    }
+    else if(total_received >= 1024)
+    {
+        value = total_received / 1024.0;
+        unit = g_strdup("KiB");
+    }   
+    else
+    {
+        value = total_received;
+        unit = g_strdup("B");
+    }
+    str = g_strdup_printf("<b>Total received:</b> %0.1f %s", value, unit);
+    g_free(unit);
+    
+    if(gui->total_received_label == NULL)
+    	return;
+
+    gtk_label_set_markup (GTK_LABEL(gui->total_received_label), str);
+    g_free(str);
+
+    gtk_widget_set_sensitive(gui->total_received_label, TRUE);
+}
+
+void gui_disable_total_sent()
+{
+   if(gui->total_sent_label == NULL)
+    	return;
+
+    gtk_widget_set_sensitive(gui->total_sent_label, FALSE); 
+}
+
+void gui_set_total_sent (const unsigned int total_sent)
+{
+    gchar* str;
+    gchar* unit;
+    float value;
+    
+    if(total_sent >= 1073741824)
+    {
+        value = total_sent / 1073741824.0;
+        unit = g_strdup("GiB");
+    }
+    if(total_sent >= 1048576)
+    {
+        value = total_sent / 1048576.0;
+        unit = g_strdup("MiB");
+    }
+    else if(total_sent >= 1024)
+    {
+        value = total_sent / 1024.0;
+        unit = g_strdup("KiB");
+    }   
+    else
+    {
+        value = total_sent;
+        unit = g_strdup("B");
+    }
+    str = g_strdup_printf("<b>Total sent:</b> %0.1f %s", value, unit);
+    g_free(unit);
+    
+    if(gui->total_sent_label == NULL)
+    	return;
+
+    gtk_label_set_markup (GTK_LABEL(gui->total_sent_label), str);
+    g_free(str);
+
+    gtk_widget_set_sensitive(gui->total_sent_label, TRUE);
 }
 
 void gui_disable_download_speed()
@@ -880,6 +974,8 @@ void gui_init()
     gui->router_url_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "router_url_eventbox"));
     gui->router_icon = GTK_WIDGET (gtk_builder_get_object (builder, "image1"));
     gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "network_graph"));
+    gui->total_received_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_received_label"));
+    gui->total_sent_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_sent_label"));
 
     gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));

@@ -385,11 +385,13 @@ static gboolean update_data_rate_cb (gpointer data)
 	    }
 
         gui_set_download_speed(data_rate_down);
+        gui_set_total_received(current_total_bytes_received);
 
         old_total_bytes_received = current_total_bytes_received;
 
     } else {
         gui_disable_download_speed();
+        gui_disable_total_received();
 
         g_printerr ("\e[31m[EE]\e[0m GetTotalBytesReceived: %s (%i)\n", error->message, error->code);
         g_error_free (error);
@@ -425,11 +427,13 @@ static gboolean update_data_rate_cb (gpointer data)
 	        data_rate_up = (current_total_bytes_sent - old_total_bytes_sent) / (duration_secs) / 1024.0;
 	    }
         gui_set_upload_speed(data_rate_up);
+        gui_set_total_sent(current_total_bytes_sent);
 
         old_total_bytes_sent = current_total_bytes_sent;
 
     } else {
         gui_disable_upload_speed();
+        gui_disable_total_sent();
 
         g_printerr ("\e[31m[EE]\e[0m GetTotalBytesSent: %s (%i)\n", error->message, error->code);
         g_error_free (error);

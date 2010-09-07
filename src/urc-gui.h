@@ -48,6 +48,14 @@ void gui_update_graph();
 
 void gui_disable_conn_status();
 
+void gui_disable_total_received (void);
+
+void gui_disable_total_sent (void);
+
+void gui_set_total_received (unsigned int total_received);
+
+void gui_set_total_sent (unsigned int total_sent);
+
 void gui_disable_download_speed(void);
 
 void gui_disable_upload_speed(void);
