@@ -6,27 +6,26 @@ icons = \
 	apps_48x48_upnp-router-control.png \
 	apps_scalable_upnp-router-control.svg \
 	$(NULL)
-	
+
 noinst_DATA = \
 	apps_16x16_upnp-router-control.svg \
 	apps_22x22_upnp-router-control.svg \
 	apps_24x24_upnp-router-control.svg \
 	apps_32x32_upnp-router-control.svg \
 	apps_48x48_upnp-router-control.svg \
-	apps_scalable2_upnp-router-control.svg \
 	$(NULL)
 
 gladedir = $(datadir)/upnp-router-control
 glade_DATA = \
     upnp-router-control.glade
-    
+
 man_MANS = upnp-router-control.1
 
 @INTLTOOL_DESKTOP_RULE@
 desktopdir = $(datadir)/applications
 desktop_in_files = upnp-router-control.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
-	
+
 EXTRA_DIST = \
       $(icon_DATA)      \
       $(noinst_DATA)   \
@@ -34,11 +33,11 @@ EXTRA_DIST = \
       $(desktop_DATA)   \
       $(man_MANS)
       $(NULL)
-      
+
 DISTCLEANFILES = \
     $(desktop_DATA)
 
-      
+
 ###############################################################################
 
 gtk_update_icon_cache = gtk-update-icon-cache -f -t $(datadir)/icons/hicolor
@@ -71,7 +70,7 @@ uninstall-icons:
 
 clean-local:
 	rm -f *~
-	
+
 install-data-local: install-icons update-icon-cache
 uninstall-local: uninstall-icons update-icon-cache
 

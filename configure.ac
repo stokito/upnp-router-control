@@ -28,16 +28,22 @@ AM_GLIB_GNU_GETTEXT
 #### Check for GTK+ >= 2.14 ####
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16,,
 	AC_MSG_ERROR([GTK+-2.6 is required to compile upnp-router-control]))
-	
+
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 #### Check for gupnp1.0 ####
 PKG_CHECK_MODULES(GUPNP, gupnp-1.0,,
 	AC_MSG_ERROR([libgupnp-1.0 is required to compile upnp-router-control]))
-	
+
 AC_SUBST(GUPNP_CFLAGS)
 AC_SUBST(GUPNP_LIBS)
+
+AC_CHECK_HEADER(download.h,,
+    AC_MSG_ERROR([libdownload is required to compile upnp-router-control]))
+
+DOWNLOAD_LIBS="-ldownload"
+AC_SUBST(DOWNLOAD_LIBS)
 
 AC_CONFIG_FILES([
 Makefile
