@@ -314,7 +314,7 @@ static void on_button_remove_clicked (GtkWidget *button,
 		gtk_widget_destroy(dialog);
 		g_error_free (error);
 	}
-	
+
 	// delete row from the local list
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 
@@ -456,7 +456,7 @@ void gui_disable_total_received()
    if(gui->total_received_label == NULL)
     	return;
 
-    gtk_widget_set_sensitive(gui->total_received_label, FALSE); 
+    gtk_widget_set_sensitive(gui->total_received_label, FALSE);
 }
 
 void gui_set_total_received (const unsigned int total_received)
@@ -464,13 +464,13 @@ void gui_set_total_received (const unsigned int total_received)
     gchar* str;
     gchar* unit;
     float value;
-    
+
     if(total_received >= 1073741824)
     {
         value = total_received / 1073741824.0;
         unit = g_strdup("GiB");
     }
-    if(total_received >= 1048576)
+    else if(total_received >= 1048576)
     {
         value = total_received / 1048576.0;
         unit = g_strdup("MiB");
@@ -479,7 +479,7 @@ void gui_set_total_received (const unsigned int total_received)
     {
         value = total_received / 1024.0;
         unit = g_strdup("KiB");
-    }   
+    }
     else
     {
         value = total_received;
@@ -487,7 +487,7 @@ void gui_set_total_received (const unsigned int total_received)
     }
     str = g_strdup_printf("<b>Total received:</b> %0.1f %s", value, unit);
     g_free(unit);
-    
+
     if(gui->total_received_label == NULL)
     	return;
 
@@ -502,7 +502,7 @@ void gui_disable_total_sent()
    if(gui->total_sent_label == NULL)
     	return;
 
-    gtk_widget_set_sensitive(gui->total_sent_label, FALSE); 
+    gtk_widget_set_sensitive(gui->total_sent_label, FALSE);
 }
 
 void gui_set_total_sent (const unsigned int total_sent)
@@ -510,13 +510,13 @@ void gui_set_total_sent (const unsigned int total_sent)
     gchar* str;
     gchar* unit;
     float value;
-    
+
     if(total_sent >= 1073741824)
     {
         value = total_sent / 1073741824.0;
         unit = g_strdup("GiB");
     }
-    if(total_sent >= 1048576)
+    else if(total_sent >= 1048576)
     {
         value = total_sent / 1048576.0;
         unit = g_strdup("MiB");
@@ -525,7 +525,7 @@ void gui_set_total_sent (const unsigned int total_sent)
     {
         value = total_sent / 1024.0;
         unit = g_strdup("KiB");
-    }   
+    }
     else
     {
         value = total_sent;
@@ -533,7 +533,7 @@ void gui_set_total_sent (const unsigned int total_sent)
     }
     str = g_strdup_printf("<b>Total sent:</b> %0.1f %s", value, unit);
     g_free(unit);
-    
+
     if(gui->total_sent_label == NULL)
     	return;
 
@@ -578,7 +578,7 @@ void gui_set_download_speed(const gdouble down_speed)
     {
         value = down_speed / 1024.0;
         unit = g_strdup("MiB/s");
-    }    
+    }
     else
     {
         value = down_speed;
