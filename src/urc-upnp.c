@@ -837,19 +837,28 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 				   NULL);
 
 	        if (error == NULL) {
-	            char** connect_result = NULL;
-                connect_result = g_strsplit(string_buffer, ",", 2);
+	            if(string_buffer != NULL && g_strcmp0(string_buffer, "") != 0)
+	            {
+	                char** connect_result = NULL;
+                    connect_result = g_strsplit(string_buffer, ",", 2);
 
-                if(opt_debug)
-        		{
-            		for(i = 0; i < level; i++)
-                		g_print("    ");
+                    if(opt_debug)
+        		    {
+            		    for(i = 0; i < level; i++)
+                	    	g_print("    ");
 
-            		g_print("      \e[32mConnectionService:\e[0m %s\n", string_buffer );
-        		}
-	            connect_device = g_strdup(connect_result[0]);
-	            connect_service = g_strdup(connect_result[1]);
-	            g_strfreev(connect_result);
+            		    g_print("      \e[32mConnectionService:\e[0m %s\n", string_buffer);
+        		    }
+	                connect_device = g_strdup(connect_result[0]);
+	                connect_service = g_strdup(connect_result[1]);
+	                g_strfreev(connect_result);
+
+                } else {
+                    g_print("\e[0;31m[WW]\e[0m GetDefaultConnectionService: empty\e[0;0m\n");
+                    connect_device = NULL;
+                    connect_service = NULL;
+                }
+                // can free NULL string
                 g_free (string_buffer);
 
             } else {
