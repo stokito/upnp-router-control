@@ -935,6 +935,8 @@ static void gui_destroy()
 
 	gui->down_rate_label = NULL;
 	gui->up_rate_label = NULL;
+	gui->total_received_label = NULL;
+	gui->total_sent_label = NULL;
 	gui->wan_status_label = NULL;
 	gui->ip_label = NULL;
 
