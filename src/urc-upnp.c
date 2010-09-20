@@ -380,7 +380,9 @@ static gboolean update_data_rate_cb (gpointer data)
             duration_secs = 1 + (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
                                         (end_time.tv_usec - begin_time.tv_usec)) / G_USEC_PER_SEC;
 
-	        g_print("GetTotalBytesReceived() duration: %f\n", duration_secs);
+	        if(opt_debug)
+	            g_print("\e[34mGetTotalBytesReceived() duration: %fs\e[0m\n", duration_secs);
+
 	        data_rate_down = ((current_total_bytes_received - old_total_bytes_received) / (duration_secs)  ) / 1024.0;
 	    }
 
@@ -422,7 +424,8 @@ static gboolean update_data_rate_cb (gpointer data)
 	        duration_secs = 1 + (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
                                         (end_time.tv_usec - begin_time.tv_usec)) / G_USEC_PER_SEC;
 
-	        g_print("GetTotalBytesSent() duration:     %f\n", duration_secs);
+            if(opt_debug)
+	            g_print("\e[34mGetTotalBytesSent() duration:     %fs\e[0m\n", duration_secs);
 
 	        data_rate_up = (current_total_bytes_sent - old_total_bytes_sent) / (duration_secs) / 1024.0;
 	    }
