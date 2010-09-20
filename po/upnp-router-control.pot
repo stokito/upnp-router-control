@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-13 18:17+0200\n"
+"POT-Creation-Date: 2010-09-21 00:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,108 +25,112 @@ msgstr ""
 msgid "Unable to set this port forward"
 msgstr ""
 
-#: ../src/urc-gui.c:309
+#: ../src/urc-gui.c:312
 msgid "Unable to remove this port forward"
 msgstr ""
 
-#: ../src/urc-gui.c:372
+#: ../src/urc-gui.c:375
 msgid "Enabled"
 msgstr ""
 
-#: ../src/urc-gui.c:373
+#: ../src/urc-gui.c:376
 msgid "Description"
 msgstr ""
 
-#: ../src/urc-gui.c:374
+#: ../src/urc-gui.c:377
 msgid "Protocol"
 msgstr ""
 
-#: ../src/urc-gui.c:375
+#: ../src/urc-gui.c:378
 msgid "Int. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:376
+#: ../src/urc-gui.c:379
 msgid "Ext. Port"
 msgstr ""
 
-#: ../src/urc-gui.c:377
+#: ../src/urc-gui.c:380
 msgid "Local IP"
 msgstr ""
 
-#: ../src/urc-gui.c:552 ../src/urc-gui.c:606 ../src/urc-gui.c:882
-#: ../src/urc-gui.c:885
+#: ../src/urc-gui.c:555 ../src/urc-gui.c:609 ../src/urc-gui.c:891
+#: ../src/urc-gui.c:894
 msgid "n.a."
 msgstr ""
 
-#: ../src/urc-gui.c:668 ../src/urc-gui.c:670 ../src/urc-gui.c:672
-#: ../src/urc-gui.c:674 ../src/urc-gui.c:690 ../src/urc-gui.c:872
+#: ../src/urc-gui.c:674 ../src/urc-gui.c:676 ../src/urc-gui.c:678
+#: ../src/urc-gui.c:680 ../src/urc-gui.c:696 ../src/urc-gui.c:881
 msgid "WAN status:"
 msgstr ""
 
-#: ../src/urc-gui.c:668
+#: ../src/urc-gui.c:674
 msgid "Connected"
 msgstr ""
 
-#: ../src/urc-gui.c:670
+#: ../src/urc-gui.c:676
 msgid "Disconnected"
 msgstr ""
 
-#: ../src/urc-gui.c:672
+#: ../src/urc-gui.c:678
 msgid "Connecting"
 msgstr ""
 
-#: ../src/urc-gui.c:674
+#: ../src/urc-gui.c:680
 msgid "Disconnecting"
 msgstr ""
 
-#: ../src/urc-gui.c:690 ../src/urc-gui.c:726
+#: ../src/urc-gui.c:696 ../src/urc-gui.c:732
 msgid "unknown"
 msgstr ""
 
-#: ../src/urc-gui.c:707 ../src/urc-gui.c:709 ../src/urc-gui.c:726
-#: ../src/urc-gui.c:877
+#: ../src/urc-gui.c:713 ../src/urc-gui.c:715 ../src/urc-gui.c:732
+#: ../src/urc-gui.c:886
 msgid "IP:"
 msgstr ""
 
-#: ../src/urc-gui.c:707
+#: ../src/urc-gui.c:713
 msgid "none"
 msgstr ""
 
-#: ../src/urc-gui.c:783 ../src/urc-gui.c:867
+#: ../src/urc-gui.c:790 ../src/urc-gui.c:876
 msgid "Router name:"
 msgstr ""
 
-#: ../src/urc-gui.c:790
+#: ../src/urc-gui.c:797
 msgid "Brand"
 msgstr ""
 
-#: ../src/urc-gui.c:792
+#: ../src/urc-gui.c:799
 msgid "Brand website:"
 msgstr ""
 
-#: ../src/urc-gui.c:794
+#: ../src/urc-gui.c:801
+msgid "Model Description:"
+msgstr ""
+
+#: ../src/urc-gui.c:803
 msgid "Model Name:"
 msgstr ""
 
-#: ../src/urc-gui.c:796
+#: ../src/urc-gui.c:805
 msgid "Model Number:"
 msgstr ""
 
-#: ../src/urc-gui.c:811
+#: ../src/urc-gui.c:820
 msgid "Open the router config in the default browser"
 msgstr ""
 
-#: ../src/urc-gui.c:826 ../src/urc-gui.c:867 ../src/urc-gui.c:872
-#: ../src/urc-gui.c:877 ../src/urc-gui.c:888
+#: ../src/urc-gui.c:835 ../src/urc-gui.c:876 ../src/urc-gui.c:881
+#: ../src/urc-gui.c:886 ../src/urc-gui.c:897
 msgid "not available"
 msgstr ""
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:911
+#: ../src/urc-gui.c:920
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/urc-gui.c:917 ../data/upnp-router-control.desktop.in.h:1
+#: ../src/urc-gui.c:926 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP IGD compliant routers"
 msgstr ""
 
