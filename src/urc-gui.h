@@ -35,6 +35,7 @@ void gui_set_router_info (const gchar *router_friendly_name,
                           const gchar *router_conf_url,
                           const gchar *router_brand,
                           const gchar *router_brand_website,
+                          const gchar *router_model_description,
                           const gchar *router_model_name,
                           const gchar *router_model_number);
 

@@ -778,6 +778,7 @@ void gui_set_router_info (const gchar *router_friendly_name,
                           const gchar *router_conf_url,
                           const gchar *router_brand,
                           const gchar *router_brand_website,
+                          const gchar *router_model_description,
                           const gchar *router_model_name,
                           const gchar *router_model_number)
 {
@@ -792,11 +793,13 @@ void gui_set_router_info (const gchar *router_friendly_name,
 
     gtk_widget_set_sensitive(gui->router_name_label, TRUE);
 
-    str = g_strdup_printf( "<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
+    str = g_strdup_printf( "<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
                            _("Brand"),
                            router_brand,
                            _("Brand website:"),
                            router_brand_website,
+                           _("Model Description:"),
+                           router_model_description,
                            _("Model Name:"),
                            router_model_name,
                            _("Model Number:"),
@@ -947,6 +950,7 @@ static void gui_destroy()
 	gui->ip_label = NULL;
 	gui->treeview = NULL;
 	gui->network_drawing_area = NULL;
+	gui->main_window = NULL;
 
 	g_free(gui);
 

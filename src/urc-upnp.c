@@ -30,6 +30,7 @@ typedef struct
     gchar* friendly_name;
     gchar* brand;
     gchar* brand_website;
+    gchar* model_description;
     gchar* model_name;
     gchar* model_number;
     gchar* http_address;
@@ -656,6 +657,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->brand = gupnp_device_info_get_manufacturer(GUPNP_DEVICE_INFO (proxy));
         router->http_address = gupnp_device_info_get_presentation_url(GUPNP_DEVICE_INFO (proxy));
         router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
+        router->model_description = gupnp_device_info_get_model_description(GUPNP_DEVICE_INFO (proxy));
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
         router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
@@ -667,6 +669,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
         if(opt_debug)
     	{
+           	g_print("   Model description: %s\n", router->model_description);
            	g_print("          Model name: %s\n", router->model_name);
            	g_print("        Model number: %s\n", router->model_number);
            	g_print("               Brand: %s\n", router->brand);
@@ -704,12 +707,18 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
         /* workaround for empty <friendlyName> property */
         if(g_strcmp0(router->friendly_name, "") == 0)
-        	router->friendly_name = g_strdup(router->model_name);
+        {
+            if(g_strcmp0(router->model_name, "") == 0)
+                router->friendly_name = g_strdup(router->model_description);
+            else
+                router->friendly_name = g_strdup(router->model_name);
+        }
 
         gui_set_router_info (router->friendly_name,
                              router->http_address,
                              router->brand,
                              router->brand_website,
+                             router->model_description,
                              router->model_name,
                              router->model_number);
 
@@ -722,12 +731,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->brand = gupnp_device_info_get_manufacturer(GUPNP_DEVICE_INFO (proxy));
         router->http_address = gupnp_device_info_get_presentation_url(GUPNP_DEVICE_INFO (proxy));
         router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
+        router->model_description = gupnp_device_info_get_model_description(GUPNP_DEVICE_INFO (proxy));
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
         router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
 
         if(opt_debug)
     	{
+           	g_print("   Model description: %s\n", router->model_description);
            	g_print("          Model name: %s\n", router->model_name);
            	g_print("        Model number: %s\n", router->model_number);
            	g_print("               Brand: %s\n", router->brand);
@@ -756,6 +767,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                              router->http_address,
                              router->brand,
                              router->brand_website,
+                             router->model_description,
                              router->model_name,
                              router->model_number);
     }
