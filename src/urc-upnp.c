@@ -640,13 +640,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     static int level = 0;
     int i;
 
-    if(opt_debug)
+    if(level == 0)
     {
-        if(level == 0)
-        {
             g_print("==> Device Available: \e[31m%s\e[0;0m\n",
                 gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
-        }
     }
 
     device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
@@ -958,12 +955,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                 g_print("    ");
             g_print("      \e[32mSub-Device: \e[31m%s\e[0m\n",
                 gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (child->data)));
-            level = level + 1;
         }
+
+        level = level + 1;
+
         /* Recursive pass */
         device_proxy_available_cb (NULL, child->data, router);
 
-        if (opt_debug) level = level - 1;
+        level = level - 1;
 
         g_object_unref (child->data);
         child = g_list_delete_link (child, child);
@@ -978,8 +977,7 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 {
     const char *device_type = NULL;
 
-    if (opt_debug)
-        g_print("==> Device Unavailable: \e[31m%s\e[0;0m\n",
+    g_print("==> Device Unavailable: \e[31m%s\e[0;0m\n",
             gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
 
     device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
