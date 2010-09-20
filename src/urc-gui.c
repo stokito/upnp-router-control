@@ -254,6 +254,9 @@ void gui_add_mapped_port(const PortForwardInfo* port_info)
     GtkTreeModel *model;
     GtkTreeIter   iter;
 
+    if(gui->treeview == NULL)
+        return;
+
     model = gtk_tree_view_get_model (GTK_TREE_VIEW (gui->treeview));
 
     gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
@@ -653,6 +656,9 @@ void gui_set_upload_speed(const gdouble up_speed)
 
 void gui_update_graph()
 {
+    if(gui->network_drawing_area == NULL)
+        return;
+
     gtk_widget_queue_draw(gui->network_drawing_area);
 }
 
@@ -939,6 +945,8 @@ static void gui_destroy()
 	gui->total_sent_label = NULL;
 	gui->wan_status_label = NULL;
 	gui->ip_label = NULL;
+	gui->treeview = NULL;
+	gui->network_drawing_area = NULL;
 
 	g_free(gui);
 
