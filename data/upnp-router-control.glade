@@ -22,7 +22,7 @@
                 <child type="submenu">
                   <object class="GtkMenu" id="menu1">
                     <property name="visible">True</property>
-                    <child>
+                    <!--<child>
                       <object class="GtkMenuItem" id="menuitem_router_switch">
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
@@ -34,7 +34,7 @@
                       <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
                         <property name="visible">True</property>
                       </object>
-                    </child>
+                    </child>-->
                     <child>
                       <object class="GtkImageMenuItem" id="menuitem_exit">
                         <property name="label">gtk-quit</property>
