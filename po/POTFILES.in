@@ -3,5 +3,6 @@
 src/urc-main.c
 src/urc-upnp.c
 src/urc-gui.c
+src/urc-graph.c
 data/upnp-router-control.glade
 data/upnp-router-control.desktop.in

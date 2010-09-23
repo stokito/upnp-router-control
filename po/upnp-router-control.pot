@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-21 00:37+0200\n"
+"POT-Creation-Date: 2010-09-23 03:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,13 +53,23 @@ msgstr ""
 msgid "Local IP"
 msgstr ""
 
-#: ../src/urc-gui.c:555 ../src/urc-gui.c:609 ../src/urc-gui.c:891
-#: ../src/urc-gui.c:894
+#: ../src/urc-gui.c:491 ../src/urc-gui.c:899
+#: ../data/upnp-router-control.glade.h:23
+msgid "Total received:"
+msgstr ""
+
+#: ../src/urc-gui.c:537 ../src/urc-gui.c:904
+#: ../data/upnp-router-control.glade.h:24
+msgid "Total sent:"
+msgstr ""
+
+#: ../src/urc-gui.c:555 ../src/urc-gui.c:609 ../src/urc-gui.c:893
+#: ../src/urc-gui.c:896 ../src/urc-gui.c:899 ../src/urc-gui.c:904
 msgid "n.a."
 msgstr ""
 
 #: ../src/urc-gui.c:674 ../src/urc-gui.c:676 ../src/urc-gui.c:678
-#: ../src/urc-gui.c:680 ../src/urc-gui.c:696 ../src/urc-gui.c:881
+#: ../src/urc-gui.c:680 ../src/urc-gui.c:696 ../src/urc-gui.c:883
 msgid "WAN status:"
 msgstr ""
 
@@ -84,7 +94,7 @@ msgid "unknown"
 msgstr ""
 
 #: ../src/urc-gui.c:713 ../src/urc-gui.c:715 ../src/urc-gui.c:732
-#: ../src/urc-gui.c:886
+#: ../src/urc-gui.c:888
 msgid "IP:"
 msgstr ""
 
@@ -92,7 +102,7 @@ msgstr ""
 msgid "none"
 msgstr ""
 
-#: ../src/urc-gui.c:790 ../src/urc-gui.c:876
+#: ../src/urc-gui.c:790 ../src/urc-gui.c:878
 msgid "Router name:"
 msgstr ""
 
@@ -120,18 +130,23 @@ msgstr ""
 msgid "Open the router config in the default browser"
 msgstr ""
 
-#: ../src/urc-gui.c:835 ../src/urc-gui.c:876 ../src/urc-gui.c:881
-#: ../src/urc-gui.c:886 ../src/urc-gui.c:897
+#: ../src/urc-gui.c:835 ../src/urc-gui.c:878 ../src/urc-gui.c:883
+#: ../src/urc-gui.c:888 ../src/urc-gui.c:909
 msgid "not available"
 msgstr ""
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:920
+#: ../src/urc-gui.c:935
 msgid "translator-credits"
 msgstr ""
 
-#: ../src/urc-gui.c:926 ../data/upnp-router-control.desktop.in.h:1
+#: ../src/urc-gui.c:941 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP IGD compliant routers"
+msgstr ""
+
+#: ../src/urc-graph.c:156
+#, c-format
+msgid "%u seconds"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:1
@@ -200,14 +215,6 @@ msgstr ""
 
 #: ../data/upnp-router-control.glade.h:22
 msgid "Protocol:"
-msgstr ""
-
-#: ../data/upnp-router-control.glade.h:23
-msgid "Total received:"
-msgstr ""
-
-#: ../data/upnp-router-control.glade.h:24
-msgid "Total sent:"
 msgstr ""
 
 #: ../data/upnp-router-control.glade.h:26
