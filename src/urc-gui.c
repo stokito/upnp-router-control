@@ -859,6 +859,8 @@ void gui_enable()
     gtk_widget_set_sensitive(gui->ip_label, TRUE);
     gtk_widget_set_sensitive(gui->down_rate_label, TRUE);
     gtk_widget_set_sensitive(gui->up_rate_label, TRUE);
+    gtk_widget_set_sensitive(gui->total_received_label, TRUE);
+    gtk_widget_set_sensitive(gui->total_sent_label, TRUE);
     gtk_widget_set_sensitive(gui->router_url_label, TRUE);
     gtk_widget_set_sensitive(gui->button_add, TRUE);
     gtk_widget_set_sensitive(gui->config_label, TRUE);
@@ -911,6 +913,9 @@ void gui_disable()
     gtk_widget_set_sensitive(gui->button_remove, FALSE);
 
     gtk_widget_set_sensitive(gui->config_label, FALSE);
+
+    disable_graph_data();
+    gui_update_graph();
 
 }
 

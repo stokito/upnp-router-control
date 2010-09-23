@@ -157,7 +157,7 @@ graph_draw_background (GtkWidget *widget)
 
         else
             label = g_strdup_printf("%u", GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
-        
+
         cairo_text_extents (cr, label, &extents);
 		cairo_move_to (cr, x - extents.width/2, draw_height+2);
 		cairo_show_text (cr, label);
@@ -174,12 +174,12 @@ graph_draw_background (GtkWidget *widget)
         y = y_frame_size * i;
 
         label_value = net_max - ((float) net_max / y_frame_count) * i;
-        
+
         if(label_value < 1024)
             label = g_strdup_printf("%0.1f KiB/s", label_value);
         if(label_value > 1024)
             label = g_strdup_printf("%0.1f MiB/s", label_value / 1024);
-        
+
         cairo_text_extents (cr, label, &extents);
 		cairo_move_to (cr, rmargin + indent - extents.width - 10 , y + extents.height/2);
 		cairo_show_text (cr, label);
@@ -199,37 +199,37 @@ static void
 graph_set_fullscale (double tmp_net_max)
 {
     //g_debug("net_max: %d tmp_net_max: %d\n", net_max, (int) ceil(tmp_net_max));
-    
+
     // workaround for values <= 10
     if(tmp_net_max != net_max && tmp_net_max <= 10) {
-        
+
         static unsigned cur_fullscale;
-        
+
         if(tmp_net_max <= 2)
             net_max = 2;
         else if(tmp_net_max <= 6)
             net_max = 6;
         else
             net_max = 10;
-            
+
         if(net_max == cur_fullscale)
             return;
-        
+
         cur_fullscale = net_max;
         //g_debug("Updated full scale: to %d\n", net_max);
         clear_graph_background();
         return;
     }
-    
+
     if(ceil(tmp_net_max) > net_max || ceil(tmp_net_max) < (0.8 * net_max - 10))
-    {        
+    {
         // an upper margin
         net_max = (int) ceil(1.1 * tmp_net_max) + 10;
-            
+
         // round to multiples of 10
         if(net_max % 10 != 0)
-            net_max = net_max - (net_max % 10);                
-        
+            net_max = net_max - (net_max % 10);
+
         //g_debug("Updated full scale: to %d\n", net_max);
         clear_graph_background();
     }
@@ -267,7 +267,7 @@ graph_draw_data (GtkWidget *widget)
     /* upload speed */
     list = upspeed_values;
     speed_value = list->data;
-    
+
     // first point
     if(speed_value->valid == TRUE) {
         // 2 is: FRAME_WIDTH / 2
@@ -294,7 +294,7 @@ graph_draw_data (GtkWidget *widget)
 
         list = list->next;
     }
-    
+
     // upload line color
     cairo_set_source_rgb (cr, 0.52, 0.28, 0.60);
     cairo_stroke(cr);
@@ -333,7 +333,7 @@ graph_draw_data (GtkWidget *widget)
     cairo_stroke(cr);
 
     cairo_destroy (cr);
-    
+
     graph_set_fullscale(tmp_net_max);
 }
 
@@ -366,18 +366,42 @@ void update_upload_graph_data(SpeedValue *speed)
         g_free(tmp_elem->data);
         upspeed_values = g_list_delete_link(upspeed_values, tmp_elem);
     }
-    
+
     if(speed->speed > net_max)
         graph_set_fullscale(speed->speed);
 
     clear_graph_data();
 }
 
+void disable_graph_data()
+{
+    GList *elem;
+
+    if(upspeed_values == NULL || downspeed_values == NULL)
+        return;
+
+    elem = upspeed_values;
+    do {
+        ((SpeedValue *)elem->data)->valid = FALSE;
+        ((SpeedValue *)elem->data)->speed = 0.0;
+        elem = elem->next;
+    } while(elem);
+
+    elem = downspeed_values;
+    do {
+        ((SpeedValue *)elem->data)->valid = FALSE;
+        ((SpeedValue *)elem->data)->speed = 0.0;
+        elem = elem->next;
+    } while(elem);
+
+    clear_graph_data ();
+}
+
 gboolean
 on_drawing_area_configure_event (GtkWidget         *widget,
 		                         GdkEventConfigure *event,
 		                         gpointer           data_ptr)
-{    
+{
     clear_graph_background();
 
 	clear_graph_data ();

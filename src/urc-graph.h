@@ -34,6 +34,9 @@ update_download_graph_data(SpeedValue *speed);
 void
 update_upload_graph_data(SpeedValue *speed);
 
+void
+disable_graph_data();
+
 gboolean
 on_drawing_area_configure_event (GtkWidget         *widget,
 		                         GdkEventConfigure *event,
