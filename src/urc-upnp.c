@@ -358,7 +358,7 @@ static gboolean update_data_rate_cb (gpointer data)
     guint current_total_bytes_sent;
     double data_rate_up;
 
-    wan_device = (GUPnPServiceProxy *) data;
+    wan_device = ((RouterInfo *) data)->wan_common_ifc;
 
     /* download speed */
     g_get_current_time (&begin_time);
@@ -449,7 +449,7 @@ static gboolean update_data_rate_cb (gpointer data)
 
     gui_update_graph();
 
-    g_timeout_add_full(G_PRIORITY_HIGH, 1000, update_data_rate_cb, data, NULL);
+    ((RouterInfo *) data)->data_rate_timer = g_timeout_add_full(G_PRIORITY_HIGH, 1000, update_data_rate_cb, data, NULL);
 
     return FALSE;
 }
@@ -899,7 +899,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             router->wan_common_ifc = child->data;
 
             /* Start data rate timer */
-            update_data_rate_cb (router->wan_common_ifc);
+            update_data_rate_cb (router);
             //router->data_rate_timer = g_timeout_add_seconds_full(G_PRIORITY_HIGH, 1, update_data_rate_cb, router->wan_common_ifc, NULL);
 
         }
@@ -1011,6 +1011,7 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
         (g_strcmp0(device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0) ) {
 
     	g_source_remove(router->port_request_timeout);
+    	g_source_remove(router->data_rate_timer);
     	gui_set_router_icon(NULL);
     	gui_disable();
 
