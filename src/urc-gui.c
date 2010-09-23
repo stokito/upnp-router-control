@@ -488,7 +488,7 @@ void gui_set_total_received (const unsigned int total_received)
         value = total_received;
         unit = g_strdup("B");
     }
-    str = g_strdup_printf("<b>Total received:</b> %0.1f %s", value, unit);
+    str = g_strdup_printf("<b>%s</b> %0.1f %s", _("Total received:"), value, unit);
     g_free(unit);
 
     if(gui->total_received_label == NULL)
@@ -534,7 +534,7 @@ void gui_set_total_sent (const unsigned int total_sent)
         value = total_sent;
         unit = g_strdup("B");
     }
-    str = g_strdup_printf("<b>Total sent:</b> %0.1f %s", value, unit);
+    str = g_strdup_printf("<b>%s</b> %0.1f %s", _("Total sent:"), value, unit);
     g_free(unit);
 
     if(gui->total_sent_label == NULL)
@@ -893,6 +893,16 @@ void gui_disable()
 
     gtk_label_set_markup (GTK_LABEL(gui->up_rate_label), _("n.a."));
     gtk_widget_set_sensitive(gui->up_rate_label, FALSE);
+
+    str = g_strdup_printf("<b>%s</b> %s", _("Total received:"), _("n.a.") );
+    gtk_label_set_markup (GTK_LABEL(gui->total_received_label), str);
+    gtk_widget_set_sensitive(gui->total_received_label, FALSE);
+    g_free(str);
+
+    str = g_strdup_printf("<b>%s</b> %s", _("Total sent:"), _("n.a.") );
+    gtk_label_set_markup (GTK_LABEL(gui->total_sent_label), str);
+    gtk_widget_set_sensitive(gui->total_sent_label, FALSE);
+    g_free(str);
 
     gtk_label_set_markup (GTK_LABEL(gui->router_url_label), _("not available"));
     gtk_widget_set_sensitive(gui->router_url_label, FALSE);
