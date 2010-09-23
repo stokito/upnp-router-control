@@ -558,7 +558,11 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
         router->external_ip = g_strdup(g_value_get_string(value));
         g_print("\e[33mEvent:\e[0;0m External IP: %s\n", router->external_ip);
 
-        gui_set_ext_ip (router->external_ip);
+        // check if IP is really null (workaround for Netgear DG834)
+        if(g_strcmp0(router->external_ip, "0.0.0.0") == 0)
+            get_external_ip(router);
+        else
+            gui_set_ext_ip (router->external_ip);
     }
     /* WAN connection status changed */
     else if(g_strcmp0("ConnectionStatus", variable) == 0)
