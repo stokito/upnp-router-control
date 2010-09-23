@@ -186,6 +186,7 @@ static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
 
     if (error) {
 
+        // error 713: end of ports array
         if(error->code != 713) {
             g_printerr ("\e[31m[EE]\e[0m GetGenericPortMappingEntry: %s (%i)\n", error->message, error->code);
             g_error_free (error);
@@ -472,6 +473,9 @@ static gboolean get_external_ip (RouterInfo *router)
 
     if (error == NULL)
     {
+        if(router->external_ip != NULL)
+            g_free(router->external_ip);
+
         router->external_ip = g_strdup(ext_ip_addr);
 
         g_print("\e[32msuccessful \e[0m[%s]\n", router->external_ip);
@@ -555,6 +559,9 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
     /* Got external IP */
     else if(g_strcmp0("ExternalIPAddress", variable) == 0)
     {
+        if(router->external_ip != NULL)
+            g_free(router->external_ip);
+
         router->external_ip = g_strdup(g_value_get_string(value));
         g_print("\e[33mEvent:\e[0;0m External IP: %s\n", router->external_ip);
 
@@ -1004,7 +1011,24 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
     	g_source_remove(router->port_request_timeout);
     	gui_set_router_icon(NULL);
     	gui_disable();
+
     	router->main_device = NULL;
+
+    	if(router->external_ip != NULL) {
+    	    g_free(router->external_ip);
+    	    router->external_ip = NULL;
+    	}
+
+    	if(router->upc != NULL)
+            g_free(router->upc);
+
+        g_free(router->friendly_name);
+        g_free(router->brand);
+        g_free(router->http_address);
+        g_free(router->brand_website);
+        g_free(router->model_description);
+        g_free(router->model_name);
+        g_free(router->model_number);
     }
 
 }
@@ -1024,6 +1048,7 @@ gboolean upnp_init(const gchar *interface, const guint port, const gboolean debu
     router = g_malloc( sizeof(RouterInfo) );
 
     router->main_device = NULL;
+    router->external_ip = NULL;
 
     /* Create a new GUPnP Context. */
     context = gupnp_context_new (NULL, interface, port, &error);
