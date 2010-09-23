@@ -241,6 +241,8 @@ static gboolean get_mapped_ports_list_timeout(gpointer data)
 {
     discovery_mapped_ports_list( (RouterInfo *) data );
 
+    ((RouterInfo *) data)->port_request_timeout = g_timeout_add_seconds(10, get_mapped_ports_list_timeout, data);
+
     return FALSE;
 }
 
