@@ -826,12 +826,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
                 actions_list = gupnp_service_introspection_list_action_names(service_introspect);
 
-                do {
-                    for(i = 0; i < level; i++)
-                        g_print("    ");
-                    g_print("               > %s\n", (gchar*) actions_list->data);
+                if(actions_list != NULL) {
+                    do {
+                        for(i = 0; i < level; i++)
+                            g_print("    ");
+                        g_print("               > %s\n", (gchar*) actions_list->data);
 
-                } while((actions_list = actions_list->next));
+                    } while((actions_list = actions_list->next));
+                }
 
             }
 
