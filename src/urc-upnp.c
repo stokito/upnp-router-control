@@ -35,6 +35,7 @@ typedef struct
     gchar* model_number;
     gchar* http_address;
     gchar* upc;
+    const gchar* udn;
 
     guint PortMappingNumberOfEntries;
 
@@ -638,8 +639,6 @@ static gchar* parse_presentation_url(gchar *presentation_url, const gchar *devic
     gchar** url_split = NULL;
     gchar *output_url_string;
 
-    g_print("%s\n", presentation_url);
-
     if(presentation_url == NULL)
     {
         url_split = g_strsplit(device_location, ":", 0);
@@ -648,7 +647,7 @@ static gchar* parse_presentation_url(gchar *presentation_url, const gchar *devic
         g_strfreev(url_split);
 
         if(opt_debug)
-            g_print("         Rewrite URL: %s\n", output_url_string);
+            g_print("        Rewrited URL: %s\n", output_url_string);
     }
     /* workaround for urls like "/login" without base url */
     else if(presentation_url != NULL && g_str_has_prefix(presentation_url, "http") == FALSE)
@@ -661,7 +660,7 @@ static gchar* parse_presentation_url(gchar *presentation_url, const gchar *devic
         g_free(presentation_url);
 
         if(opt_debug)
-            g_print("         Rewrite URL: %s\n", output_url_string);
+            g_print("        Rewrited URL: %s\n", output_url_string);
     }
     else
     {
@@ -712,6 +711,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
         router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
+        router->udn = gupnp_device_info_get_udn(GUPNP_DEVICE_INFO (proxy));
 
         router_icon_url = gupnp_device_info_get_icon_url(GUPNP_DEVICE_INFO (proxy),
                                        NULL, -1, -1, -1, FALSE,
@@ -726,6 +726,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
            	g_print("               Brand: %s\n", router->brand);
            	g_print("    Presentation URL: %s\n", router->http_address);
            	g_print("                 UPC: %s\n", router->upc);
+           	g_print("  Unique Device Name: %s\n", router->udn);
 
            	if(router_icon_url != NULL) {
            	    g_print("            Icon URL: %s\n", router_icon_url);
@@ -774,6 +775,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
         router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
         router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
+        router->udn = gupnp_device_info_get_udn(GUPNP_DEVICE_INFO (proxy));
 
         if(opt_debug)
     	{
@@ -783,6 +785,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
            	g_print("               Brand: %s\n", router->brand);
            	g_print("    Presentation URL: %s\n", router->http_address);
            	g_print("                 UPC: %s\n", router->upc);
+           	g_print("  Unique Device Name: %s\n", router->udn);
         }
 
         router->http_address = parse_presentation_url(router->http_address,
