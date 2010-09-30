@@ -538,6 +538,66 @@ static gboolean get_nat_rsip_status (RouterInfo *router)
     }
 }
 
+static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int level)
+{
+    gchar *string_buffer = NULL;
+    gchar *connect_service = NULL;
+    GError *error = NULL;
+
+    if(opt_debug)
+    {
+        for(i = 0; i < level; i++)
+            g_print("    ");
+
+        g_print("      \e[32m** Getting DefaultConnectionService...\e[0m\n");
+    }
+
+    gupnp_service_proxy_send_action (proxy,
+				   /* Action name and error location */
+				   "GetDefaultConnectionService", &error,
+				   /* IN args */
+				   NULL,
+				   /* OUT args */
+				   "NewDefaultConnectionService",
+				   G_TYPE_STRING, &string_buffer,
+				   NULL);
+
+    if (error == NULL) {
+
+        if(string_buffer != NULL && g_strcmp0(string_buffer, "") != 0)
+        {
+            char** connect_result = NULL;
+            connect_result = g_strsplit(string_buffer, ",", 2);
+
+            if(opt_debug)
+            {
+                int i;
+                for(i = 0; i < level; i++)
+                    g_print("    ");
+
+                g_print("      \e[32mConnectionService:\e[0m %s\n", string_buffer);
+            }
+            //connect_device = g_strdup(connect_result[0]);
+            connect_service = g_strdup(connect_result[1]);
+            g_strfreev(connect_result);
+
+        } else {
+            g_print("\e[0;31m[WW]\e[0m GetDefaultConnectionService: empty\e[0;0m\n");
+            //connect_device = NULL;
+            connect_service = NULL;
+        }
+        // yes, can free NULL string
+        g_free (string_buffer);
+
+    } else {
+        g_printerr ("\e[31m[EE]\e[0m GetDefaultConnectionService: %s (%i)\n", error->message, error->code);
+        g_error_free (error);
+    }
+
+    return connect_service;
+}
+
+
 /* Service event callback */
 static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
                                         const char *variable,
@@ -546,7 +606,6 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
 {
 
     RouterInfo *router;
-
     router = (RouterInfo *) data;
 
     /* Numebr of port mapped entries */
@@ -676,10 +735,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                        RouterInfo        *router)
 {
     GList *child;
-    GError *error = NULL;
 
-    char *string_buffer = NULL;
-    static char *connect_device = NULL;
     static char *connect_service = NULL;
     const char *service_type = NULL;
     const char *service_id = NULL;
@@ -693,7 +749,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
     if(level == 0)
     {
-            g_print("==> Device Available: \e[31m%s\e[0;0m\n",
+        g_print("==> Device Available: \e[31m%s\e[0;0m\n",
                 gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
     }
 
@@ -734,7 +790,6 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                 g_print("          Icon depth: %d\n", icon_depth);
                 g_print("          Icon width: %d\n", icon_width);
                 g_print("         Icon height: %d\n", icon_height);
-
                 g_free(icon_mime_type);
             }
         }
@@ -868,55 +923,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         	(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:L3Forwarding:1") == 0) )
         {
 
-            if(opt_debug)
-            {
+            if(connect_service != NULL)
+                g_free(connect_service);
 
-                for(i = 0; i < level; i++)
-                    g_print("    ");
-
-                g_print("      \e[32m** Getting DefaultConnectionService...\e[0m\n");
-            }
-
-            gupnp_service_proxy_send_action (child->data,
-				   /* Action name and error location */
-				   "GetDefaultConnectionService", &error,
-				   /* IN args */
-				   NULL,
-				   /* OUT args */
-				   "NewDefaultConnectionService",
-				   G_TYPE_STRING, &string_buffer,
-				   NULL);
-
-	        if (error == NULL) {
-	            if(string_buffer != NULL && g_strcmp0(string_buffer, "") != 0)
-	            {
-	                char** connect_result = NULL;
-                    connect_result = g_strsplit(string_buffer, ",", 2);
-
-                    if(opt_debug)
-        		    {
-            		    for(i = 0; i < level; i++)
-                	    	g_print("    ");
-
-            		    g_print("      \e[32mConnectionService:\e[0m %s\n", string_buffer);
-        		    }
-	                connect_device = g_strdup(connect_result[0]);
-	                connect_service = g_strdup(connect_result[1]);
-	                g_strfreev(connect_result);
-
-                } else {
-                    g_print("\e[0;31m[WW]\e[0m GetDefaultConnectionService: empty\e[0;0m\n");
-                    connect_device = NULL;
-                    connect_service = NULL;
-                }
-                // can free NULL string
-                g_free (string_buffer);
-
-            } else {
-                g_printerr ("\e[31m[EE]\e[0m GetDefaultConnectionService: %s (%i)\n", error->message, error->code);
-                g_error_free (error);
-            }
-
+            connect_service = get_default_connection_service(child->data, level);
 
         }
         /* Is a WAN IFC service? */
@@ -926,7 +936,6 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
             /* Start data rate timer */
             update_data_rate_cb (router);
-            //router->data_rate_timer = g_timeout_add_seconds_full(G_PRIORITY_HIGH, 1, update_data_rate_cb, router->wan_common_ifc, NULL);
 
         }
         /* Is a WAN IP Connection service or other? */
