@@ -543,6 +543,7 @@ static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int leve
     gchar *string_buffer = NULL;
     gchar *connect_service = NULL;
     GError *error = NULL;
+    int i;
 
     if(opt_debug)
     {
@@ -571,7 +572,6 @@ static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int leve
 
             if(opt_debug)
             {
-                int i;
                 for(i = 0; i < level; i++)
                     g_print("    ");
 
