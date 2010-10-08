@@ -271,7 +271,7 @@ graph_draw_data (GtkWidget *widget)
     // first point
     if(speed_value->valid == TRUE) {
         // 2 is: FRAME_WIDTH / 2
-        y = draw_height - 15 - speed_value->speed * (draw_height - 15 - 2) / net_max;
+        y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
         x = draw_width;
         cairo_move_to (cr, x, y + 0.5);
     }
@@ -282,7 +282,7 @@ graph_draw_data (GtkWidget *widget)
 
         if(speed_value->valid == TRUE) {
             // 2 is: FRAME_WIDTH / 2
-            y = draw_height - 15 - speed_value->speed * (draw_height - 15 - 2) / net_max;
+            y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
             x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
 
             cairo_line_to (cr, x, y + 0.5);
@@ -305,7 +305,7 @@ graph_draw_data (GtkWidget *widget)
 
     if(speed_value->valid == TRUE) {
         // 2 is: FRAME_WIDTH / 2
-        y = draw_height - 15 - speed_value->speed * (draw_height - 15 - 2) / net_max;
+        y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
         x = draw_width;
         cairo_move_to (cr, x, y + 0.5);
     }
@@ -317,7 +317,7 @@ graph_draw_data (GtkWidget *widget)
         if(speed_value->valid == TRUE) {
             // 2 is: FRAME_WIDTH / 2
             // 15 is: bottom space
-            y = draw_height - 15 - speed_value->speed * (draw_height - 15 - 2) / net_max;
+            y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
             x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
 
             cairo_line_to (cr, x, y + 0.5);
