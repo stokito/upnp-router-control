@@ -396,7 +396,6 @@ static gboolean update_data_rate_cb (gpointer data)
 
         g_printerr ("\e[31m[EE]\e[0m GetTotalBytesReceived: %s (%i)\n", error->message, error->code);
         g_error_free (error);
-        return FALSE;
     }
 
     /* upload speed */
@@ -439,7 +438,6 @@ static gboolean update_data_rate_cb (gpointer data)
 
         g_printerr ("\e[31m[EE]\e[0m GetTotalBytesSent: %s (%i)\n", error->message, error->code);
         g_error_free (error);
-        return FALSE;
     }
 
     gui_update_graph();
