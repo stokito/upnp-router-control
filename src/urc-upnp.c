@@ -785,6 +785,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     /* Is an IGD device? */
     if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0)
     {
+        /* do nothing if there is already a device stored */
+        if(router->main_device != NULL)
+            return;
+
         router->main_device = GUPNP_DEVICE_INFO (proxy);
         router->friendly_name = gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy));
         router->brand = gupnp_device_info_get_manufacturer(GUPNP_DEVICE_INFO (proxy));
@@ -846,8 +850,12 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
     }
     /* There is only a WANConnectionDevice? */
-    else if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0 && router->main_device == NULL )
+    else if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0 && level == 0 )
     {
+    	/* do nothing if there is already a device stored */
+        if(router->main_device != NULL)
+            return;
+
     	router->main_device = GUPNP_DEVICE_INFO (proxy);
         router->friendly_name = gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy));
         router->brand = gupnp_device_info_get_manufacturer(GUPNP_DEVICE_INFO (proxy));
@@ -1075,8 +1083,7 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 
     device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
 
-    if( (g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0) ||
-        (g_strcmp0(device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0) ) {
+    if(router->udn == gupnp_device_info_get_udn(GUPNP_DEVICE_INFO (proxy)) ) {
 
     	g_source_remove(router->port_request_timeout);
     	g_source_remove(router->data_rate_timer);
