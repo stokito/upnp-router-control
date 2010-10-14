@@ -2,6 +2,10 @@ AC_INIT([upnp-router-control], [0.1], [https://launchpad.net/upnp-router-control
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)
+
+# Use AM_SILENT_RULES if present
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+
 AM_MAINTAINER_MODE
 
 dnl make sure we keep ACLOCAL_FLAGS around for maintainer builds to work
@@ -24,6 +28,11 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 IT_PROG_INTLTOOL([0.40.0])
 AM_GLIB_GNU_GETTEXT
 
+AC_ARG_ENABLE(libcurl,
+              [  --disable-libcurl      compile UPnP Router Control without icon download support],
+              [libcurl=$enableval],
+              [libcurl="yes"], )
+
 
 #### Check for GTK+ >= 2.14 ####
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16,,
@@ -39,11 +48,24 @@ PKG_CHECK_MODULES(GUPNP, gupnp-1.0,,
 AC_SUBST(GUPNP_CFLAGS)
 AC_SUBST(GUPNP_LIBS)
 
-AC_CHECK_HEADER(download.h,,
-    AC_MSG_ERROR([libdownload is required to compile upnp-router-control]))
+#### Check for libcurl ####
+if test "$enable_libcurl" = "no"
+then
+   echo "Disabling libcurl support"
+else
+	PKG_CHECK_MODULES(LIBCURL, libcurl,
+	HAVE_LIBCURL="yes", HAVE_LIBCURL="no")
 
-DOWNLOAD_LIBS="-ldownload"
-AC_SUBST(DOWNLOAD_LIBS)
+	if test "x$HAVE_LIBCURL" = "xyes"
+	then
+	   AC_DEFINE(HAVE_LIBCURL, 1, [libcurl available])
+	fi
+fi
+
+AM_CONDITIONAL(LIBCURL, test -n "$LIBCURL_LIBS")
+
+AC_SUBST(LIBCURL_CFLAGS)
+AC_SUBST(LIBCURL_LIBS)
 
 AC_CONFIG_FILES([
 Makefile

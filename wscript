@@ -15,15 +15,21 @@ srcdir = '.'
 blddir = '_build_'
 
 def set_options(opt):
-    pass
+    opt.add_option('--disable-libcurl', action='store_true', default=False, help='Compile UPnP Router Control without icon download support')
 
 def configure(conf):
-    
+
+    import Options
+
     conf.check_tool('gcc intltool')
- 
+
     conf.check_cfg(package='gtk+-2.0', uselib_store='GTK', atleast_version='2.14', mandatory=True, args='--cflags --libs')
     conf.check_cfg(package='gupnp-1.0', uselib_store='GUPNP', mandatory=True, args='--cflags --libs')
-    conf.check(header_name="download.h", mandatory=True)
+
+    if Options.options.disable_libcurl == False:
+        conf.check_cfg(package='libcurl', uselib_store='LIBCURL', mandatory=False, args='--cflags --libs')
+    else:
+        print("Disabling libcurl support")
 
     conf.define('PACKAGE', APPNAME)
     conf.define('VERSION', VERSION)
@@ -35,18 +41,18 @@ def configure(conf):
 
     conf.env.append_value('CCFLAGS', '-DHAVE_CONFIG_H')
 
-    conf.write_config_header('config.h')    
+    conf.write_config_header('config.h')
 
 def build(bld):
     bld.env['PACKAGE_DATADIR'] = bld.env['DATADIR'] + '/' + APPNAME
 
     bld.add_subdirs('src data')
-    
+
     # translations
     if bld.env['INTLTOOL']:
         bld.add_subdirs('po')
-        
-    
+
+
 def shutdown():
 	# Postinstall tasks:
 	gnome.postinstall_icons() # Updating the icon cache

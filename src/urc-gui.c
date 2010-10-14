@@ -89,7 +89,7 @@ void gui_set_router_icon(gchar *image_path)
     if(pixbuf != NULL)
         g_object_unref(pixbuf);
 
-    if(image_path == NULL)
+    if(image_path == NULL || !g_file_test(image_path, G_FILE_TEST_EXISTS))
         gtk_image_set_from_icon_name(GTK_IMAGE(gui->router_icon), "upnp-router-control", 64);
 
     else {

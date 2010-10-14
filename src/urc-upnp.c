@@ -17,9 +17,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include "config.h"
+
 #include <glib.h>
 #include <libgupnp/gupnp-control-point.h>
-#include <download.h>
+
+#ifdef HAVE_LIBCURL
+#include <curl/curl.h>
+#endif
 
 #include "urc-gui.h"
 #include "urc-upnp.h"
@@ -396,6 +401,7 @@ static gboolean update_data_rate_cb (gpointer data)
 
         g_printerr ("\e[31m[EE]\e[0m GetTotalBytesReceived: %s (%i)\n", error->message, error->code);
         g_error_free (error);
+        error = NULL;
     }
 
     /* upload speed */
@@ -675,50 +681,60 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
     	g_print("\e[33mEvent:\e[0;0m %s [Not managed]", variable);
 }
 
+#ifdef HAVE_LIBCURL
 gpointer download_router_icon (gpointer data)
 {
-    FILE *remote_file, *local_file;
+    FILE *local_file;
     gchar *filename;
-    char buf[8192];
-    int r, w = 0;
+    CURL *curl_handle;
+    CURLcode ret;
+    char error_buffer[CURL_ERROR_SIZE];
 
     if(data == NULL)
         return 0;
 
-    filename = g_strconcat(g_get_user_cache_dir(), "/router_icon", NULL);
+    filename = g_strconcat(g_get_tmp_dir(), "/upnp-router-control.icon", NULL);
 
-    local_file = fopen(filename, "w");
+    g_print("\e[36mDownloading router icon...\e[0;0m\n");
 
-    g_print("\e[36mDownloading router icon... ");
+    curl_handle = curl_easy_init();
 
-    remote_file = downloadGetURL((char*)data, NULL);
+    if(curl_handle) {
 
-    if(remote_file == NULL)
-        g_print("\e[31m[EE]\e[0m Error downloading icon of the router: %s\n", downloadLastErrString);
+        local_file = fopen(filename, "w");
 
-    else {
-        for (;;) {
+        curl_easy_setopt(curl_handle, CURLOPT_URL, (char*)data);
+        curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, local_file);
+        curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, error_buffer);
+        /* do not download images > 500KiB */
+        curl_easy_setopt(curl_handle, CURLOPT_MAXFILESIZE, 512000);
+        /* 1 minute of timeout */
+        curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
 
-            if ((r = fread(buf, 1, sizeof buf, remote_file)) < 1)
-                break;
-            if ((w = fwrite(buf, 1, sizeof buf, local_file)) != r)
-                break;
+        ret = curl_easy_perform(curl_handle);
+
+        fclose(local_file);
+
+        if(ret != 0) {
+            g_print("\e[31m[EE]\e[0m Error downloading icon of the router: %s\n", error_buffer);
+
+        } else {
+            g_print("\e[32mRouter icon downloaded\e[0;0m\n");
+            gui_set_router_icon(filename);
         }
-        g_print("\e[32msuccessful\e[0;0m\n");
 
-        gui_set_router_icon(filename);
+        curl_easy_cleanup(curl_handle);
 
+    } else {
+        g_print("\e[31m[EE]\e[0m Error loading libcurl, will not download router icon");
     }
 
-    if(remote_file)
-        fclose(remote_file);
-
-    fclose(local_file);
     g_free(filename);
     g_free(data);
 
     return 0;
 }
+#endif /* HAVE_LIBCURL */
 
 static gchar* parse_presentation_url(gchar *presentation_url, const gchar *device_location)
 {
@@ -825,8 +841,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             }
         }
 
+        #ifdef HAVE_LIBCURL
         // start the download in a separate thread
         g_thread_create(download_router_icon, router_icon_url, TRUE, NULL);
+        #endif
 
         router->http_address = parse_presentation_url(router->http_address,
                                gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));

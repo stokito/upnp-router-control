@@ -9,5 +9,5 @@ obj.env['CPPFLAGS'] = ['-Wall', '-g', '-O2']
 #obj.env['LINKFLAGS'] = ['-export-dynamic']
 obj.env['LINKFLAGS'] = '-ldownload'
 obj.find_sources_in_dirs('.')
-obj.uselib = 'GTK GUPNP'
+obj.uselib = 'GTK GUPNP LIBCURL'
 obj.target = 'upnp-router-control'
