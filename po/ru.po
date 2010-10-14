@@ -7,132 +7,153 @@ msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-01-21 18:57+0100\n"
-"PO-Revision-Date: 2010-02-11 14:43+0000\n"
-"Last-Translator: Oleg \"Nightwing\" Lomakin <Unknown>\n"
+"POT-Creation-Date: 2010-09-23 03:28+0200\n"
+"PO-Revision-Date: 2010-10-04 08:34+0000\n"
+"Last-Translator: Alexander 'FONTER' Zinin <spore_09@mail.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-02-11 19:52+0000\n"
+"X-Launchpad-Export-Date: 2010-10-14 17:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ../src/urc-main.c:80 ../data/upnp-router-control.glade.h:22
+#: ../src/urc-main.c:80 ../data/upnp-router-control.glade.h:25
 #: ../data/upnp-router-control.desktop.in.h:2
 msgid "UPnP Router Control"
 msgstr "UPnP Router Control"
 
-#: ../src/urc-gui.c:106
+#: ../src/urc-gui.c:130
 msgid "Unable to set this port forward"
 msgstr "Невозможно перенаправить этот порт"
 
-#: ../src/urc-gui.c:286
+#: ../src/urc-gui.c:312
 msgid "Unable to remove this port forward"
 msgstr "Невозможно отменить перенаправление этого порта"
 
-#: ../src/urc-gui.c:346
+#: ../src/urc-gui.c:375
 msgid "Enabled"
 msgstr "Включено"
 
-#: ../src/urc-gui.c:347
+#: ../src/urc-gui.c:376
 msgid "Description"
 msgstr "Описание"
 
-#: ../src/urc-gui.c:348
+#: ../src/urc-gui.c:377
 msgid "Protocol"
 msgstr "Протокол"
 
-#: ../src/urc-gui.c:349
+#: ../src/urc-gui.c:378
 msgid "Int. Port"
 msgstr "Внутр. порт"
 
-#: ../src/urc-gui.c:350
+#: ../src/urc-gui.c:379
 msgid "Ext. Port"
 msgstr "Внеш. порт"
 
-#: ../src/urc-gui.c:351
+#: ../src/urc-gui.c:380
 msgid "Local IP"
 msgstr "Локальный IP"
 
-#: ../src/urc-gui.c:434 ../src/urc-gui.c:479 ../src/urc-gui.c:733
-#: ../src/urc-gui.c:736
+#: ../src/urc-gui.c:491 ../src/urc-gui.c:899
+#: ../data/upnp-router-control.glade.h:23
+msgid "Total received:"
+msgstr "Всего получено:"
+
+#: ../src/urc-gui.c:537 ../src/urc-gui.c:904
+#: ../data/upnp-router-control.glade.h:24
+msgid "Total sent:"
+msgstr "Всего отправлено:"
+
+#: ../src/urc-gui.c:555 ../src/urc-gui.c:609 ../src/urc-gui.c:893
+#: ../src/urc-gui.c:896 ../src/urc-gui.c:899 ../src/urc-gui.c:904
 msgid "n.a."
 msgstr "н/д"
 
-#: ../src/urc-gui.c:527 ../src/urc-gui.c:529 ../src/urc-gui.c:531
-#: ../src/urc-gui.c:533 ../src/urc-gui.c:549 ../src/urc-gui.c:723
+#: ../src/urc-gui.c:674 ../src/urc-gui.c:676 ../src/urc-gui.c:678
+#: ../src/urc-gui.c:680 ../src/urc-gui.c:696 ../src/urc-gui.c:883
 msgid "WAN status:"
 msgstr "Статус WAN:"
 
-#: ../src/urc-gui.c:527
+#: ../src/urc-gui.c:674
 msgid "Connected"
 msgstr "Подключено"
 
-#: ../src/urc-gui.c:529
+#: ../src/urc-gui.c:676
 msgid "Disconnected"
 msgstr "Отключено"
 
-#: ../src/urc-gui.c:531
+#: ../src/urc-gui.c:678
 msgid "Connecting"
 msgstr "Подключение"
 
-#: ../src/urc-gui.c:533
+#: ../src/urc-gui.c:680
 msgid "Disconnecting"
 msgstr "Отключение"
 
-#: ../src/urc-gui.c:549 ../src/urc-gui.c:585
+#: ../src/urc-gui.c:696 ../src/urc-gui.c:732
 msgid "unknown"
 msgstr "неизвестно"
 
-#: ../src/urc-gui.c:566 ../src/urc-gui.c:568 ../src/urc-gui.c:585
-#: ../src/urc-gui.c:728
+#: ../src/urc-gui.c:713 ../src/urc-gui.c:715 ../src/urc-gui.c:732
+#: ../src/urc-gui.c:888
 msgid "IP:"
 msgstr "IP:"
 
-#: ../src/urc-gui.c:566
+#: ../src/urc-gui.c:713
 msgid "none"
 msgstr "нет"
 
-#: ../src/urc-gui.c:642 ../src/urc-gui.c:718
+#: ../src/urc-gui.c:790 ../src/urc-gui.c:878
 msgid "Router name:"
 msgstr "Имя маршрутизатора:"
 
-#: ../src/urc-gui.c:649
+#: ../src/urc-gui.c:797
 msgid "Brand"
 msgstr "Производитель"
 
-#: ../src/urc-gui.c:651
+#: ../src/urc-gui.c:799
 msgid "Brand website:"
 msgstr "Сайт производителя:"
 
-#: ../src/urc-gui.c:653
+#: ../src/urc-gui.c:801
+msgid "Model Description:"
+msgstr "Описание модели:"
+
+#: ../src/urc-gui.c:803
 msgid "Model Name:"
 msgstr "Модель:"
 
-#: ../src/urc-gui.c:655
+#: ../src/urc-gui.c:805
 msgid "Model Number:"
 msgstr "Номер модели:"
 
-#: ../src/urc-gui.c:668
+#: ../src/urc-gui.c:820
 msgid "Open the router config in the default browser"
 msgstr "Открыть страницу настройки маршрутизатора в браузере по умолчанию"
 
-#: ../src/urc-gui.c:718 ../src/urc-gui.c:723 ../src/urc-gui.c:728
-#: ../src/urc-gui.c:739
+#: ../src/urc-gui.c:835 ../src/urc-gui.c:878 ../src/urc-gui.c:883
+#: ../src/urc-gui.c:888 ../src/urc-gui.c:909
 msgid "not available"
 msgstr "недоступно"
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:762
+#: ../src/urc-gui.c:935
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
+"  Alexander 'FONTER' Zinin https://launchpad.net/~spore-09\n"
+"  Daniele Napolitano https://launchpad.net/~dnax88\n"
 "  Oleg \"Nightwing\" Lomakin https://launchpad.net/~nightwing666"
 
-#: ../src/urc-gui.c:768 ../data/upnp-router-control.desktop.in.h:1
+#: ../src/urc-gui.c:941 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP IGD compliant routers"
 msgstr ""
 "Простая программа для управления UPnP IGD-совместимыми маршрутизаторами"
+
+#: ../src/urc-graph.c:156
+#, c-format
+msgid "%u seconds"
+msgstr "%u секунд"
 
 #: ../data/upnp-router-control.glade.h:1
 msgid "<b>Advanced parameters</b>"
@@ -199,17 +220,21 @@ msgid "Local port:"
 msgstr "Локальный порт:"
 
 #: ../data/upnp-router-control.glade.h:21
+msgid "Network history"
+msgstr "История сети"
+
+#: ../data/upnp-router-control.glade.h:22
 msgid "Protocol:"
 msgstr "Протокол:"
 
-#: ../data/upnp-router-control.glade.h:23
+#: ../data/upnp-router-control.glade.h:26
 msgid "_File"
 msgstr "_Файл"
 
-#: ../data/upnp-router-control.glade.h:24
+#: ../data/upnp-router-control.glade.h:27
 msgid "_Help"
 msgstr "_Справка"
 
-#: ../data/upnp-router-control.glade.h:25
+#: ../data/upnp-router-control.glade.h:28
 msgid "_Switch router"
 msgstr "_Выбрать маршрутизатор"
