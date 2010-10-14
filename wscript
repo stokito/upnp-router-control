@@ -7,7 +7,7 @@ import intltool
 import gnome
 
 # the following two variables are used by the target "waf dist"
-VERSION='0.1'
+VERSION='0.2'
 APPNAME='upnp-router-control'
 
 # these variables are mandatory ('/' are converted automatically)

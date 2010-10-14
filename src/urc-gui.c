@@ -925,6 +925,7 @@ static void on_about_activate_cb (GtkMenuItem *menuitem,
 {
     gchar* authors[] = {
 		"Daniele Napolitano <dnax88@gmail.com>",
+		"Giuseppe Cicalini <cicone@gmail.com> (basic cURL code)",
 		NULL
 	};
     gchar* artists[] = {
@@ -939,7 +940,7 @@ static void on_about_activate_cb (GtkMenuItem *menuitem,
 		     "artists", artists,
 		     "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
              "comments", _("A simple program to manage UPnP IGD compliant routers"),
-             "copyright", "Copyright © 2009 Daniele Napolitano \"DnaX\"",
+             "copyright", "Copyright © 2009-2010 Daniele Napolitano \"DnaX\"",
              "version", VERSION,
              "website", "http://launchpad.net/upnp-router-control",
 		     "logo-icon-name", "upnp-router-control",

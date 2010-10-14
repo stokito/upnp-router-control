@@ -1,2 +1,13 @@
+2010-10-14 Daniele Napolitano <dnax88@gmail.com>
+    * 0.2 release
+    * [feature] New network history graph
+    * [feature] Support for device icon
+    * [feature] Show total bytes sent and received
+    * Fixed a lot of various bugs
+    * [bug fixed] LP #654198: quit menu item has no shortcut
+    * [bug fixed] LP #645965: segmentation fault when in debug mode
+    * [l18n] Updated translations: de.po es.po eu.po it.po pl.po ru.po
+    * [l18n] Added translation: fr.po
+
 2009-03-06 Daniele Napolitano <dnax88@gmail.com>
 	* First release

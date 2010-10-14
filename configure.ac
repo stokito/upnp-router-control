@@ -1,4 +1,4 @@
-AC_INIT([upnp-router-control], [0.1], [https://launchpad.net/upnp-router-control])
+AC_INIT([upnp-router-control], [0.2], [https://launchpad.net/upnp-router-control])
 
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AM_CONFIG_HEADER(config.h)

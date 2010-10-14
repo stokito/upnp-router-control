@@ -1,4 +1,4 @@
-UPnP Router Control 0.1
+UPnP Router Control 0.2
 ***********************
 
 Copyright (C) 2010  Daniele Napolitano <dnax88@gmail.com>
@@ -12,11 +12,12 @@ Compilation and installation
 In order to compile UPnP Port Mapper you need following software packages:
 	- GTK+ library ( >= 2.16 )
 	- GUPnP library
+	- cURL library (optional)
 
 To configure run:
 	./waf configure --prefix=/usr
- 
-Configure automatically searches for all required components and packages. 
+
+Configure automatically searches for all required components and packages.
 
 To compile and install run:
 	./waf build
@@ -29,7 +30,8 @@ Known working routers
 * Netgear DGN2000
 * Belkin F5D8236-4 N Wireless Router
 * U.S. Robotics USR 8054
-
+* Linksys WRT54G3G-EU (3G/UMTS Broadband)
+* TP-Link TD-W89541G (ADSL2+ Router)
 
 Information
 ===========
