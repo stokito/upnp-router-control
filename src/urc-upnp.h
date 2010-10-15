@@ -37,6 +37,38 @@ typedef struct
 
 } PortForwardInfo;
 
+typedef struct
+{
+    GUPnPDeviceInfo *main_device;
+    gchar* friendly_name;
+    gchar* brand;
+    gchar* brand_website;
+    gchar* model_description;
+    gchar* model_name;
+    gchar* model_number;
+    gchar* http_address;
+    gchar* upc;
+    const gchar* udn;
+
+    gchar* external_ip;
+
+    gboolean rsip_available;
+    gboolean nat_enabled;
+    gboolean connected;
+
+    /* no-event request timers */
+    guint port_request_timeout;
+    guint connection_status_timeout;
+    guint external_ip_timeout;
+
+    guint data_rate_timer;
+
+    GUPnPServiceProxy *wan_conn_service;
+    GUPnPServiceProxy *wan_common_ifc;
+
+} RouterInfo;
+
+/* Functions */
 const gchar* get_client_ip();
 
 gboolean upnp_init(const gchar *interface, const uint port, const gboolean debug);
@@ -44,5 +76,13 @@ gboolean upnp_init(const gchar *interface, const uint port, const gboolean debug
 gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host, GError **error);
 
 gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo *port_info, GError **error);
+
+void discovery_mapped_ports_list (RouterInfo *router);
+
+gboolean get_conn_status (RouterInfo *router);
+
+gboolean get_external_ip (RouterInfo *router);
+
+gboolean get_nat_rsip_status (RouterInfo *router);
 
 #endif /* __URC_UPNP_H__ */

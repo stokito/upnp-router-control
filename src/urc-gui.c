@@ -74,6 +74,7 @@ typedef struct
               *button_remove,
               *button_add,
               *router_icon,
+              *menuitem_refresh,
               *network_drawing_area;
 
     AddPortWindow* add_port_window;
@@ -241,6 +242,9 @@ void gui_clear_ports_list_treeview (void)
     GtkTreeIter   iter;
     gboolean      more;
 
+    if(gui->treeview == NULL)
+        return;
+
     model = gtk_tree_view_get_model (GTK_TREE_VIEW (gui->treeview));
     more = gtk_tree_model_get_iter_first (model, &iter);
 
@@ -270,6 +274,7 @@ void gui_add_mapped_port(const PortForwardInfo* port_info)
                         UPNP_COLUMN_LOCAL_IP, port_info->internal_host,
                         UPNP_COLUMN_REM_IP, port_info->remote_host,
                         -1);
+
 }
 
 /* Button remove callback */
@@ -838,6 +843,17 @@ void gui_set_router_info (const gchar *router_friendly_name,
 
 }
 
+/* updates all values */
+static void on_refresh_activate_cb (GtkMenuItem *menuitem,
+                                  gpointer     user_data)
+{
+
+    get_conn_status ((RouterInfo *) user_data);
+    get_external_ip ((RouterInfo *) user_data);
+    get_nat_rsip_status ((RouterInfo *) user_data);
+    discovery_mapped_ports_list((RouterInfo *) user_data);
+}
+
 void gui_set_ports_buttons_callback_data(gpointer data)
 {
     g_signal_connect(gui->button_remove, "clicked",
@@ -847,6 +863,14 @@ void gui_set_ports_buttons_callback_data(gpointer data)
                      G_CALLBACK(gui_run_add_port_window), data);
 
     gtk_widget_set_sensitive(gui->button_add, TRUE);
+}
+
+void gui_set_refresh_callback_data(gpointer data)
+{
+    g_signal_connect(gui->menuitem_refresh, "activate",
+                     G_CALLBACK(on_refresh_activate_cb), data);
+
+    gtk_widget_set_sensitive(gui->menuitem_refresh, TRUE);
 }
 
 void gui_enable()
@@ -864,6 +888,7 @@ void gui_enable()
     gtk_widget_set_sensitive(gui->router_url_label, TRUE);
     gtk_widget_set_sensitive(gui->button_add, TRUE);
     gtk_widget_set_sensitive(gui->config_label, TRUE);
+    gtk_widget_set_sensitive(gui->menuitem_refresh, TRUE);
 }
 
 void gui_disable()
@@ -913,6 +938,8 @@ void gui_disable()
     gtk_widget_set_sensitive(gui->button_remove, FALSE);
 
     gtk_widget_set_sensitive(gui->config_label, FALSE);
+
+    gtk_widget_set_sensitive(gui->menuitem_refresh, FALSE);
 
     disable_graph_data();
     gui_update_graph();
@@ -966,6 +993,7 @@ static void gui_destroy()
 	gui->ip_label = NULL;
 	gui->treeview = NULL;
 	gui->network_drawing_area = NULL;
+
 	gui->main_window = NULL;
 
 	g_free(gui);
@@ -1009,6 +1037,8 @@ void gui_init()
 
     gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
+
+    gui->menuitem_refresh = GTK_WIDGET (gtk_builder_get_object (builder, "menuitem_refresh"));
 
     g_signal_connect(gtk_builder_get_object (builder, "menuitem_about"), "activate",
                          G_CALLBACK(on_about_activate_cb), NULL);

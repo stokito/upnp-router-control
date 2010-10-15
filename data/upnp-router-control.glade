@@ -7,7 +7,6 @@
     <property name="window_position">center</property>
     <property name="default_width">600</property>
     <property name="default_height">250</property>
-    <signal name="delete_event" handler="gtk_main_quit"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -22,19 +21,20 @@
                 <child type="submenu">
                   <object class="GtkMenu" id="menu1">
                     <property name="visible">True</property>
-                    <!--<child>
-                      <object class="GtkMenuItem" id="menuitem_router_switch">
+                    <child>
+                      <object class="GtkImageMenuItem" id="menuitem_refresh">
+                        <property name="label">gtk-refresh</property>
                         <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="label" translatable="yes">_Switch router</property>
                         <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <accelerator key="F5" signal="activate"/>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                      <object class="GtkSeparatorMenuItem" id="menu_separator1">
                         <property name="visible">True</property>
                       </object>
-                    </child>-->
+                    </child>
                     <child>
                       <object class="GtkImageMenuItem" id="menuitem_exit">
                         <property name="label">gtk-quit</property>
@@ -42,7 +42,6 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                        <signal name="activate" handler="gtk_main_quit"/>
                       </object>
                     </child>
                   </object>

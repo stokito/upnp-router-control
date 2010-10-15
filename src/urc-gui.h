@@ -31,6 +31,8 @@ void gui_disable();
 
 void gui_set_ports_buttons_callback_data(gpointer data);
 
+void gui_set_refresh_callback_data(gpointer data);
+
 void gui_set_router_info (const gchar *router_friendly_name,
                           const gchar *router_conf_url,
                           const gchar *router_brand,

@@ -29,37 +29,6 @@
 #include "urc-gui.h"
 #include "urc-upnp.h"
 
-typedef struct
-{
-    GUPnPDeviceInfo *main_device;
-    gchar* friendly_name;
-    gchar* brand;
-    gchar* brand_website;
-    gchar* model_description;
-    gchar* model_name;
-    gchar* model_number;
-    gchar* http_address;
-    gchar* upc;
-    const gchar* udn;
-
-    gchar* external_ip;
-
-    gboolean rsip_available;
-    gboolean nat_enabled;
-    gboolean connected;
-
-    /* no-event request timers */
-    guint port_request_timeout;
-    guint connection_status_timeout;
-    guint external_ip_timeout;
-
-    guint data_rate_timer;
-
-    GUPnPServiceProxy *wan_conn_service;
-    GUPnPServiceProxy *wan_common_ifc;
-
-} RouterInfo;
-
 static gboolean opt_debug = FALSE;
 
 static const gchar* client_ip = NULL;
@@ -244,7 +213,7 @@ void discovery_mapped_ports_list(RouterInfo *router)
 }
 
 /* Retrive connection infos: connection status, uptime and last error. */
-static gboolean get_conn_status (RouterInfo *router)
+gboolean get_conn_status (RouterInfo *router)
 {
     GError *error = NULL;
     gchar* conn_status;
@@ -410,7 +379,7 @@ static gboolean update_data_rate_cb (gpointer data)
 
 
 /* Retrive external IP address */
-static gboolean get_external_ip (RouterInfo *router)
+gboolean get_external_ip (RouterInfo *router)
 {
     GError *error = NULL;
     gchar *ext_ip_addr = NULL;
@@ -456,7 +425,7 @@ static gboolean get_external_ip (RouterInfo *router)
 }
 
 /* Retrive RSIP and NAT availability */
-static gboolean get_nat_rsip_status (RouterInfo *router)
+gboolean get_nat_rsip_status (RouterInfo *router)
 {
     GError *error = NULL;
 
@@ -953,6 +922,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             router->wan_conn_service = child->data;
 
             gui_set_ports_buttons_callback_data(router->wan_conn_service);
+
+            gui_set_refresh_callback_data(router);
 
             if(opt_debug)
             {
