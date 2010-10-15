@@ -42,8 +42,6 @@ typedef struct
     gchar* upc;
     const gchar* udn;
 
-    guint PortMappingNumberOfEntries;
-
     gchar* external_ip;
 
     gboolean rsip_available;
@@ -207,7 +205,7 @@ static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
 
 }
 
-
+/* Retrive ports mapped and populate the treeview */
 void discovery_mapped_ports_list(RouterInfo *router)
 {
     PortForwardInfo* port_info;
@@ -223,17 +221,16 @@ void discovery_mapped_ports_list(RouterInfo *router)
 
         g_print (" * %s [%s]\n", port_info->description, port_info->enabled ? "enabled" : "disabled" );
 
-	    g_print ("   RemoteIP: %s, ExtPort: %d %s, IntPort: %d, IntIP: %s\n",
-	             port_info->remote_host,
+	    g_print ("   ExtPort: %d %s, IntPort: %d, IntIP: %s, RemoteIP: %s\n",
 	             port_info->external_port,
 	             port_info->protocol,
 	             port_info->internal_port,
-	             port_info->internal_host
+	             port_info->internal_host,
+	             port_info->remote_host
 	             );
 
-        if(port_info->external_port > 0) {
-                gui_add_mapped_port(port_info);
-        }
+        if(port_info->external_port > 0)
+            gui_add_mapped_port(port_info);
 
         g_free (port_info->description);
         g_free (port_info->protocol);
@@ -244,48 +241,6 @@ void discovery_mapped_ports_list(RouterInfo *router)
         index++;
     }
 
-}
-
-/* Retrive ports mapped and populate the treeview */
-static void get_mapped_ports_list(RouterInfo *router)
-{
-
-    PortForwardInfo* port_info;
-    int i;
-
-    /* Clear previus entries */
-    gui_clear_ports_list_treeview();
-
-    if(router->PortMappingNumberOfEntries != 0)
-        g_print("\e[1;32m==> List port mapped (%d)\e[0;0m\n", router->PortMappingNumberOfEntries);
-
-    for(i = 0; i < router->PortMappingNumberOfEntries; i++)
-    {
-        port_info = get_mapped_port(router, i);
-
-	    if (port_info != NULL)
-	    {
-	        g_print (" * %s [%s]\n", port_info->description, port_info->enabled ? "enabled" : "disabled" );
-
-	        g_print ("   RemoteIP: %s, ExtPort: %d %s, IntPort: %d, IntIP: %s\n",
-	                 port_info->remote_host,
-	                 port_info->external_port,
-	                 port_info->protocol,
-	                 port_info->internal_port,
-	                 port_info->internal_host
-	                 );
-
-            if(port_info->external_port > 0)
-            {
-                gui_add_mapped_port(port_info);
-            }
-            g_free (port_info->description);
-            g_free (port_info->protocol);
-            g_free (port_info->internal_host);
-            g_free (port_info->remote_host);
-            g_free (port_info);
-        }
-    }
 }
 
 /* Retrive connection infos: connection status, uptime and last error. */
@@ -639,10 +594,9 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
         /* deactivate manual request timer */
         g_source_remove(router->port_request_timeout);
 
-        router->PortMappingNumberOfEntries = g_value_get_uint(value);
-        g_print("\e[33mEvent:\e[0;0m Ports mapped: %d\n", router->PortMappingNumberOfEntries);
+        g_print("\e[33mEvent:\e[0;0m Ports mapped: %d\n", g_value_get_uint(value));
 
-        get_mapped_ports_list(router);
+        discovery_mapped_ports_list(router);
     }
     /* Got external IP */
     else if(g_strcmp0("ExternalIPAddress", variable) == 0)
