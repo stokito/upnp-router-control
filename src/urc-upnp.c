@@ -460,6 +460,51 @@ gboolean get_nat_rsip_status (RouterInfo *router)
     }
 }
 
+/* Retrive WAN link properties */
+gboolean get_wan_link_properties (RouterInfo *router)
+{
+    GError *error = NULL;
+
+    gchar *access_type, *physical_link_status;
+    guint upstream_max_bitrate, downstream_max_bitrate;
+
+    g_print("\e[36mRequest for WAN link properties... ");
+
+    /* download speed */
+    gupnp_service_proxy_send_action (router->wan_common_ifc,
+				   /* Action name and error location */
+				   "GetCommonLinkProperties", &error,
+				   /* IN args */
+				   NULL,
+				   /* OUT args */
+				   "NewWANAccessType",
+				   G_TYPE_STRING, &access_type,
+				   "NewLayer1UpstreamMaxBitRate",
+				   G_TYPE_UINT, &upstream_max_bitrate,
+				   "NewLayer1DownstreamMaxBitRate",
+				   G_TYPE_UINT, &downstream_max_bitrate,
+				   "NewPhysicalLinkStatus",
+				   G_TYPE_STRING, &physical_link_status,
+				   NULL);
+
+    if (error == NULL)
+    {
+        g_print("\e[32msuccessful\e[0m\n");
+        g_print("\e[36mWAN link properties:\e[0m access_type=%s, link_status=%s, max_up=%u, max_down=%u\n",
+                     access_type, physical_link_status, upstream_max_bitrate, downstream_max_bitrate );
+
+        return TRUE;
+    }
+    else
+    {
+        g_print("\e[1;31mfailed\e[0;0m\n");
+
+        g_printerr ("\e[31m[EE]\e[0m GetCommonLinkProperties: %s (%i)\n", error->message, error->code);
+        g_error_free (error);
+        return FALSE;
+    }
+}
+
 static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int level)
 {
     gchar *string_buffer = NULL;
@@ -909,6 +954,9 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         else if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1") == 0)
         {
             router->wan_common_ifc = child->data;
+
+            /* Get common WAN link properties */
+            get_wan_link_properties (router);
 
             /* Start data rate timer */
             update_data_rate_cb (router);
