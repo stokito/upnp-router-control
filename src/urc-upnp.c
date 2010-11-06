@@ -163,7 +163,8 @@ static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
     if (error) {
 
         // error 713: end of ports array
-        if(error->code != 713) {
+        // error 402: invalid args
+        if(error->code != 713 && error->code != 402) {
             g_printerr ("\e[31m[EE]\e[0m GetGenericPortMappingEntry: %s (%i)\n", error->message, error->code);
             g_error_free (error);
         }
