@@ -734,7 +734,7 @@ void gui_disable_ext_ip()
     if(gui->ip_label == NULL)
     	return;
 
-    g_strdup_printf( "<b>%s</b> %s", _("IP:"), _("unknown"));
+    str = g_strdup_printf( "<b>%s</b> %s", _("IP:"), _("unknown"));
 
     gtk_label_set_markup (GTK_LABEL(gui->ip_label), str);
 
