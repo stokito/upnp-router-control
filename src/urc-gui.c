@@ -253,27 +253,36 @@ void gui_clear_ports_list_treeview (void)
 }
 
 /* Add a port mapped in the treeview list */
-void gui_add_mapped_port(const PortForwardInfo* port_info)
+void gui_add_mapped_ports(const GSList *port_list)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
+    const GSList *port_iter = port_list;
+    PortForwardInfo *port_info;
 
     if(gui->treeview == NULL)
         return;
 
     model = gtk_tree_view_get_model (GTK_TREE_VIEW (gui->treeview));
 
-    gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
-    gtk_list_store_set (GTK_LIST_STORE (model),
-                        &iter,
-                        UPNP_COLUMN_ENABLED, port_info->enabled,
-                        UPNP_COLUMN_DESC, port_info->description,
-                        UPNP_COLUMN_PROTOCOL, port_info->protocol,
-                        UPNP_COLUMN_INT_PORT, port_info->internal_port,
-                        UPNP_COLUMN_EXT_PORT, port_info->external_port,
-                        UPNP_COLUMN_LOCAL_IP, port_info->internal_host,
-                        UPNP_COLUMN_REM_IP, port_info->remote_host,
-                        -1);
+    while(port_iter)
+    {
+        port_info = (PortForwardInfo*) port_iter->data;
+
+        gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
+        gtk_list_store_set (GTK_LIST_STORE (model),
+                            &iter,
+                            UPNP_COLUMN_ENABLED, port_info->enabled,
+                            UPNP_COLUMN_DESC, port_info->description,
+                            UPNP_COLUMN_PROTOCOL, port_info->protocol,
+                            UPNP_COLUMN_INT_PORT, port_info->internal_port,
+                            UPNP_COLUMN_EXT_PORT, port_info->external_port,
+                            UPNP_COLUMN_LOCAL_IP, port_info->internal_host,
+                            UPNP_COLUMN_REM_IP, port_info->remote_host,
+                            -1);
+
+        port_iter = g_slist_next (port_iter);
+    }
 
 }
 

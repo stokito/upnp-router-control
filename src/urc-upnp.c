@@ -111,7 +111,12 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 	                 port_info->internal_host
 	                 );
 
-	    gui_add_mapped_port(port_info);
+	    GSList *port_list = NULL;
+	    port_list = g_slist_prepend(port_list, port_info);
+
+	    gui_add_mapped_ports(port_list);
+
+	    g_slist_free(port_list);
 
 	    error = NULL;
 	    return TRUE;
@@ -180,9 +185,8 @@ void discovery_mapped_ports_list(RouterInfo *router)
 {
     PortForwardInfo* port_info;
     guint index = 0;
-
-    /* Clear previus entries */
-    gui_clear_ports_list_treeview();
+    GSList *port_list = NULL;
+    GSList *iter;
 
     g_print("\e[1;32m==> Getting mapped ports list...\e[0;0m\n");
 
@@ -200,7 +204,22 @@ void discovery_mapped_ports_list(RouterInfo *router)
 	             );
 
         if(port_info->external_port > 0)
-            gui_add_mapped_port(port_info);
+            port_list = g_slist_prepend(port_list, port_info);
+
+        index++;
+    }
+
+    /* Clear previus entries */
+    gui_clear_ports_list_treeview();
+
+    /* Update GUI treeview */
+    gui_add_mapped_ports(port_list);
+
+    /* Destroy the list */
+    iter = port_list;
+    while(iter)
+    {
+        port_info = (PortForwardInfo*) iter->data;
 
         g_free (port_info->description);
         g_free (port_info->protocol);
@@ -208,9 +227,9 @@ void discovery_mapped_ports_list(RouterInfo *router)
         g_free (port_info->remote_host);
         g_free (port_info);
 
-        index++;
+        iter = g_slist_next (iter);
     }
-
+    g_slist_free (port_list);
 }
 
 /* Retrive connection infos: connection status, uptime and last error. */

@@ -21,7 +21,6 @@
 #define __URC_GUI_H__
 
 #include <glib.h>
-#include "urc-upnp.h"
 
 void gui_init();
 
@@ -67,7 +66,7 @@ void gui_set_download_speed(const gdouble down_speed);
 
 void gui_set_upload_speed(const gdouble up_speed);
 
-void gui_add_mapped_port(const PortForwardInfo* port_info);
+void gui_add_mapped_ports(const GSList *port_list);
 
 void gui_clear_ports_list_treeview(void);
 
