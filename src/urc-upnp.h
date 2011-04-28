@@ -71,7 +71,7 @@ typedef struct
 /* Functions */
 const gchar* get_client_ip();
 
-gboolean upnp_init(const gchar *interface, const uint port, const gboolean debug);
+gboolean upnp_init();
 
 gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host, GError **error);
 

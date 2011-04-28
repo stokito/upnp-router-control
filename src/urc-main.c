@@ -29,9 +29,9 @@
 
 /* Options variables */
 static gboolean opt_version = FALSE;
-static gboolean opt_debug = FALSE;
-static gchar* opt_bindif = NULL;
-static guint opt_bindport = 0;
+gboolean opt_debug = FALSE;
+gchar* opt_bindif = NULL;
+guint opt_bindport = 0;
 
 /* Options schema */
 static GOptionEntry entries[] = 
@@ -90,7 +90,7 @@ main(int argc, char** argv)
         gui_init();
         
         /* Initialize the UPnP subsystem */
-        if( ! upnp_init(opt_bindif, opt_bindport, opt_debug) )
+        if( ! upnp_init() )
             return 1;
         
         /* Enter in the main loop */

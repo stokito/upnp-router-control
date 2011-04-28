@@ -29,7 +29,10 @@
 #include "urc-gui.h"
 #include "urc-upnp.h"
 
-static gboolean opt_debug = FALSE;
+extern gboolean opt_debug;
+extern char* opt_bindif;
+extern guint opt_bindport;
+
 
 static const gchar* client_ip = NULL;
 
@@ -1121,36 +1124,50 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 
 }
 
+static gboolean upnp_init_timeout(gpointer data)
+{
+    upnp_init ();
 
-gboolean upnp_init(const gchar *interface, const guint port, const gboolean debug)
+    return FALSE;
+}
+
+
+gboolean upnp_init()
 {
     GUPnPContext *context;
     GUPnPControlPoint *cp;
     GError *error = NULL;
     RouterInfo* router;
 
-    opt_debug = debug;
+    g_print ("* Starting UPnP Resource discovery... ");
 
-    g_print("* Starting UPnP Resource discovery... ");
-
+    /* Create a new GUPnP Context. */
+    context = gupnp_context_new (NULL, opt_bindif, opt_bindport, &error);
+    
+    if(error != NULL)
+    {
+        g_print("\n\e[31m[EE]\e[0m gupnp_context_new: %s (%i)\n", error->message, error->code);
+        
+        // if socket already in use, retry after 10 seconds
+        if(error->code == 33) {
+        
+            g_print ("Retry after 10 seconds...\n");
+            g_timeout_add_seconds (10, upnp_init_timeout, NULL);
+            g_error_free (error);
+            return TRUE;
+        }
+        
+        g_error_free (error);
+        return FALSE;
+    }
+    
     router = g_malloc( sizeof(RouterInfo) );
 
     router->main_device = NULL;
     router->external_ip = NULL;
 
-    /* Create a new GUPnP Context. */
-    context = gupnp_context_new (NULL, interface, port, &error);
-
-    if(error != NULL)
-    {
-        g_error("\e[31m[EE]\e[0m gupnp_context_new: %s (%i)", error->message, error->code);
-        g_error_free (error);
-        return FALSE;
-    }
-
     /* Create a Control Point targeting RootDevice */
-    cp = gupnp_control_point_new
-    (context, "upnp:rootdevice");
+    cp = gupnp_control_point_new (context, "upnp:rootdevice");
 
     /* The service-proxy-available signal is emitted when any services which match
      our target are found, so connect to it */
@@ -1167,9 +1184,9 @@ gboolean upnp_init(const gchar *interface, const guint port, const gboolean debu
     /* Tell the Control Point to start searching */
     gssdp_resource_browser_set_active (GSSDP_RESOURCE_BROWSER (cp), TRUE);
 
-    g_print("done\n");
+    g_print ("done\n");
 
-    client_ip = gupnp_context_get_host_ip(context);
+    client_ip = gupnp_context_get_host_ip (context);
 
     return TRUE;
 }
