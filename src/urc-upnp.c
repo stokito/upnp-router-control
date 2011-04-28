@@ -760,6 +760,15 @@ static gchar* parse_presentation_url(gchar *presentation_url, const gchar *devic
     return output_url_string;
 }
 
+/* useful function for debug strings */
+static void print_indent(guint8 tabs)
+{
+    int i;
+    
+    for(i = 0; i < tabs; i++)
+            g_print("    ");
+}
+
 /* Device available callback */
 static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                        GUPnPServiceProxy *proxy,
@@ -776,74 +785,74 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     int icon_depth, icon_width, icon_height;
 
     static int level = 0;
-    int i;
 
-    if(level == 0)
-    {
-        g_print("==> Device Available: \e[31m%s\e[0;0m\n",
-                gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
+    if(level == 0) {
+    
+        g_print ("==> Device Available: \e[31m%s\e[0;0m\n",
+                gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy)));
     }
 
-    device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
+    device_type = gupnp_device_info_get_device_type (GUPNP_DEVICE_INFO (proxy));
 
     /* Is an IGD device? */
-    if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0)
+    if(g_strcmp0 (device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0)
     {
         /* do nothing if there is already a device stored */
         if(router->main_device != NULL)
             return;
 
         router->main_device = GUPNP_DEVICE_INFO (proxy);
-        router->friendly_name = gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy));
-        router->brand = gupnp_device_info_get_manufacturer(GUPNP_DEVICE_INFO (proxy));
-        router->http_address = gupnp_device_info_get_presentation_url(GUPNP_DEVICE_INFO (proxy));
-        router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
-        router->model_description = gupnp_device_info_get_model_description(GUPNP_DEVICE_INFO (proxy));
-        router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
-        router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
-        router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
-        router->udn = gupnp_device_info_get_udn(GUPNP_DEVICE_INFO (proxy));
+        router->friendly_name = gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy));
+        router->brand = gupnp_device_info_get_manufacturer (GUPNP_DEVICE_INFO (proxy));
+        router->http_address = gupnp_device_info_get_presentation_url (GUPNP_DEVICE_INFO (proxy));
+        router->brand_website = gupnp_device_info_get_manufacturer_url (GUPNP_DEVICE_INFO (proxy));
+        router->model_description = gupnp_device_info_get_model_description (GUPNP_DEVICE_INFO (proxy));
+        router->model_name = gupnp_device_info_get_model_name (GUPNP_DEVICE_INFO (proxy));
+        router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
+        router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
+        router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
 
-        router_icon_url = gupnp_device_info_get_icon_url(GUPNP_DEVICE_INFO (proxy),
+        router_icon_url = gupnp_device_info_get_icon_url (GUPNP_DEVICE_INFO (proxy),
                                        NULL, -1, -1, -1, FALSE,
                                        &icon_mime_type, &icon_depth,
                                        &icon_width, &icon_height);
 
-        if(opt_debug)
-    	{
-           	g_print("   Model description: %s\n", router->model_description);
-           	g_print("          Model name: %s\n", router->model_name);
-           	g_print("        Model number: %s\n", router->model_number);
-           	g_print("               Brand: %s\n", router->brand);
-           	g_print("    Presentation URL: %s\n", router->http_address);
-           	g_print("                 UPC: %s\n", router->upc);
-           	g_print("  Unique Device Name: %s\n", router->udn);
+        if(opt_debug) {
+        
+           	g_print ("   Model description: %s\n", router->model_description);
+           	g_print ("          Model name: %s\n", router->model_name);
+           	g_print ("        Model number: %s\n", router->model_number);
+           	g_print ("               Brand: %s\n", router->brand);
+           	g_print ("    Presentation URL: %s\n", router->http_address);
+           	g_print ("                 UPC: %s\n", router->upc);
+           	g_print ("  Unique Device Name: %s\n", router->udn);
 
            	if(router_icon_url != NULL) {
-           	    g_print("            Icon URL: %s\n", router_icon_url);
-                g_print("      Icon mime/type: %s\n", icon_mime_type);
-                g_print("          Icon depth: %d\n", icon_depth);
-                g_print("          Icon width: %d\n", icon_width);
-                g_print("         Icon height: %d\n", icon_height);
-                g_free(icon_mime_type);
+           	
+           	    g_print ("            Icon URL: %s\n", router_icon_url);
+                g_print ("      Icon mime/type: %s\n", icon_mime_type);
+                g_print ("          Icon depth: %d\n", icon_depth);
+                g_print ("          Icon width: %d\n", icon_width);
+                g_print ("         Icon height: %d\n", icon_height);
+                g_free (icon_mime_type);
             }
         }
 
         #ifdef HAVE_LIBCURL
         // start the download in a separate thread
-        g_thread_create(download_router_icon, router_icon_url, TRUE, NULL);
+        g_thread_create (download_router_icon, router_icon_url, TRUE, NULL);
         #endif
 
         router->http_address = parse_presentation_url(router->http_address,
                                gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
 
         /* workaround for empty <friendlyName> property */
-        if(g_strcmp0(router->friendly_name, "") == 0)
-        {
-            if(g_strcmp0(router->model_name, "") == 0)
-                router->friendly_name = g_strdup(router->model_description);
+        if(g_strcmp0 (router->friendly_name, "") == 0) {
+        
+            if(g_strcmp0 (router->model_name, "") == 0)
+                router->friendly_name = g_strdup (router->model_description);
             else
-                router->friendly_name = g_strdup(router->model_name);
+                router->friendly_name = g_strdup (router->model_name);
         }
 
         gui_set_router_info (router->friendly_name,
@@ -856,44 +865,44 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
     }
     /* There is only a WANConnectionDevice? */
-    else if(g_strcmp0(device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0 && level == 0 )
+    else if(g_strcmp0 (device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0 && level == 0 )
     {
     	/* do nothing if there is already a device stored */
         if(router->main_device != NULL)
             return;
 
     	router->main_device = GUPNP_DEVICE_INFO (proxy);
-        router->friendly_name = gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy));
-        router->brand = gupnp_device_info_get_manufacturer(GUPNP_DEVICE_INFO (proxy));
-        router->http_address = gupnp_device_info_get_presentation_url(GUPNP_DEVICE_INFO (proxy));
-        router->brand_website = gupnp_device_info_get_manufacturer_url(GUPNP_DEVICE_INFO (proxy));
-        router->model_description = gupnp_device_info_get_model_description(GUPNP_DEVICE_INFO (proxy));
-        router->model_name = gupnp_device_info_get_model_name(GUPNP_DEVICE_INFO (proxy));
-        router->model_number = gupnp_device_info_get_model_number(GUPNP_DEVICE_INFO (proxy));
-        router->upc = gupnp_device_info_get_upc(GUPNP_DEVICE_INFO (proxy));
-        router->udn = gupnp_device_info_get_udn(GUPNP_DEVICE_INFO (proxy));
+        router->friendly_name = gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy));
+        router->brand = gupnp_device_info_get_manufacturer (GUPNP_DEVICE_INFO (proxy));
+        router->http_address = gupnp_device_info_get_presentation_url (GUPNP_DEVICE_INFO (proxy));
+        router->brand_website = gupnp_device_info_get_manufacturer_url (GUPNP_DEVICE_INFO (proxy));
+        router->model_description = gupnp_device_info_get_model_description (GUPNP_DEVICE_INFO (proxy));
+        router->model_name = gupnp_device_info_get_model_name (GUPNP_DEVICE_INFO (proxy));
+        router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
+        router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
+        router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
 
-        if(opt_debug)
-    	{
-           	g_print("   Model description: %s\n", router->model_description);
-           	g_print("          Model name: %s\n", router->model_name);
-           	g_print("        Model number: %s\n", router->model_number);
-           	g_print("               Brand: %s\n", router->brand);
-           	g_print("    Presentation URL: %s\n", router->http_address);
-           	g_print("                 UPC: %s\n", router->upc);
-           	g_print("  Unique Device Name: %s\n", router->udn);
+        if(opt_debug) {
+        
+           	g_print ("   Model description: %s\n", router->model_description);
+           	g_print ("          Model name: %s\n", router->model_name);
+           	g_print ("        Model number: %s\n", router->model_number);
+           	g_print ("               Brand: %s\n", router->brand);
+           	g_print ("    Presentation URL: %s\n", router->http_address);
+           	g_print ("                 UPC: %s\n", router->upc);
+           	g_print ("  Unique Device Name: %s\n", router->udn);
         }
 
-        router->http_address = parse_presentation_url(router->http_address,
+        router->http_address = parse_presentation_url (router->http_address,
                                gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
 
         /* workaround for empty <friendlyName> property or standard name */
-        if(g_strcmp0(router->friendly_name, "") == 0 || g_strcmp0(router->friendly_name, "WANConnectionDevice") == 0)
+        if(g_strcmp0 (router->friendly_name, "") == 0 || g_strcmp0 (router->friendly_name, "WANConnectionDevice") == 0)
         {
             if(g_strcmp0(router->model_name, "") == 0)
-                router->friendly_name = g_strdup(router->model_description);
+                router->friendly_name = g_strdup (router->model_description);
             else
-                router->friendly_name = g_strdup(router->model_name);
+                router->friendly_name = g_strdup (router->model_name);
         }
 
         gui_set_router_info (router->friendly_name,
@@ -905,34 +914,28 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                              router->model_number);
     }
 
-
     /* Enum services */
-    child = gupnp_device_info_list_services(GUPNP_DEVICE_INFO (proxy));
+    child = gupnp_device_info_list_services (GUPNP_DEVICE_INFO (proxy));
 
-    if(opt_debug)
-    {
-        for(i = 0; i < level; i++)
-            g_print("    ");
+    if(opt_debug) {
+    
+        print_indent(level);
 
-        if (g_list_length(child) > 0)
-            g_print("    \e[1;32mEnum services...\e[0;0m\n");
+        if (g_list_length (child) > 0)
+            g_print ("    \e[1;32mEnum services...\e[0;0m\n");
     }
 
-    while( child )
-    {
+    while( child ) {
 
-        service_type = gupnp_service_info_get_service_type(GUPNP_SERVICE_INFO (child->data));
-        service_id = gupnp_service_info_get_id(GUPNP_SERVICE_INFO (child->data));
+        service_type = gupnp_service_info_get_service_type (GUPNP_SERVICE_INFO (child->data));
+        service_id = gupnp_service_info_get_id (GUPNP_SERVICE_INFO (child->data));
 
-        if(opt_debug)
-        {
-            for(i = 0; i < level; i++)
-                g_print("    ");
-
+        if(opt_debug) {
+        
+            print_indent (level);
             g_print("      \e[32mService:\e[0m %s\n", service_id );
 
-            for(i = 0; i < level; i++)
-                g_print("    ");
+            print_indent (level);
             g_print("         Type: %s\n", service_type );
 
 
@@ -940,23 +943,21 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             const GList *actions_list;
             GUPnPServiceIntrospection *service_introspect;
 
-            service_introspect = gupnp_service_info_get_introspection(child->data, NULL);
+            service_introspect = gupnp_service_info_get_introspection (child->data, NULL);
 
             if(service_introspect != NULL) {
 
-                actions_list = gupnp_service_introspection_list_action_names(service_introspect);
+                actions_list = gupnp_service_introspection_list_action_names (service_introspect);
 
                 if(actions_list != NULL) {
+                
                     do {
-                        for(i = 0; i < level; i++)
-                            g_print("    ");
+                        print_indent(level);
                         g_print("               > %s\n", (gchar*) actions_list->data);
 
-                    } while((actions_list = actions_list->next));
+                    } while ((actions_list = actions_list->next));
                 }
-
             }
-
         }
 
         /* Is a IP forwarding service? */
@@ -965,9 +966,9 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         {
 
             if(connect_service != NULL)
-                g_free(connect_service);
+                g_free (connect_service);
 
-            connect_service = get_default_connection_service(child->data, level);
+            connect_service = get_default_connection_service (child->data, level);
 
         }
         /* Is a WAN IFC service? */
@@ -983,37 +984,35 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
         }
         /* Is a WAN IP Connection service or other? */
-        else if( (connect_service == NULL && g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANIPConnection:1") == 0) ||
-                g_strcmp0 (service_id, connect_service) == 0 )
+        else if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANIPConnection:1") == 0)
         {
 
             router->wan_conn_service = child->data;
 
-            gui_set_ports_buttons_callback_data(router->wan_conn_service);
+            gui_set_ports_buttons_callback_data (router->wan_conn_service);
 
-            gui_set_refresh_callback_data(router);
+            gui_set_refresh_callback_data (router);
 
-            if(opt_debug)
-            {
-                for(i = 0; i < level; i++)
-                    g_print("    ");
+            if(opt_debug) {
+            
+                print_indent (level);
 
         		char **str = NULL;
 
-                str = g_strsplit(service_id, ":", 0);
-                g_print("      \e[32m** Subscribed to %s events\e[0m\n", str[g_strv_length(str)-1]);
-                g_strfreev(str);
+                str = g_strsplit (service_id, ":", 0);
+                g_print ("      \e[32m** Subscribed to %s events\e[0m\n", str[g_strv_length (str)-1]);
+                g_strfreev (str);
             }
 
             /* Get external IP */
-            get_external_ip(router);
+            get_external_ip (router);
             /* Get connection status info */
-            get_conn_status(router);
+            get_conn_status (router);
             /* Get RSIP and NAT status */
-            get_nat_rsip_status(router);
+            get_nat_rsip_status (router);
 
         	/* Subscribe to events */
-        	gupnp_service_proxy_set_subscribed(child->data, TRUE);
+        	gupnp_service_proxy_set_subscribed (child->data, TRUE);
 
             gupnp_service_proxy_add_notify (child->data,
                                             "PortMappingNumberOfEntries",
@@ -1032,13 +1031,13 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                             router);
 
             /* Start port request timeout at 5 sec */
-            router->port_request_timeout = g_timeout_add_seconds(5, get_mapped_ports_list_timeout, router);
+            router->port_request_timeout = g_timeout_add_seconds (5, get_mapped_ports_list_timeout, router);
 
             /* Start connection status request timeout at 6 sec */
-            router->connection_status_timeout = g_timeout_add_seconds(6, get_connection_status_timeout, router);
+            router->connection_status_timeout = g_timeout_add_seconds (6, get_connection_status_timeout, router);
 
             /* Start external IP request timeout at 7 sec */
-            router->external_ip_timeout = g_timeout_add_seconds(7, get_external_ip_timeout, router);
+            router->external_ip_timeout = g_timeout_add_seconds (7, get_external_ip_timeout, router);
 
         }
         else
@@ -1049,24 +1048,21 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
 
     /* Enum subdevices */
-    child = gupnp_device_info_list_devices(GUPNP_DEVICE_INFO (proxy));
+    child = gupnp_device_info_list_devices (GUPNP_DEVICE_INFO (proxy));
 
-    if (opt_debug && g_list_length(child) > 0)
-    {
-        for(i = 0; i < level; i++)
-            g_print("    ");
-
-        g_print("    \e[1;32mEnum sub-devices...\e[0;0m\n");
+    if (opt_debug && g_list_length (child) > 0) {
+    
+        print_indent (level);
+        g_print ("    \e[1;32mEnum sub-devices...\e[0;0m\n");
     }
 
-    while( child )
-    {
-        if (opt_debug)
-        {
-            for(i = 0; i < level; i++)
-                g_print("    ");
-            g_print("      \e[32mSub-Device: \e[31m%s\e[0m\n",
-                gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (child->data)));
+    while (child) {
+    
+        if (opt_debug) {
+        
+            print_indent (level);
+            g_print ("      \e[32mSub-Device: \e[31m%s\e[0m\n",
+                gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (child->data)));
         }
 
         level = level + 1;
@@ -1089,35 +1085,38 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 {
     const char *device_type = NULL;
 
-    g_print("==> Device Unavailable: \e[31m%s\e[0;0m\n",
-            gupnp_device_info_get_friendly_name(GUPNP_DEVICE_INFO (proxy)));
+    g_print ("==> Device Unavailable: \e[31m%s\e[0;0m\n",
+            gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy)));
 
-    device_type = gupnp_device_info_get_device_type(GUPNP_DEVICE_INFO (proxy));
+    device_type = gupnp_device_info_get_device_type (GUPNP_DEVICE_INFO (proxy));
 
-    if(router->udn == gupnp_device_info_get_udn(GUPNP_DEVICE_INFO (proxy)) ) {
+    if(router->udn == gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy)) ) {
 
-    	g_source_remove(router->port_request_timeout);
-    	g_source_remove(router->data_rate_timer);
-    	gui_set_router_icon(NULL);
-    	gui_disable();
+    	g_source_remove (router->port_request_timeout);
+    	g_source_remove (router->connection_status_timeout);
+    	g_source_remove (router->external_ip_timeout);
+    	g_source_remove (router->data_rate_timer);
+    	gui_set_router_icon (NULL);
+    	gui_disable ();
 
     	router->main_device = NULL;
 
     	if(router->external_ip != NULL) {
-    	    g_free(router->external_ip);
+    	
+    	    g_free (router->external_ip);
     	    router->external_ip = NULL;
     	}
 
     	if(router->upc != NULL)
-            g_free(router->upc);
+            g_free (router->upc);
 
-        g_free(router->friendly_name);
-        g_free(router->brand);
-        g_free(router->http_address);
-        g_free(router->brand_website);
-        g_free(router->model_description);
-        g_free(router->model_name);
-        g_free(router->model_number);
+        g_free (router->friendly_name);
+        g_free (router->brand);
+        g_free (router->http_address);
+        g_free (router->brand_website);
+        g_free (router->model_description);
+        g_free (router->model_name);
+        g_free (router->model_number);
     }
 
 }
