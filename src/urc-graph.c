@@ -85,6 +85,7 @@ graph_draw_background (GtkWidget *widget)
     gchar *label;
     GtkStyle *style;
     double draw_width, draw_height;
+    GtkAllocation allocation;
 
     const double fontsize = 8.0;
     const double rmargin = 3.5 * fontsize;
@@ -96,14 +97,16 @@ graph_draw_background (GtkWidget *widget)
     double x, y;
     gint i;
     float label_value;
+    
+    gtk_widget_get_allocation (widget, &allocation);
 
 	background = cairo_image_surface_create( CAIRO_FORMAT_ARGB32,
-	                                         widget->allocation.width,
-					                         widget->allocation.height);
+	                                         allocation.width,
+					                         allocation.height);
 	cr = cairo_create(background);
 
-    draw_width = widget->allocation.width - 2 * FRAME_WIDTH;
-    draw_height = widget->allocation.height - 2 * FRAME_WIDTH;
+    draw_width = allocation.width - 2 * FRAME_WIDTH;
+    draw_height = allocation.height - 2 * FRAME_WIDTH;
 
 	cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);
 
@@ -239,6 +242,7 @@ static void
 graph_draw_data (GtkWidget *widget)
 {
     cairo_t *cr;
+    GtkAllocation allocation;
     double draw_width, draw_height;
     const double fontsize = 8.0;
     const double rmargin = 3.5 * fontsize;
@@ -248,14 +252,16 @@ graph_draw_data (GtkWidget *widget)
     GList *list;
     SpeedValue *speed_value;
     guint tmp_net_max;
+    
+    gtk_widget_get_allocation (widget, &allocation);
 
 	graph = cairo_image_surface_create( CAIRO_FORMAT_ARGB32,
-	                                         widget->allocation.width,
-					                         widget->allocation.height);
+	                                    allocation.width,
+					                    allocation.height);
 	cr = cairo_create(graph);
 
-    draw_width = widget->allocation.width - 2 * FRAME_WIDTH;
-    draw_height = widget->allocation.height - 2 * FRAME_WIDTH;
+    draw_width = allocation.width - 2 * FRAME_WIDTH;
+    draw_height = allocation.height - 2 * FRAME_WIDTH;
 
     cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);
 
@@ -423,7 +429,7 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     if(background == NULL)
         graph_draw_background (widget);
 
-    cr = gdk_cairo_create (widget->window);
+    cr = gdk_cairo_create (gtk_widget_get_window (widget));
 
     cairo_rectangle (cr,
                          event->area.x, event->area.y,

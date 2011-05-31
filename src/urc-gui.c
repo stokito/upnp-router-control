@@ -757,7 +757,7 @@ static gboolean on_mouseover_cb (GtkWidget        *widget,
 {
     GdkCursor *cursor;
     cursor = gdk_cursor_new_for_display (gdk_display_get_default(), GDK_HAND2);
-    gdk_window_set_cursor (widget->window, cursor);
+    gdk_window_set_cursor (gtk_widget_get_window(widget), cursor);
     return FALSE;
 }
 
@@ -768,7 +768,7 @@ static gboolean on_mouseout_cb (GtkWidget        *widget,
 {
     GdkCursor *cursor;
     cursor = gdk_cursor_new_for_display (gdk_display_get_default(), GDK_LEFT_PTR);
-    gdk_window_set_cursor (widget->window, cursor);
+    gdk_window_set_cursor (gtk_widget_get_window (widget), cursor);
 
     return FALSE;
 }
@@ -833,15 +833,15 @@ void gui_set_router_info (const gchar *router_friendly_name,
 
         gtk_widget_set_tooltip_text(gui->router_url_label, _("Open the router config in the default browser"));
 
-        gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "enter-notify-event",
-		    		         GTK_SIGNAL_FUNC(on_mouseover_cb), NULL
+        g_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "enter-notify-event",
+		    		         G_CALLBACK(on_mouseover_cb), NULL
 		                   );
-	    gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "leave-notify-event",
-		    		         GTK_SIGNAL_FUNC(on_mouseout_cb), NULL
+	    g_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "leave-notify-event",
+		    		         G_CALLBACK(on_mouseout_cb), NULL
 		                   );
 
-	    gtk_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "button-release-event",
-		    		         GTK_SIGNAL_FUNC(on_mousepress_cb), (gchar *) router_conf_url
+	    g_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "button-release-event",
+		    		         G_CALLBACK(on_mousepress_cb), (gchar *) router_conf_url
 		                   );
 
 	} else {
