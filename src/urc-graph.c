@@ -251,7 +251,7 @@ graph_draw_data (GtkWidget *widget)
     gint i;
     GList *list;
     SpeedValue *speed_value;
-    guint tmp_net_max;
+    guint tmp_net_max = 0;
     
     gtk_widget_get_allocation (widget, &allocation);
 
