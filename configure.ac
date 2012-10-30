@@ -34,9 +34,9 @@ AC_ARG_ENABLE(libcurl,
               [libcurl="yes"], )
 
 
-#### Check for GTK+ >= 2.14 ####
-PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16,,
-	AC_MSG_ERROR([GTK+-2.6 is required to compile upnp-router-control]))
+#### Check for GTK+ 3 ####
+PKG_CHECK_MODULES(GTK, gtk+-3.0,,
+	AC_MSG_ERROR([GTK+-3 is required to compile upnp-router-control]))
 
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)

@@ -113,7 +113,7 @@ static void gui_add_port_window_close(GtkWidget *button,
         port_info = g_malloc( sizeof(PortForwardInfo) );
 
         port_info->description = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_desc)) );
-        port_info->protocol = g_strdup( gtk_combo_box_get_active_text(GTK_COMBO_BOX (gui->add_port_window->add_proto)) );
+        port_info->protocol = g_strdup( gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT (gui->add_port_window->add_proto)) );
         port_info->internal_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_local_port) );
         port_info->external_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_ext_port) );
         port_info->internal_host = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_local_ip)) );
@@ -144,7 +144,7 @@ static void gui_add_port_window_close(GtkWidget *button,
         g_free(port_info);
     }
 
-    gtk_widget_hide_all (gui->add_port_window->window);
+    gtk_widget_hide (gui->add_port_window->window);
 
 }
 
@@ -189,8 +189,6 @@ static void gui_run_add_port_window(GtkWidget *button,
 static void gui_create_add_port_window(GtkBuilder* builder)
 {
     AddPortWindow* add_port_window;
-    GtkListStore *list_store;
-    GtkCellRenderer *renderer;
 
     add_port_window = g_malloc( sizeof(AddPortWindow) );
 
@@ -208,20 +206,10 @@ static void gui_create_add_port_window(GtkBuilder* builder)
     add_port_window->button_cancel = GTK_WIDGET (gtk_builder_get_object (builder, "button_cancel"));
     add_port_window->expander = GTK_WIDGET (gtk_builder_get_object (builder, "expander1"));
 
-    list_store = gtk_list_store_new (1, G_TYPE_STRING );
-
-    gtk_combo_box_set_model(GTK_COMBO_BOX(add_port_window->add_proto), GTK_TREE_MODEL(list_store));
-
-    renderer = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start( GTK_CELL_LAYOUT(add_port_window->add_proto), renderer, TRUE);
-	gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT(add_port_window->add_proto),
-					renderer,
-					"text",
-					0,
-					NULL);
-
-    gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "TCP");
-    gtk_combo_box_append_text(GTK_COMBO_BOX(add_port_window->add_proto), "UDP");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(add_port_window->add_proto), "TCP");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(add_port_window->add_proto), "UDP");
+    
+    gtk_combo_box_set_active(GTK_COMBO_BOX(add_port_window->add_proto), 0);
 
     g_signal_connect(add_port_window->add_ext_port, "value-changed",
                          G_CALLBACK(gui_add_port_window_on_port_change), NULL);
@@ -833,14 +821,14 @@ void gui_set_router_info (const gchar *router_friendly_name,
 
         gtk_widget_set_tooltip_text(gui->router_url_label, _("Open the router config in the default browser"));
 
-        g_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "enter-notify-event",
+        g_signal_connect ( G_OBJECT(gui->router_url_eventbox), "enter-notify-event",
 		    		         G_CALLBACK(on_mouseover_cb), NULL
 		                   );
-	    g_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "leave-notify-event",
+	    g_signal_connect ( G_OBJECT(gui->router_url_eventbox), "leave-notify-event",
 		    		         G_CALLBACK(on_mouseout_cb), NULL
 		                   );
 
-	    g_signal_connect ( GTK_OBJECT(gui->router_url_eventbox), "button-release-event",
+	    g_signal_connect ( G_OBJECT(gui->router_url_eventbox), "button-release-event",
 		    		         G_CALLBACK(on_mousepress_cb), (gchar *) router_conf_url
 		                   );
 
@@ -1058,8 +1046,8 @@ void gui_init()
     g_signal_connect(G_OBJECT(gui->main_window), "delete-event",
                          G_CALLBACK(gui_destroy), NULL);
 
-    g_signal_connect(G_OBJECT(gui->network_drawing_area), "expose-event",
-                         G_CALLBACK(on_drawing_area_expose_event), NULL);
+    g_signal_connect(G_OBJECT(gui->network_drawing_area), "draw",
+                         G_CALLBACK(on_drawing_area_draw), NULL);
     g_signal_connect(G_OBJECT(gui->network_drawing_area), "configure-event",
                          G_CALLBACK(on_drawing_area_configure_event), NULL);
 

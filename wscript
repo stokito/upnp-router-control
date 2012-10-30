@@ -23,7 +23,7 @@ def configure(conf):
 
     conf.check_tool('gcc intltool')
 
-    conf.check_cfg(package='gtk+-2.0', uselib_store='GTK', atleast_version='2.14', mandatory=True, args='--cflags --libs')
+    conf.check_cfg(package='gtk+-3.0', uselib_store='GTK', atleast_version='3.0', mandatory=True, args='--cflags --libs')
     conf.check_cfg(package='gupnp-1.0', uselib_store='GUPNP', mandatory=True, args='--cflags --libs')
 
     if Options.options.disable_libcurl == False:

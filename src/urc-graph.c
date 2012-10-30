@@ -206,7 +206,7 @@ graph_set_fullscale (double tmp_net_max)
     // workaround for values <= 10
     if(tmp_net_max != net_max && tmp_net_max <= 10) {
 
-        static unsigned cur_fullscale;
+        static unsigned cur_fullscale = 2;
 
         if(tmp_net_max <= 2)
             net_max = 2;
@@ -417,24 +417,16 @@ on_drawing_area_configure_event (GtkWidget         *widget,
 
 
 gboolean
-on_drawing_area_expose_event (GtkWidget      *widget,
-                              GdkEventExpose *event,
+on_drawing_area_draw (GtkWidget      *widget,
+                              cairo_t   *cr,
                               gpointer        user_data)
 {
-    cairo_t *cr;
 
     if(graph == NULL)
         graph_draw_data (widget);
 
     if(background == NULL)
         graph_draw_background (widget);
-
-    cr = gdk_cairo_create (gtk_widget_get_window (widget));
-
-    cairo_rectangle (cr,
-                         event->area.x, event->area.y,
-                         event->area.width, event->area.height);
-    cairo_clip (cr);
 
     // draw background
     cairo_set_source_surface(cr, background, 0.0, 0.0);
@@ -443,8 +435,6 @@ on_drawing_area_expose_event (GtkWidget      *widget,
     // draw graph data
     cairo_set_source_surface(cr, graph, 0.0, 0.0);
     cairo_paint(cr);
-
-    cairo_destroy (cr);
 
     return FALSE;
 }

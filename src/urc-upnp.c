@@ -288,6 +288,8 @@ gboolean get_conn_status (RouterInfo *router)
     }
 }
 
+gdouble last_request_delay = 0;
+
 /* Retrive download and upload speeds */
 static gboolean update_data_rate_cb (gpointer data)
 {
@@ -296,6 +298,7 @@ static gboolean update_data_rate_cb (gpointer data)
     GTimeVal begin_time;
     GTimeVal end_time;
     gdouble duration_secs;
+    gdouble total_request_delay = 0;
 
     static guint old_total_bytes_received = 0;
     guint current_total_bytes_received;
@@ -328,8 +331,11 @@ static gboolean update_data_rate_cb (gpointer data)
 	    else {
 
             // UPnP query time
-            duration_secs = 1 + (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
+            duration_secs =  (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
                                         (end_time.tv_usec - begin_time.tv_usec)) / G_USEC_PER_SEC;
+            
+            total_request_delay = duration_secs;
+            duration_secs += last_request_delay;
 
 	        if(opt_debug)
 	            g_print("\e[34mGetTotalBytesReceived() duration: %fs\e[0m\n", duration_secs);
@@ -372,8 +378,11 @@ static gboolean update_data_rate_cb (gpointer data)
 	    else {
 
 	        // UPnP query time
-	        duration_secs = 1 + (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
+	        duration_secs = (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
                                         (end_time.tv_usec - begin_time.tv_usec)) / G_USEC_PER_SEC;
+
+            total_request_delay += duration_secs;
+            duration_secs += last_request_delay;
 
             if(opt_debug)
 	            g_print("\e[34mGetTotalBytesSent() duration:     %fs\e[0m\n", duration_secs);
@@ -394,6 +403,8 @@ static gboolean update_data_rate_cb (gpointer data)
     }
 
     gui_update_graph();
+    
+    last_request_delay = total_request_delay;
 
     ((RouterInfo *) data)->data_rate_timer = g_timeout_add_full(G_PRIORITY_HIGH, 1000, update_data_rate_cb, data, NULL);
 
@@ -987,7 +998,9 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
         }
         /* Is a WAN IP Connection service or other? */
-        else if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANIPConnection:1") == 0)
+        else if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANIPConnection:1") == 0 ||
+                ( g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANPPPConnection:1") == 0  &&
+                  g_strcmp0(connect_service, "") == 0))
         {
 
             router->wan_conn_service = child->data;

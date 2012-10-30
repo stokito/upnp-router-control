@@ -20,8 +20,10 @@ upnp_router_control_SOURCES = \
        urc-graph.c \
        urc-graph.h
 
-upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GUPNP_LIBS@ @LIBCURL_LIBS@
+upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GUPNP_LIBS@ @LIBCURL_LIBS@ $(LIBCURL_LIBS)
 
 MAINTAINERCLEANFILES =				\
 	*~			      				\
 	Makefile.in
+
+AM_CPPFLAGS = $(LIBCURL_CFLAGS) 
