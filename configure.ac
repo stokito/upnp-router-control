@@ -42,7 +42,7 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 #### Check for gupnp1.0 ####
-PKG_CHECK_MODULES(GUPNP, gupnp-1.0,,
+PKG_CHECK_MODULES(GUPNP, gssdp-1.0 gupnp-1.0,,
 	AC_MSG_ERROR([libgupnp-1.0 is required to compile upnp-router-control]))
 
 AC_SUBST(GUPNP_CFLAGS)
