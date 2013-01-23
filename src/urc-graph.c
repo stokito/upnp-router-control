@@ -83,7 +83,9 @@ graph_draw_background (GtkWidget *widget)
     cairo_pattern_t *pat;
     cairo_text_extents_t extents;
     gchar *label;
-    GtkStyle *style;
+	GtkStyleContext *context;
+	GtkStateFlags state;
+    GdkRGBA color;
     double draw_width, draw_height;
     GtkAllocation allocation;
 
@@ -129,8 +131,10 @@ graph_draw_background (GtkWidget *widget)
 
 	}
 
-    style = gtk_widget_get_style (widget);
-
+	context = gtk_widget_get_style_context (widget);
+	state = gtk_widget_get_state_flags (widget);
+    gtk_style_context_get_color (context, state, &color);
+		
     cairo_set_font_size (cr, fontsize);
 
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
@@ -147,7 +151,7 @@ graph_draw_background (GtkWidget *widget)
 
     // draw grid
 	cairo_set_dash (cr, dash, 2, 0);
-	gdk_cairo_set_source_color (cr, &style->fg[GTK_STATE_NORMAL]);
+	gdk_cairo_set_source_rgba (cr, &color);
 
     // drawing vertical grid
     x_frame_size = (draw_width - rmargin - indent) / x_frame_count;
