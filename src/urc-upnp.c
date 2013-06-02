@@ -20,7 +20,7 @@
 #include "config.h"
 
 #include <glib.h>
-#include <libgupnp/gupnp-control-point.h>
+#include <libgupnp/gupnp.h>
 
 #ifdef HAVE_LIBCURL
 #include <curl/curl.h>
@@ -35,6 +35,7 @@ extern guint opt_bindport;
 
 
 static const gchar* client_ip = NULL;
+GUPnPContextManager *context_mngr = NULL;
 
 const gchar* get_client_ip()
 {
@@ -1120,56 +1121,28 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
         g_free (router->model_description);
         g_free (router->model_name);
         g_free (router->model_number);
+		g_free (router);
     }
 
 }
 
-static gboolean upnp_init_timeout(gpointer data)
+static void on_context_available (GUPnPContextManager *context_manager,
+							 GUPnPContext *context,
+						     gpointer user_data)
 {
-    upnp_init ();
+	GUPnPControlPoint *cp;
+	RouterInfo* router;
 
-    return FALSE;
-}
+	g_print ("* Starting UPnP Resource discovery... ");
+	
+	/* Create a Control Point targeting RootDevice */
+    cp = gupnp_control_point_new (context, "upnp:rootdevice");
 
-
-gboolean upnp_init()
-{
-    GUPnPContext *context;
-    GUPnPControlPoint *cp;
-    GError *error = NULL;
-    RouterInfo* router;
-
-    g_print ("* Starting UPnP Resource discovery... ");
-
-    /* Create a new GUPnP Context. */
-    context = gupnp_context_new (NULL, opt_bindif, opt_bindport, &error);
-    
-    if(error != NULL)
-    {
-        g_print("\n\e[31m[EE]\e[0m gupnp_context_new: %s (%i)\n", error->message, error->code);
-        
-        // if socket already in use, retry after 10 seconds
-        if(error->code == 33) {
-        
-            g_print ("Retry after 10 seconds...\n");
-            g_timeout_add_seconds (10, upnp_init_timeout, NULL);
-            g_error_free (error);
-            return TRUE;
-        }
-        
-        g_error_free (error);
-        return FALSE;
-    }
-    
-    router = g_malloc( sizeof(RouterInfo) );
-
+	router = g_malloc( sizeof(RouterInfo) );
     router->main_device = NULL;
     router->external_ip = NULL;
 
-    /* Create a Control Point targeting RootDevice */
-    cp = gupnp_control_point_new (context, "upnp:rootdevice");
-
-    /* The service-proxy-available signal is emitted when any services which match
+	 /* The service-proxy-available signal is emitted when any services which match
      our target are found, so connect to it */
     g_signal_connect (cp,
 		    "device-proxy-available",
@@ -1183,10 +1156,23 @@ gboolean upnp_init()
 
     /* Tell the Control Point to start searching */
     gssdp_resource_browser_set_active (GSSDP_RESOURCE_BROWSER (cp), TRUE);
+	gupnp_context_manager_manage_control_point(context_manager, cp);
 
     g_print ("done\n");
 
     client_ip = gupnp_context_get_host_ip (context);
 
+	g_object_unref(cp);
+}
+
+gboolean upnp_init()
+{
+    /* Create a new GUPnP Context. */
+	context_mngr = gupnp_context_manager_create (opt_bindport);
+
+	g_signal_connect(context_mngr, "context-available",
+					 G_CALLBACK(on_context_available),
+                     NULL);    
+ 
     return TRUE;
 }

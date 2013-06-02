@@ -34,6 +34,8 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 IT_PROG_INTLTOOL(0.40.0)
 AM_GLIB_GNU_GETTEXT
 
+AC_SEARCH_LIBS([ceil], [m])
+
 AC_ARG_ENABLE(libcurl,
               [  --disable-libcurl      compile UPnP Router Control without icon download support],
               [libcurl=$enableval],
@@ -47,8 +49,15 @@ PKG_CHECK_MODULES(GTK, gtk+-3.0,,
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
+#### Check for gssdp1.0 ####
+PKG_CHECK_MODULES(GSSDP, gssdp-1.0,,
+	AC_MSG_ERROR([libgssdp-1.0 is required to compile upnp-router-control]))
+
+AC_SUBST(GSSDP_CFLAGS)
+AC_SUBST(GSSDP_LIBS)
+
 #### Check for gupnp1.0 ####
-PKG_CHECK_MODULES(GUPNP, gssdp-1.0 gupnp-1.0,,
+PKG_CHECK_MODULES(GUPNP, gupnp-1.0,,
 	AC_MSG_ERROR([libgupnp-1.0 is required to compile upnp-router-control]))
 
 AC_SUBST(GUPNP_CFLAGS)

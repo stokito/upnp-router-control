@@ -6,6 +6,7 @@ INCLUDES =                                                  \
 
 AM_CFLAGS = 						\
 	@GTK_CFLAGS@					\
+    @GSSDP_LIBS@                    \
 	@GUPNP_CFLAGS@                  \
 	@LIBCURL_CFLAGS@
 
@@ -20,7 +21,7 @@ upnp_router_control_SOURCES = \
        urc-graph.c \
        urc-graph.h
 
-upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GUPNP_LIBS@ @LIBCURL_LIBS@ $(LIBCURL_LIBS)
+upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GSSDP_LIBS@ @GUPNP_LIBS@ @LIBCURL_LIBS@ $(LIBCURL_LIBS)
 
 MAINTAINERCLEANFILES =				\
 	*~			      				\
