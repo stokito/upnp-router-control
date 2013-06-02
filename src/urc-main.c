@@ -80,8 +80,6 @@ main(int argc, char** argv)
         
         gtk_icon_theme_append_search_path(gtk_icon_theme_get_default (),
 			    DATADIR G_DIR_SEPARATOR_S "icons");
-		
-        g_type_init ();
         
         /* Initialize the GUI */
         gui_init();
