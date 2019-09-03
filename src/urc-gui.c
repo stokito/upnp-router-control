@@ -119,6 +119,7 @@ static void gui_add_port_window_close(GtkWidget *button,
         port_info->internal_host = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_local_ip)) );
         port_info->remote_host = "";
         port_info->lease_time = 0;
+        port_info->enabled = TRUE;
 
         if(add_port_mapping(user_data, port_info, &error) != TRUE)
         {
