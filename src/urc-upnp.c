@@ -19,6 +19,7 @@
 
 #include "config.h"
 
+#include <string.h>
 #include <glib.h>
 #include <libgupnp/gupnp.h>
 
@@ -773,6 +774,30 @@ static void print_indent(guint8 tabs)
             g_print("    ");
 }
 
+/* function to compare UPnP device/service string and check
+ * version is at least the one needed */
+static int device_service_cmp(const char *devserv1, const char *devserv2, int ver2)
+{
+    int ver1;
+    size_t len;
+    int res;
+
+    if(devserv1 == NULL && devserv2 == NULL)
+        return 0;
+    if(devserv1 == NULL)
+        return -1;
+    if(devserv2 == NULL)
+        return 1;
+    len = strlen(devserv2);
+    res = memcmp(devserv1, devserv2, len);
+    if(res != 0)
+        return res;
+    ver1 = atoi(devserv1+len);
+    if(ver1 >= ver2)
+        return 0;
+    return -1;
+}
+
 /* Device available callback */
 static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                        GUPnPServiceProxy *proxy,
@@ -799,7 +824,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     device_type = gupnp_device_info_get_device_type (GUPNP_DEVICE_INFO (proxy));
 
     /* Is an IGD device? */
-    if(g_strcmp0 (device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:1") == 0)
+    if(device_service_cmp (device_type, "urn:schemas-upnp-org:device:InternetGatewayDevice:", 1) == 0)
     {
         /* do nothing if there is already a device stored */
         if(router->main_device != NULL)
@@ -869,7 +894,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
     }
     /* There is only a WANConnectionDevice? */
-    else if(g_strcmp0 (device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:1") == 0 && level == 0 )
+    else if(device_service_cmp (device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:", 1) == 0 && level == 0 )
     {
     	/* do nothing if there is already a device stored */
         if(router->main_device != NULL)
@@ -965,8 +990,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         }
 
         /* Is a IP forwarding service? */
-        if( (g_strcmp0 (service_type, "urn:schemas-upnp-org:service:Layer3Forwarding:1") == 0) ||
-        	(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:L3Forwarding:1") == 0) )
+        if( (device_service_cmp (service_type, "urn:schemas-upnp-org:service:Layer3Forwarding:", 1) == 0) ||
+        	(device_service_cmp (service_type, "urn:schemas-upnp-org:service:L3Forwarding:", 1) == 0) )
         {
 
             if(connect_service != NULL)
@@ -976,7 +1001,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
         }
         /* Is a WAN IFC service? */
-        else if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1") == 0)
+        else if(device_service_cmp (service_type, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:", 1) == 0)
         {
             router->wan_common_ifc = child->data;
 
@@ -988,7 +1013,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
         }
         /* Is a WAN IP Connection service or other? */
-        else if(g_strcmp0 (service_type, "urn:schemas-upnp-org:service:WANIPConnection:1") == 0)
+        else if(device_service_cmp (service_type, "urn:schemas-upnp-org:service:WANIPConnection:", 1) == 0)
         {
 
             router->wan_conn_service = child->data;
