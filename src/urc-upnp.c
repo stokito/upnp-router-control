@@ -869,7 +869,7 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
         #ifdef HAVE_LIBCURL
         // start the download in a separate thread
-        g_thread_create (download_router_icon, router_icon_url, TRUE, NULL);
+        g_thread_new("down_router_ico", download_router_icon, router_icon_url);
         #endif
 
         router->http_address = parse_presentation_url(router->http_address,
