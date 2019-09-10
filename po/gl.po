@@ -1,96 +1,98 @@
-# Italian translation for upnp-port-mapper package
-# Copyright (C) 2009 the Free Software Foundation, Inc.
-# This file is distributed under the same license as the upnp-port-mapper package.
-# Daniele Napolitano <dnax88@gmail.com>, 2009.
+# Galician translation for upnp-router-control
+# Copyright (c) 2011 Rosetta Contributors and Canonical Ltd 2011
+# This file is distributed under the same license as the upnp-router-control package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-09-23 03:28+0200\n"
-"PO-Revision-Date: 2010-09-23 04:58+0000\n"
-"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
-"Language-Team: Italian <tp@lists.linux.it>\n"
+"PO-Revision-Date: 2011-09-26 18:16+0000\n"
+"Last-Translator: Fran Diéguez <Unknown>\n"
+"Language-Team: Galician <gl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2019-09-10 18:12+0000\n"
+"X-Generator: Launchpad (build 19044)\n"
 
 #: ../src/urc-main.c:80 ../data/upnp-router-control.glade.h:25
 #: ../data/upnp-router-control.desktop.in.h:2
 msgid "UPnP Router Control"
-msgstr "Controllo router UPnP"
+msgstr "Control de router UPnP"
 
 #: ../src/urc-gui.c:130
 msgid "Unable to set this port forward"
-msgstr "Impossibile impostare questa nuova porta"
+msgstr "Non foi posíbel estabelecer esta redireción"
 
 #: ../src/urc-gui.c:312
 msgid "Unable to remove this port forward"
-msgstr "Impossibile rimuovere questa porta"
+msgstr "Non foi posíbel quitar esta redireción"
 
 #: ../src/urc-gui.c:375
 msgid "Enabled"
-msgstr "Abilitato"
+msgstr "Activada"
 
 #: ../src/urc-gui.c:376
 msgid "Description"
-msgstr "Descrizione"
+msgstr "Descrición"
 
 #: ../src/urc-gui.c:377
 msgid "Protocol"
-msgstr "Protocollo"
+msgstr "Protocolo"
 
 #: ../src/urc-gui.c:378
 msgid "Int. Port"
-msgstr "Porta int."
+msgstr "Porto interno"
 
 #: ../src/urc-gui.c:379
 msgid "Ext. Port"
-msgstr "Porta ext."
+msgstr "Porto externo"
 
 #: ../src/urc-gui.c:380
 msgid "Local IP"
-msgstr "IP locale"
+msgstr "IP local"
 
 #: ../src/urc-gui.c:491 ../src/urc-gui.c:899
 #: ../data/upnp-router-control.glade.h:23
 msgid "Total received:"
-msgstr "Totale ricevuti:"
+msgstr "Total recibidos:"
 
 #: ../src/urc-gui.c:537 ../src/urc-gui.c:904
 #: ../data/upnp-router-control.glade.h:24
 msgid "Total sent:"
-msgstr "Totale inviati:"
+msgstr "Total enviados:"
 
 #: ../src/urc-gui.c:555 ../src/urc-gui.c:609 ../src/urc-gui.c:893
 #: ../src/urc-gui.c:896 ../src/urc-gui.c:899 ../src/urc-gui.c:904
 msgid "n.a."
-msgstr "n.d."
+msgstr "n. d."
 
 #: ../src/urc-gui.c:674 ../src/urc-gui.c:676 ../src/urc-gui.c:678
 #: ../src/urc-gui.c:680 ../src/urc-gui.c:696 ../src/urc-gui.c:883
 msgid "WAN status:"
-msgstr "Stato WAN:"
+msgstr "Estado WAN:"
 
 #: ../src/urc-gui.c:674
 msgid "Connected"
-msgstr "Connesso"
+msgstr "Conectado"
 
 #: ../src/urc-gui.c:676
 msgid "Disconnected"
-msgstr "Disconnesso"
+msgstr "Desconectado"
 
 #: ../src/urc-gui.c:678
 msgid "Connecting"
-msgstr "In connessione"
+msgstr "Conexión"
 
 #: ../src/urc-gui.c:680
 msgid "Disconnecting"
-msgstr "In disconnessione"
+msgstr "Desconectando"
 
 #: ../src/urc-gui.c:696 ../src/urc-gui.c:732
 msgid "unknown"
-msgstr "sconosciuto"
+msgstr "descoñecido"
 
 #: ../src/urc-gui.c:713 ../src/urc-gui.c:715 ../src/urc-gui.c:732
 #: ../src/urc-gui.c:888
@@ -99,137 +101,139 @@ msgstr "IP:"
 
 #: ../src/urc-gui.c:713
 msgid "none"
-msgstr "nessuno"
+msgstr "ningún"
 
 #: ../src/urc-gui.c:790 ../src/urc-gui.c:878
 msgid "Router name:"
-msgstr "Nome router:"
+msgstr "Nome do router:"
 
 #: ../src/urc-gui.c:797
 msgid "Brand"
-msgstr "Produttore"
+msgstr "Marca"
 
 #: ../src/urc-gui.c:799
 msgid "Brand website:"
-msgstr "Sito web produttore:"
+msgstr "Sitio web da marca:"
 
 #: ../src/urc-gui.c:801
 msgid "Model Description:"
-msgstr "Descrizione modello:"
+msgstr "Descrición do modelo"
 
 #: ../src/urc-gui.c:803
 msgid "Model Name:"
-msgstr "Nome modello:"
+msgstr "Nome do modelo:"
 
 #: ../src/urc-gui.c:805
 msgid "Model Number:"
-msgstr "Numero modello:"
+msgstr "Número do modelo:"
 
 #: ../src/urc-gui.c:820
 msgid "Open the router config in the default browser"
-msgstr "Apri la configurazione del router nel browser predefinito"
+msgstr "Abrir a configuración do router no navegador predeterminado"
 
 #: ../src/urc-gui.c:835 ../src/urc-gui.c:878 ../src/urc-gui.c:883
 #: ../src/urc-gui.c:888 ../src/urc-gui.c:909
 msgid "not available"
-msgstr "non disponibile"
+msgstr "non dispoñíbel"
 
 #. Feel free to put your names here translators :-)
 #: ../src/urc-gui.c:935
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
-"  Daniele Napolitano https://launchpad.net/~dnax88"
+"  Fran Diéguez https://launchpad.net/~frandieguez"
 
 #: ../src/urc-gui.c:941 ../data/upnp-router-control.desktop.in.h:1
 msgid "A simple program to manage UPnP IGD compliant routers"
-msgstr "Un semplice programma per gestire router compatibili con UPnP IGD"
+msgstr ""
+"Un programa sinxelo para administrar routers compatíbeis co protocolo UPnP "
+"IGD"
 
 #: ../src/urc-graph.c:156
 #, c-format
 msgid "%u seconds"
-msgstr "%u secondi"
+msgstr "%u segundos"
 
 #: ../data/upnp-router-control.glade.h:1
 msgid "<b>Advanced parameters</b>"
-msgstr "<b>Parametri avanzati</b>"
+msgstr "<b>Parámetros avanzados</b>"
 
 #: ../data/upnp-router-control.glade.h:2
 msgid "<b>Config:</b>"
-msgstr "<b>Configurazione:</b>"
+msgstr "<b>Configuración:</b>"
 
 #: ../data/upnp-router-control.glade.h:3
 msgid "<i>Insert here a short description for this port</i>\n"
-msgstr "<i>Inserisci qui una breve descrizione per questa porta</i>\n"
+msgstr "<i>escriba aquí unha descripción curta para este porto</i>\n"
 
 #: ../data/upnp-router-control.glade.h:5
 msgid ""
 "<i>Insert here the local IP where forward packets,\n"
 "usually IP of this computer</i>\n"
 msgstr ""
-"<i>Inserisci qui l'IP locale dove trasferire i pacchetti,\n"
-"di solito l'IP di questo computer</i>\n"
+"<i>escriba aquí a IP local onde se redireccionan os paquetes,\n"
+"normalmente a IP deste equipo</i>\n"
 
 #: ../data/upnp-router-control.glade.h:8
 msgid "<i>Insert here the port exposed by the router to Internet</i>\n"
-msgstr "<i>Inserisci qui la porta esposta dal router su Internet</i>\n"
+msgstr "<i>escriba aquí o puerto que exporá o router a Internet</i>\n"
 
 #: ../data/upnp-router-control.glade.h:10
 msgid ""
 "<i>Insert the the local port where forward the packets from router to your "
 "computer</i>\n"
 msgstr ""
-"<i>Inserisci la porta locale dove trasferire i pacchetti dal tuo router al "
-"tuo computer</i>\n"
+"<i>escriba o porto local onde redireccionar os paquetes do router ao seu "
+"computador</i>\n"
 
 #: ../data/upnp-router-control.glade.h:12
 msgid "<i>Select here the protocol used, usually TCP</i>\n"
-msgstr "<i>Seleziona qui il protocollo usato, di solito TCP</i>\n"
+msgstr "<i>Seleccione aquí o protocolo usado, normalmente será TCP</i>\n"
 
 #: ../data/upnp-router-control.glade.h:14
 msgid "Add new port forward"
-msgstr "Aggiungi una nuova porta"
+msgstr "Engaidr unha nova redirección de porto"
 
 #: ../data/upnp-router-control.glade.h:15
 msgid "Click for map a new port"
-msgstr "Clicca per mappare una nuova porta"
+msgstr "Faga clic para mapear un novo porto"
 
 #: ../data/upnp-router-control.glade.h:16
 msgid "Click for remove a port mapping"
-msgstr "Clicca per rimuovere una porta mappata"
+msgstr "Prema para quitar o mapeo a un porto"
 
 #: ../data/upnp-router-control.glade.h:17
 msgid "Description:"
-msgstr "Descrizione:"
+msgstr "Descrición:"
 
 #: ../data/upnp-router-control.glade.h:18
 msgid "External port:"
-msgstr "Porta esterna:"
+msgstr "Porto externo:"
 
 #: ../data/upnp-router-control.glade.h:19
 msgid "Local IP:"
-msgstr "IP locale:"
+msgstr "IP local:"
 
 #: ../data/upnp-router-control.glade.h:20
 msgid "Local port:"
-msgstr "Porta locale:"
+msgstr "Porto local:"
 
 #: ../data/upnp-router-control.glade.h:21
 msgid "Network history"
-msgstr "Cronologia rete"
+msgstr "Historial da rede"
 
 #: ../data/upnp-router-control.glade.h:22
 msgid "Protocol:"
-msgstr "Protocollo:"
+msgstr "Protocolo:"
 
 #: ../data/upnp-router-control.glade.h:26
 msgid "_File"
-msgstr "_File"
+msgstr "_Ficheiro"
 
 #: ../data/upnp-router-control.glade.h:27
 msgid "_Help"
-msgstr "A_iuto"
+msgstr "_Axuda"
 
 #: ../data/upnp-router-control.glade.h:28
 msgid "_Switch router"
-msgstr "_Cambia router"
+msgstr "_Cambiar router"
