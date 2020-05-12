@@ -50,15 +50,15 @@ AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
 #### Check for gssdp1.0 ####
-PKG_CHECK_MODULES(GSSDP, gssdp-1.0,,
-	AC_MSG_ERROR([libgssdp-1.0 is required to compile upnp-router-control]))
+PKG_CHECK_MODULES(GSSDP, gssdp-1.2,,
+	AC_MSG_ERROR([libgssdp-1.2 is required to compile upnp-router-control]))
 
 AC_SUBST(GSSDP_CFLAGS)
 AC_SUBST(GSSDP_LIBS)
 
 #### Check for gupnp1.0 ####
-PKG_CHECK_MODULES(GUPNP, gupnp-1.0,,
-	AC_MSG_ERROR([libgupnp-1.0 is required to compile upnp-router-control]))
+PKG_CHECK_MODULES(GUPNP, gupnp-1.2,,
+	AC_MSG_ERROR([libgupnp-1.2 is required to compile upnp-router-control]))
 
 AC_SUBST(GUPNP_CFLAGS)
 AC_SUBST(GUPNP_LIBS)

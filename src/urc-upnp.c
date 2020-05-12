@@ -22,6 +22,7 @@
 #include <string.h>
 #include <glib.h>
 #include <libgupnp/gupnp.h>
+#include <libgssdp/gssdp.h>
 
 #ifdef HAVE_LIBCURL
 #include <curl/curl.h>
@@ -45,34 +46,39 @@ const gchar* get_client_ip()
 
 gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host, GError **error)
 {
-    GError *err = NULL;
+    GError *local_error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
 
-    gupnp_service_proxy_send_action (wan_service,
-				   /* Action name and error location */
-				   "DeletePortMapping", &err,
-				   /* IN args */
-				   "NewRemoteHost",
-				   G_TYPE_STRING, remote_host,
-				   "NewExternalPort",
-				   G_TYPE_UINT, external_port,
-				   "NewProtocol",
-				   G_TYPE_STRING, protocol,
-				   NULL,
-				   NULL);
+    action = gupnp_service_proxy_action_new(
+        "DeletePortMapping",
+	        /* IN args */
+		   "NewRemoteHost",
+		   G_TYPE_STRING, remote_host,
+		   "NewExternalPort",
+		   G_TYPE_UINT, external_port,
+		   "NewProtocol",
+		   G_TYPE_STRING, protocol,
+		   NULL
+    );
 
-    if (err == NULL) {
+    gupnp_service_proxy_call_action(wan_service,
+                                    action,
+                                    NULL,
+                                    &local_error);
 
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+
+    if (local_error == NULL) {
 	    g_print("\e[36m*** Removed entry:\e[0m Port %d (%s)\n", external_port, protocol);
 
 	    error = NULL;
 	    return TRUE;
+    }
+    else {
+        g_warning ("\e[31m[EE]\e[0m DeletePortMapping: %s (%i)\n", local_error->message, local_error->code);
 
-    } else {
-
-        g_printerr ("\e[31m[EE]\e[0m DeletePortMapping: %s (%i)\n", err->message, err->code);
-
-        *error = g_error_copy(err);
-        g_error_free (err);
+        *error = g_error_copy(local_error);
+        g_error_free (local_error);
 
         return FALSE;
     }
@@ -80,11 +86,11 @@ gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protoco
 
 gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_info, GError **error)
 {
-    GError *err = NULL;
+    GError *local_error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
 
-    gupnp_service_proxy_send_action (wan_service,
-				   /* Action name and error location */
-				   "AddPortMapping", &err,
+    action = gupnp_service_proxy_action_new(
+                   "AddPortMapping",
 				   /* IN args */
 				   "NewRemoteHost",
 				   G_TYPE_STRING, port_info->remote_host,
@@ -102,10 +108,17 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 				   G_TYPE_STRING, port_info->description,
 				   "NewLeaseDuration",
 				   G_TYPE_UINT, port_info->lease_time,
-				   NULL,
-				   NULL);
+				   NULL
+    );
 
-    if (err == NULL) {
+    gupnp_service_proxy_call_action(wan_service,
+                                    action,
+                                    NULL,
+                                    &local_error);
+
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+
+    if (local_error == NULL) {
 
 	    g_print ("\e[36m*** Added entry: \e[0m%s\n", port_info->description );
 	    g_print ("    RemoteIP: %s, ExtPort: %d %s, IntPort: %d, IntIP: %s\n",
@@ -126,11 +139,12 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 	    error = NULL;
 	    return TRUE;
 
-    } else {
-        g_printerr ("\e[31m[EE]\e[0m AddPortMapping: %s (%i)\n", err->message, err->code);
+    }
+    else {
+        g_printerr ("\e[31m[EE]\e[0m AddPortMapping: %s (%i)\n", local_error->message, local_error->code);
 
-        *error = g_error_copy(err);
-        g_error_free (err);
+        *error = g_error_copy(local_error);
+        g_error_free (local_error);
 
         return FALSE;
     }
@@ -140,17 +154,31 @@ static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
 {
 
     GError *error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
     PortForwardInfo* port;
 
     port = g_malloc( sizeof(PortForwardInfo) );
 
-    gupnp_service_proxy_send_action (router->wan_conn_service,
-				   /* Action name and error location */
-				   "GetGenericPortMappingEntry", &error,
-				   /* IN args */
+    action = gupnp_service_proxy_action_new(
+        "GetGenericPortMappingEntry",
+ 				   /* IN args */
 				   "NewPortMappingIndex",
 				   G_TYPE_UINT, index,
-				   NULL,
+				   NULL
+    );
+
+    gupnp_service_proxy_call_action(router->wan_conn_service,
+                                    action,
+                                    NULL,
+                                    &error);
+
+   if (error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action,
+                   /* Error location */
+                   &error,
 				   /* OUT args */
 				   "NewRemoteHost",
 				   G_TYPE_STRING, &port->remote_host,
@@ -170,6 +198,9 @@ static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
 				   G_TYPE_UINT, &port->lease_time,
 				   NULL);
 
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+
+    out:
     if (error) {
 
         // error 713: end of ports array
@@ -241,17 +272,30 @@ void discovery_mapped_ports_list(RouterInfo *router)
 gboolean get_conn_status (RouterInfo *router)
 {
     GError *error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
     gchar* conn_status;
     gchar* last_conn_error;
     guint  uptime = 0;
 
     g_print("\e[36mRequest for connection status info... ");
 
-    gupnp_service_proxy_send_action (router->wan_conn_service,
-				   /* Action name and error location */
-				   "GetStatusInfo", &error,
-				   /* IN args */
-				   NULL,
+    action = gupnp_service_proxy_action_new(
+        "GetStatusInfo",
+        NULL
+    );
+
+    gupnp_service_proxy_call_action(router->wan_conn_service,
+                                    action,
+                                    NULL,
+                                    &error);
+
+    if (error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action,
+                   /* Error location */
+                   &error,
 				   /* OUT args */
 				   "NewConnectionStatus",
 				   G_TYPE_STRING, &conn_status,
@@ -261,8 +305,9 @@ gboolean get_conn_status (RouterInfo *router)
 				   G_TYPE_UINT, &uptime,
 				   NULL);
 
-    if (error == NULL)
-    {
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+
+    if (error == NULL) {
         if(g_strcmp0("Connected", conn_status) == 0)
             router->connected = TRUE;
         else
@@ -278,25 +323,28 @@ gboolean get_conn_status (RouterInfo *router)
 
         return TRUE;
     }
-    else
-    {
+
+    out:
+    if (error != NULL) {
         g_print("\e[1;31mfailed\e[0;0m\n");
 
         gui_disable_conn_status();
 
         g_printerr ("\e[31m[EE]\e[0m GetStatusInfo: %s (%i)\n", error->message, error->code);
         g_error_free (error);
-        return FALSE;
     }
+    return FALSE;
 }
 
 /* Retrive download and upload speeds */
 static gboolean update_data_rate_cb (gpointer data)
 {
     GError *error = NULL;
+    GUPnPServiceProxyAction *action_in = NULL;
+    GUPnPServiceProxyAction *action_out = NULL;
     GUPnPServiceProxy *wan_device;
-    GTimeVal begin_time;
-    GTimeVal end_time;
+    gint64 begin_time;
+    gint64 end_time;
     gdouble duration_secs;
 
     static guint old_total_bytes_received = 0;
@@ -309,19 +357,38 @@ static gboolean update_data_rate_cb (gpointer data)
 
     wan_device = ((RouterInfo *) data)->wan_common_ifc;
 
+    action_in = gupnp_service_proxy_action_new(
+        "GetTotalBytesReceived",
+        NULL
+    );
+
+    action_out = gupnp_service_proxy_action_new(
+        "GetTotalBytesSent",
+        NULL
+    );
+
     /* download speed */
-    g_get_current_time (&begin_time);
-    gupnp_service_proxy_send_action (wan_device,
-				   /* Action name and error location */
-				   "GetTotalBytesReceived", &error,
-				   /* IN args */
-				   NULL,
+    begin_time = g_get_monotonic_time();
+    gupnp_service_proxy_call_action(wan_device,
+                                    action_in,
+                                    NULL,
+                                    &error);
+
+    if (error != NULL) {
+        goto error_in;
+    }
+
+    gupnp_service_proxy_action_get_result (action_in,
+                   /* Error location */
+                   &error,
 				   /* OUT args */
 				   "NewTotalBytesReceived",
 				   G_TYPE_UINT, &current_total_bytes_received,
 				   NULL);
 
-	g_get_current_time (&end_time);
+    g_clear_pointer (&action_in, gupnp_service_proxy_action_unref);
+
+	end_time  = g_get_monotonic_time();
 
 	if (error == NULL) {
 
@@ -330,8 +397,7 @@ static gboolean update_data_rate_cb (gpointer data)
 	    else {
 
             // UPnP query time
-            duration_secs = 1 + (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
-                                        (end_time.tv_usec - begin_time.tv_usec)) / G_USEC_PER_SEC;
+            duration_secs = 1 + ((double)end_time - begin_time) * G_USEC_PER_SEC;
 
 	        if(opt_debug)
 	            g_print("\e[34mGetTotalBytesReceived() duration: %fs\e[0m\n", duration_secs);
@@ -344,7 +410,10 @@ static gboolean update_data_rate_cb (gpointer data)
 
         old_total_bytes_received = current_total_bytes_received;
 
-    } else {
+    }
+
+    error_in:
+    if (error != NULL) {
         gui_disable_download_speed();
         gui_disable_total_received();
 
@@ -354,18 +423,27 @@ static gboolean update_data_rate_cb (gpointer data)
     }
 
     /* upload speed */
-    g_get_current_time (&begin_time);
-    gupnp_service_proxy_send_action (wan_device,
-				   /* Action name and error location */
-				   "GetTotalBytesSent", &error,
-				   /* IN args */
-				   NULL,
+    begin_time = g_get_monotonic_time();
+    gupnp_service_proxy_call_action(wan_device,
+                                    action_out,
+                                    NULL,
+                                    &error);
+
+    if (error != NULL) {
+        goto error_out;
+    }
+
+    gupnp_service_proxy_action_get_result (action_out,
+                   /* Error location */
+                   &error,
 				   /* OUT args */
 				   "NewTotalBytesSent",
 				   G_TYPE_UINT, &current_total_bytes_sent,
 				   NULL);
 
-	g_get_current_time (&end_time);
+    g_clear_pointer (&action_out, gupnp_service_proxy_action_unref);
+
+	end_time  = g_get_monotonic_time();
 
 	if (error == NULL) {
 
@@ -374,8 +452,7 @@ static gboolean update_data_rate_cb (gpointer data)
 	    else {
 
 	        // UPnP query time
-	        duration_secs = 1 + (((double)end_time.tv_sec - begin_time.tv_sec) * G_USEC_PER_SEC +
-                                        (end_time.tv_usec - begin_time.tv_usec)) / G_USEC_PER_SEC;
+	        duration_secs = 1 + ((double)end_time - begin_time) * G_USEC_PER_SEC;
 
             if(opt_debug)
 	            g_print("\e[34mGetTotalBytesSent() duration:     %fs\e[0m\n", duration_secs);
@@ -386,8 +463,10 @@ static gboolean update_data_rate_cb (gpointer data)
         gui_set_total_sent(current_total_bytes_sent);
 
         old_total_bytes_sent = current_total_bytes_sent;
+    }
 
-    } else {
+    error_out:
+    if (error != NULL) {
         gui_disable_upload_speed();
         gui_disable_total_sent();
 
@@ -407,22 +486,36 @@ static gboolean update_data_rate_cb (gpointer data)
 gboolean get_external_ip (RouterInfo *router)
 {
     GError *error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
     gchar *ext_ip_addr = NULL;
 
     g_print("\e[36mRequest for external IP address... ");
 
-    gupnp_service_proxy_send_action (router->wan_conn_service,
-				   /* Action name and error location */
-				   "GetExternalIPAddress", &error,
-				   /* IN args */
-				   NULL,
-				   /* OUT args */
-				   "NewExternalIPAddress",
-				   G_TYPE_STRING, &ext_ip_addr,
-				   NULL);
+    action = gupnp_service_proxy_action_new(
+        "GetExternalIPAddress",
+        NULL
+    );
 
-    if (error == NULL)
-    {
+    gupnp_service_proxy_call_action(router->wan_conn_service,
+                                    action,
+                                    NULL,
+                                    &error);
+
+    if (error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action,
+       /* Error location */
+       &error,
+       /* OUT args */
+       "NewExternalIPAddress",
+       G_TYPE_STRING, &ext_ip_addr,
+       NULL);
+
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+
+    if (error == NULL) {
         if(router->external_ip != NULL)
             g_free(router->external_ip);
 
@@ -437,31 +530,45 @@ gboolean get_external_ip (RouterInfo *router)
 
         return TRUE;
     }
-    else
-    {
+
+    out:
+    if (error != NULL) {
         g_print("\e[1;31mfailed\e[0;0m\n");
 
         gui_disable_ext_ip ();
 
         g_printerr ("\e[31m[EE]\e[0m GetExternalIPAddress: %s (%i)\n", error->message, error->code);
         g_error_free (error);
-        return FALSE;
     }
+
+    return FALSE;
 }
 
 /* Retrive RSIP and NAT availability */
 gboolean get_nat_rsip_status (RouterInfo *router)
 {
     GError *error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
 
     g_print("\e[36mRequest for NAT and RSIP availability... ");
 
-    /* download speed */
-    gupnp_service_proxy_send_action (router->wan_conn_service,
-				   /* Action name and error location */
-				   "GetNATRSIPStatus", &error,
-				   /* IN args */
-				   NULL,
+    action = gupnp_service_proxy_action_new(
+        "GetNATRSIPStatus",
+        NULL
+    );
+
+    gupnp_service_proxy_call_action(router->wan_conn_service,
+                                    action,
+                                    NULL,
+                                    &error);
+
+    if (error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action,
+                   /* Error location */
+                   &error,
 				   /* OUT args */
 				   "NewRSIPAvailable",
 				   G_TYPE_BOOLEAN, &router->rsip_available,
@@ -469,38 +576,52 @@ gboolean get_nat_rsip_status (RouterInfo *router)
 				   G_TYPE_BOOLEAN, &router->nat_enabled,
 				   NULL);
 
-    if (error == NULL)
-    {
-        g_print("\e[32msuccessful \e[0m[RSIP=%s, NAT=%s]\n", router->rsip_available == TRUE ? "yes" : "no", router->nat_enabled == TRUE ? "yes" : "no" );
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
 
+    if (error == NULL) {
+        g_print("\e[32msuccessful \e[0m[RSIP=%s, NAT=%s]\n", router->rsip_available == TRUE ? "yes" : "no", router->nat_enabled == TRUE ? "yes" : "no" );
         return TRUE;
     }
-    else
-    {
+
+    out:
+    if (error != NULL) {
         g_print("\e[1;31mfailed\e[0;0m\n");
 
         g_printerr ("\e[31m[EE]\e[0m GetNATRSIPStatus: %s (%i)\n", error->message, error->code);
         g_error_free (error);
-        return FALSE;
     }
+
+    return FALSE;
 }
 
 /* Retrive WAN link properties */
 gboolean get_wan_link_properties (RouterInfo *router)
 {
     GError *error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
 
     gchar *access_type, *physical_link_status;
     guint upstream_max_bitrate, downstream_max_bitrate;
 
     g_print("\e[36mRequest for WAN link properties... ");
 
-    /* download speed */
-    gupnp_service_proxy_send_action (router->wan_common_ifc,
-				   /* Action name and error location */
-				   "GetCommonLinkProperties", &error,
-				   /* IN args */
-				   NULL,
+    action = gupnp_service_proxy_action_new(
+        "GetCommonLinkProperties",
+        NULL
+    );
+
+    gupnp_service_proxy_call_action(router->wan_common_ifc,
+                                    action,
+                                    NULL,
+                                    &error);
+
+    if (error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action,
+                   /* Error location */
+                   &error,
 				   /* OUT args */
 				   "NewWANAccessType",
 				   G_TYPE_STRING, &access_type,
@@ -512,58 +633,73 @@ gboolean get_wan_link_properties (RouterInfo *router)
 				   G_TYPE_STRING, &physical_link_status,
 				   NULL);
 
-    if (error == NULL)
-    {
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+
+    if (error == NULL) {
         g_print("\e[32msuccessful\e[0m\n");
         g_print("\e[36mWAN link properties:\e[0m access_type=%s, link_status=%s, max_up=%u, max_down=%u\n",
                      access_type, physical_link_status, upstream_max_bitrate, downstream_max_bitrate );
 
         return TRUE;
     }
-    else
-    {
+
+    out:
+    if (error != NULL) {
         g_print("\e[1;31mfailed\e[0;0m\n");
 
         g_printerr ("\e[31m[EE]\e[0m GetCommonLinkProperties: %s (%i)\n", error->message, error->code);
         g_error_free (error);
-        return FALSE;
     }
+
+    return FALSE;
 }
 
 static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int level)
 {
+    GError *error = NULL;
+    GUPnPServiceProxyAction *action = NULL;
     gchar *string_buffer = NULL;
     gchar *connect_service = NULL;
-    GError *error = NULL;
     int i;
 
-    if(opt_debug)
-    {
+    if (opt_debug) {
         for(i = 0; i < level; i++)
             g_print("    ");
 
         g_print("      \e[32m** Getting DefaultConnectionService...\e[0m\n");
     }
 
-    gupnp_service_proxy_send_action (proxy,
-				   /* Action name and error location */
-				   "GetDefaultConnectionService", &error,
-				   /* IN args */
-				   NULL,
+    action = gupnp_service_proxy_action_new(
+        "GetDefaultConnectionService",
+        NULL
+    );
+
+    gupnp_service_proxy_call_action(proxy,
+                                    action,
+                                    NULL,
+                                    &error);
+
+    if (error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action,
+                   /* Error location */
+                   &error,
 				   /* OUT args */
 				   "NewDefaultConnectionService",
 				   G_TYPE_STRING, &string_buffer,
 				   NULL);
 
+    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+
     if (error == NULL) {
 
-        if(string_buffer != NULL && g_strcmp0(string_buffer, "") != 0)
-        {
+        if (string_buffer != NULL && g_strcmp0(string_buffer, "") != 0) {
             char** connect_result = NULL;
             connect_result = g_strsplit(string_buffer, ",", 2);
 
-            if(opt_debug)
-            {
+            if(opt_debug) {
                 for(i = 0; i < level; i++)
                     g_print("    ");
 
@@ -573,15 +709,18 @@ static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int leve
             connect_service = g_strdup(connect_result[1]);
             g_strfreev(connect_result);
 
-        } else {
+        }
+        else {
             g_print("\e[0;31m[WW]\e[0m GetDefaultConnectionService: empty\e[0;0m\n");
-            //connect_device = NULL;
+
             connect_service = NULL;
         }
         // yes, can free NULL string
         g_free (string_buffer);
+    }
 
-    } else {
+    out:
+    if (error != NULL) {
         g_printerr ("\e[31m[EE]\e[0m GetDefaultConnectionService: %s (%i)\n", error->message, error->code);
         g_error_free (error);
     }
@@ -798,6 +937,23 @@ static int device_service_cmp(const char *devserv1, const char *devserv2, int ve
     return -1;
 }
 
+static void urc_gupnp_introspection_callback (GUPnPServiceInfo *info,
+                                      GUPnPServiceIntrospection *introspection,
+                                      const GError *error,
+                                      gpointer user_data)
+{
+
+    const GList *actions_list;
+    actions_list = gupnp_service_introspection_list_action_names (introspection);
+
+    if(actions_list != NULL) {
+        do {
+            g_print("               > %s\n", (gchar*) actions_list->data);
+
+        } while ((actions_list = actions_list->next));
+    }
+}
+
 /* Device available callback */
 static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                        GUPnPServiceProxy *proxy,
@@ -969,24 +1125,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
 
 
             /* Introspect current service */
-            const GList *actions_list;
-            GUPnPServiceIntrospection *service_introspect;
+            gupnp_service_info_get_introspection_async (child->data, urc_gupnp_introspection_callback, &level);
 
-            service_introspect = gupnp_service_info_get_introspection (child->data, NULL);
-
-            if(service_introspect != NULL) {
-
-                actions_list = gupnp_service_introspection_list_action_names (service_introspect);
-
-                if(actions_list != NULL) {
-                
-                    do {
-                        print_indent(level);
-                        g_print("               > %s\n", (gchar*) actions_list->data);
-
-                    } while ((actions_list = actions_list->next));
-                }
-            }
         }
 
         /* Is a IP forwarding service? */
@@ -1112,12 +1252,8 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
                                          GUPnPServiceProxy *proxy,
                                          RouterInfo        *router)
 {
-    const char *device_type = NULL;
-
     g_print ("==> Device Unavailable: \e[31m%s\e[0;0m\n",
             gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy)));
-
-    device_type = gupnp_device_info_get_device_type (GUPNP_DEVICE_INFO (proxy));
 
     if(router->udn == gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy)) ) {
 
@@ -1156,6 +1292,7 @@ static void on_context_available (GUPnPContextManager *context_manager,
 						     gpointer user_data)
 {
 	GUPnPControlPoint *cp;
+    GSSDPClient *gssdp_client;
 	RouterInfo* router;
 
 	g_print ("* Starting UPnP Resource discovery... ");
@@ -1185,7 +1322,8 @@ static void on_context_available (GUPnPContextManager *context_manager,
 
     g_print ("done\n");
 
-    client_ip = gupnp_context_get_host_ip (context);
+    gssdp_client = gssdp_client_new (NULL, NULL);
+    client_ip = gssdp_client_get_host_ip (gssdp_client);
 
 	g_object_unref(cp);
 }
