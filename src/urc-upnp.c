@@ -937,6 +937,75 @@ static int device_service_cmp(const char *devserv1, const char *devserv2, int ve
     return -1;
 }
 
+static void urc_set_main_device(GUPnPServiceProxy *proxy,
+                                RouterInfo        *router) {
+
+    gchar *router_icon_url, *icon_mime_type;
+    int icon_depth, icon_width, icon_height;
+
+    router->main_device = GUPNP_DEVICE_INFO (proxy);
+    router->friendly_name = gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy));
+    router->brand = gupnp_device_info_get_manufacturer (GUPNP_DEVICE_INFO (proxy));
+    router->http_address = gupnp_device_info_get_presentation_url (GUPNP_DEVICE_INFO (proxy));
+    router->brand_website = gupnp_device_info_get_manufacturer_url (GUPNP_DEVICE_INFO (proxy));
+    router->model_description = gupnp_device_info_get_model_description (GUPNP_DEVICE_INFO (proxy));
+    router->model_name = gupnp_device_info_get_model_name (GUPNP_DEVICE_INFO (proxy));
+    router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
+    router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
+    router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
+
+    router_icon_url = gupnp_device_info_get_icon_url (GUPNP_DEVICE_INFO (proxy),
+                                   NULL, -1, -1, -1, FALSE,
+                                   &icon_mime_type, &icon_depth,
+                                   &icon_width, &icon_height);
+
+    if (opt_debug) {
+
+        g_print ("   Model description: %s\n", router->model_description);
+        g_print ("          Model name: %s\n", router->model_name);
+        g_print ("        Model number: %s\n", router->model_number);
+        g_print ("               Brand: %s\n", router->brand);
+        g_print ("    Presentation URL: %s\n", router->http_address);
+        g_print ("                 UPC: %s\n", router->upc);
+        g_print ("  Unique Device Name: %s\n", router->udn);
+
+        if(router_icon_url != NULL) {
+
+            g_print ("            Icon URL: %s\n", router_icon_url);
+            g_print ("      Icon mime/type: %s\n", icon_mime_type);
+            g_print ("          Icon depth: %d\n", icon_depth);
+            g_print ("          Icon width: %d\n", icon_width);
+            g_print ("         Icon height: %d\n", icon_height);
+            g_free (icon_mime_type);
+        }
+    }
+
+    #ifdef HAVE_LIBCURL
+    // start the download in a separate thread
+    g_thread_new("down_router_ico", download_router_icon, router_icon_url);
+    #endif
+
+    router->http_address = parse_presentation_url(router->http_address,
+                           gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
+
+    /* workaround for empty <friendlyName> property or standard name */
+    if(g_strcmp0 (router->friendly_name, "") == 0 || g_strcmp0 (router->friendly_name, "WANConnectionDevice") == 0)
+    {
+        if(g_strcmp0(router->model_name, "") == 0)
+            router->friendly_name = g_strdup (router->model_description);
+        else
+            router->friendly_name = g_strdup (router->model_name);
+    }
+
+    gui_set_router_info (router->friendly_name,
+                         router->http_address,
+                         router->brand,
+                         router->brand_website,
+                         router->model_description,
+                         router->model_name,
+                         router->model_number);
+}
+
 static void urc_gupnp_introspection_callback (GUPnPServiceInfo *info,
                                       GUPnPServiceIntrospection *introspection,
                                       const GError *error,
@@ -966,13 +1035,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
     const char *service_id = NULL;
     const char *device_type = NULL;
 
-    gchar *router_icon_url, *icon_mime_type;
-    int icon_depth, icon_width, icon_height;
-
     static int level = 0;
 
     if(level == 0) {
-    
+
         g_print ("==> Device Available: \e[31m%s\e[0;0m\n",
                 gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy)));
     }
@@ -986,117 +1052,17 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         if(router->main_device != NULL)
             return;
 
-        router->main_device = GUPNP_DEVICE_INFO (proxy);
-        router->friendly_name = gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy));
-        router->brand = gupnp_device_info_get_manufacturer (GUPNP_DEVICE_INFO (proxy));
-        router->http_address = gupnp_device_info_get_presentation_url (GUPNP_DEVICE_INFO (proxy));
-        router->brand_website = gupnp_device_info_get_manufacturer_url (GUPNP_DEVICE_INFO (proxy));
-        router->model_description = gupnp_device_info_get_model_description (GUPNP_DEVICE_INFO (proxy));
-        router->model_name = gupnp_device_info_get_model_name (GUPNP_DEVICE_INFO (proxy));
-        router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
-        router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
-        router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
-
-        router_icon_url = gupnp_device_info_get_icon_url (GUPNP_DEVICE_INFO (proxy),
-                                       NULL, -1, -1, -1, FALSE,
-                                       &icon_mime_type, &icon_depth,
-                                       &icon_width, &icon_height);
-
-        if(opt_debug) {
-        
-           	g_print ("   Model description: %s\n", router->model_description);
-           	g_print ("          Model name: %s\n", router->model_name);
-           	g_print ("        Model number: %s\n", router->model_number);
-           	g_print ("               Brand: %s\n", router->brand);
-           	g_print ("    Presentation URL: %s\n", router->http_address);
-           	g_print ("                 UPC: %s\n", router->upc);
-           	g_print ("  Unique Device Name: %s\n", router->udn);
-
-           	if(router_icon_url != NULL) {
-           	
-           	    g_print ("            Icon URL: %s\n", router_icon_url);
-                g_print ("      Icon mime/type: %s\n", icon_mime_type);
-                g_print ("          Icon depth: %d\n", icon_depth);
-                g_print ("          Icon width: %d\n", icon_width);
-                g_print ("         Icon height: %d\n", icon_height);
-                g_free (icon_mime_type);
-            }
-        }
-
-        #ifdef HAVE_LIBCURL
-        // start the download in a separate thread
-        g_thread_new("down_router_ico", download_router_icon, router_icon_url);
-        #endif
-
-        router->http_address = parse_presentation_url(router->http_address,
-                               gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
-
-        /* workaround for empty <friendlyName> property */
-        if(g_strcmp0 (router->friendly_name, "") == 0) {
-        
-            if(g_strcmp0 (router->model_name, "") == 0)
-                router->friendly_name = g_strdup (router->model_description);
-            else
-                router->friendly_name = g_strdup (router->model_name);
-        }
-
-        gui_set_router_info (router->friendly_name,
-                             router->http_address,
-                             router->brand,
-                             router->brand_website,
-                             router->model_description,
-                             router->model_name,
-                             router->model_number);
+        urc_set_main_device(proxy, router);
 
     }
     /* There is only a WANConnectionDevice? */
     else if(device_service_cmp (device_type, "urn:schemas-upnp-org:device:WANConnectionDevice:", 1) == 0 && level == 0 )
     {
-    	/* do nothing if there is already a device stored */
+        /* do nothing if there is already a device stored */
         if(router->main_device != NULL)
             return;
 
-    	router->main_device = GUPNP_DEVICE_INFO (proxy);
-        router->friendly_name = gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy));
-        router->brand = gupnp_device_info_get_manufacturer (GUPNP_DEVICE_INFO (proxy));
-        router->http_address = gupnp_device_info_get_presentation_url (GUPNP_DEVICE_INFO (proxy));
-        router->brand_website = gupnp_device_info_get_manufacturer_url (GUPNP_DEVICE_INFO (proxy));
-        router->model_description = gupnp_device_info_get_model_description (GUPNP_DEVICE_INFO (proxy));
-        router->model_name = gupnp_device_info_get_model_name (GUPNP_DEVICE_INFO (proxy));
-        router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
-        router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
-        router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
-
-        if(opt_debug) {
-        
-           	g_print ("   Model description: %s\n", router->model_description);
-           	g_print ("          Model name: %s\n", router->model_name);
-           	g_print ("        Model number: %s\n", router->model_number);
-           	g_print ("               Brand: %s\n", router->brand);
-           	g_print ("    Presentation URL: %s\n", router->http_address);
-           	g_print ("                 UPC: %s\n", router->upc);
-           	g_print ("  Unique Device Name: %s\n", router->udn);
-        }
-
-        router->http_address = parse_presentation_url (router->http_address,
-                               gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
-
-        /* workaround for empty <friendlyName> property or standard name */
-        if(g_strcmp0 (router->friendly_name, "") == 0 || g_strcmp0 (router->friendly_name, "WANConnectionDevice") == 0)
-        {
-            if(g_strcmp0(router->model_name, "") == 0)
-                router->friendly_name = g_strdup (router->model_description);
-            else
-                router->friendly_name = g_strdup (router->model_name);
-        }
-
-        gui_set_router_info (router->friendly_name,
-                             router->http_address,
-                             router->brand,
-                             router->brand_website,
-                             router->model_description,
-                             router->model_name,
-                             router->model_number);
+        urc_set_main_device(proxy, router);
     }
 
     /* Enum services */
