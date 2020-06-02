@@ -938,10 +938,18 @@ static int device_service_cmp(const char *devserv1, const char *devserv2, int ve
 }
 
 static void urc_set_main_device(GUPnPServiceProxy *proxy,
-                                RouterInfo        *router) {
+                                RouterInfo        *router,
+                                gboolean is_complaiant_igd_device) {
 
     gchar *router_icon_url, *icon_mime_type;
     int icon_depth, icon_width, icon_height;
+
+    if (is_complaiant_igd_device) {
+        g_print ("*** Selected IGD complaiant device\n");
+    }
+    else {
+        g_print ("*** Selected simple device (not IGD complaiant)\n");
+    }
 
     router->main_device = GUPNP_DEVICE_INFO (proxy);
     router->friendly_name = gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (proxy));
@@ -1028,12 +1036,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                        GUPnPServiceProxy *proxy,
                                        RouterInfo        *router)
 {
-    GList *child;
+    GList *services;
+    GList *subdevices;
 
     static char *connect_service = NULL;
     const char *service_type = NULL;
     const char *service_id = NULL;
     const char *device_type = NULL;
+    gboolean is_managed_device = FALSE;
 
     static int level = 0;
 
@@ -1052,7 +1062,8 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         if(router->main_device != NULL)
             return;
 
-        urc_set_main_device(proxy, router);
+        urc_set_main_device(proxy, router, TRUE);
+        is_managed_device = TRUE;
 
     }
     /* There is only a WANConnectionDevice? */
@@ -1062,153 +1073,153 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
         if(router->main_device != NULL)
             return;
 
-        urc_set_main_device(proxy, router);
+        urc_set_main_device(proxy, router, FALSE);
+        is_managed_device = TRUE;
     }
 
-    /* Enum services */
-    child = gupnp_device_info_list_services (GUPNP_DEVICE_INFO (proxy));
+    /* Enum services (only on managed devices) */
+    if (is_managed_device) {
 
-    if(opt_debug) {
-    
-        print_indent(level);
+        services = gupnp_device_info_list_services (GUPNP_DEVICE_INFO (proxy));
 
-        if (g_list_length (child) > 0)
-            g_print ("    \e[1;32mEnum services...\e[0;0m\n");
-    }
+        if (opt_debug) {
+            print_indent(level);
 
-    while( child ) {
-
-        service_type = gupnp_service_info_get_service_type (GUPNP_SERVICE_INFO (child->data));
-        service_id = gupnp_service_info_get_id (GUPNP_SERVICE_INFO (child->data));
-
-        if(opt_debug) {
-        
-            print_indent (level);
-            g_print("      \e[32mService:\e[0m %s\n", service_id );
-
-            print_indent (level);
-            g_print("         Type: %s\n", service_type );
-
-
-            /* Introspect current service */
-            gupnp_service_info_get_introspection_async (child->data, urc_gupnp_introspection_callback, &level);
-
+            if (g_list_length (services) > 0)
+                g_print ("    \e[1;32mEnum services...\e[0;0m\n");
         }
 
-        /* Is a IP forwarding service? */
-        if( (device_service_cmp (service_type, "urn:schemas-upnp-org:service:Layer3Forwarding:", 1) == 0) ||
-        	(device_service_cmp (service_type, "urn:schemas-upnp-org:service:L3Forwarding:", 1) == 0) )
-        {
+        while( services ) {
 
-            if(connect_service != NULL)
-                g_free (connect_service);
-
-            connect_service = get_default_connection_service (child->data, level);
-
-        }
-        /* Is a WAN IFC service? */
-        else if(device_service_cmp (service_type, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:", 1) == 0)
-        {
-            router->wan_common_ifc = child->data;
-
-            /* Get common WAN link properties */
-            get_wan_link_properties (router);
-
-            /* Start data rate timer */
-            update_data_rate_cb (router);
-
-        }
-        /* Is a WAN IP Connection service or other? */
-        else if(device_service_cmp (service_type, "urn:schemas-upnp-org:service:WANIPConnection:", 1) == 0)
-        {
-
-            router->wan_conn_service = child->data;
-
-            gui_set_ports_buttons_callback_data (router->wan_conn_service);
-
-            gui_set_refresh_callback_data (router);
+            service_type = gupnp_service_info_get_service_type (GUPNP_SERVICE_INFO (services->data));
+            service_id = gupnp_service_info_get_id (GUPNP_SERVICE_INFO (services->data));
 
             if(opt_debug) {
-            
+
                 print_indent (level);
+                g_print("      \e[32mService:\e[0m %s\n", service_id );
 
-        		char **str = NULL;
+                print_indent (level);
+                g_print("         Type: %s\n", service_type );
 
-                str = g_strsplit (service_id, ":", 0);
-                g_print ("      \e[32m** Subscribed to %s events\e[0m\n", str[g_strv_length (str)-1]);
-                g_strfreev (str);
+
+                /* Introspect current service */
+                gupnp_service_info_get_introspection_async (services->data, urc_gupnp_introspection_callback, &level);
+
             }
 
-            /* Get external IP */
-            get_external_ip (router);
-            /* Get connection status info */
-            get_conn_status (router);
-            /* Get RSIP and NAT status */
-            get_nat_rsip_status (router);
+            /* Is a IP forwarding service? */
+            if( (device_service_cmp (service_type, "urn:schemas-upnp-org:service:Layer3Forwarding:", 1) == 0) ||
+                (device_service_cmp (service_type, "urn:schemas-upnp-org:service:L3Forwarding:", 1) == 0) )
+            {
 
-        	/* Subscribe to events */
-        	gupnp_service_proxy_set_subscribed (child->data, TRUE);
+                if(connect_service != NULL)
+                    g_free (connect_service);
 
-            gupnp_service_proxy_add_notify (child->data,
-                                            "PortMappingNumberOfEntries",
-                                            G_TYPE_UINT,
-                                            service_proxy_event_cb,
-                                            router);
-            gupnp_service_proxy_add_notify (child->data,
-                                            "ExternalIPAddress",
-                                            G_TYPE_STRING,
-                                            service_proxy_event_cb,
-                                            router);
-            gupnp_service_proxy_add_notify (child->data,
-                                            "ConnectionStatus",
-                                            G_TYPE_STRING,
-                                            service_proxy_event_cb,
-                                            router);
+                connect_service = get_default_connection_service (services->data, level);
 
-            /* Start port request timeout at 5 sec */
-            router->port_request_timeout = g_timeout_add_seconds (5, get_mapped_ports_list_timeout, router);
+            }
+            /* Is a WAN IFC service? */
+            else if(device_service_cmp (service_type, "urn:schemas-upnp-org:service:WANCommonInterfaceConfig:", 1) == 0)
+            {
+                router->wan_common_ifc = services->data;
 
-            /* Start connection status request timeout at 6 sec */
-            router->connection_status_timeout = g_timeout_add_seconds (6, get_connection_status_timeout, router);
+                /* Get common WAN link properties */
+                get_wan_link_properties (router);
 
-            /* Start external IP request timeout at 7 sec */
-            router->external_ip_timeout = g_timeout_add_seconds (7, get_external_ip_timeout, router);
+                /* Start data rate timer */
+                update_data_rate_cb (router);
 
+            }
+            /* Is a WAN IP Connection service or other? */
+            else if(device_service_cmp (service_type, "urn:schemas-upnp-org:service:WANIPConnection:", 1) == 0)
+            {
+
+                router->wan_conn_service = services->data;
+
+                gui_set_ports_buttons_callback_data (router->wan_conn_service);
+
+                gui_set_refresh_callback_data (router);
+
+                if(opt_debug) {
+                    print_indent (level);
+
+                    char **str = NULL;
+
+                    str = g_strsplit (service_id, ":", 0);
+                    g_print ("      \e[32m** Subscribed to %s events\e[0m\n", str[g_strv_length (str)-1]);
+                    g_strfreev (str);
+                }
+
+                /* Get external IP */
+                get_external_ip (router);
+                /* Get connection status info */
+                get_conn_status (router);
+                /* Get RSIP and NAT status */
+                get_nat_rsip_status (router);
+
+                /* Subscribe to events */
+                gupnp_service_proxy_set_subscribed (services->data, TRUE);
+
+                gupnp_service_proxy_add_notify (services->data,
+                                                "PortMappingNumberOfEntries",
+                                                G_TYPE_UINT,
+                                                service_proxy_event_cb,
+                                                router);
+                gupnp_service_proxy_add_notify (services->data,
+                                                "ExternalIPAddress",
+                                                G_TYPE_STRING,
+                                                service_proxy_event_cb,
+                                                router);
+                gupnp_service_proxy_add_notify (services->data,
+                                                "ConnectionStatus",
+                                                G_TYPE_STRING,
+                                                service_proxy_event_cb,
+                                                router);
+
+                /* Start port request timeout at 5 sec */
+                router->port_request_timeout = g_timeout_add_seconds (5, get_mapped_ports_list_timeout, router);
+
+                /* Start connection status request timeout at 6 sec */
+                router->connection_status_timeout = g_timeout_add_seconds (6, get_connection_status_timeout, router);
+
+                /* Start external IP request timeout at 7 sec */
+                router->external_ip_timeout = g_timeout_add_seconds (7, get_external_ip_timeout, router);
+
+            }
+            else
+                g_object_unref (services->data);
+
+            services = g_list_delete_link (services, services);
         }
-        else
-            g_object_unref (child->data);
-
-        child = g_list_delete_link (child, child);
     }
 
 
     /* Enum subdevices */
-    child = gupnp_device_info_list_devices (GUPNP_DEVICE_INFO (proxy));
+    subdevices = gupnp_device_info_list_devices (GUPNP_DEVICE_INFO (proxy));
 
-    if (opt_debug && g_list_length (child) > 0) {
-    
+    if (opt_debug && g_list_length (subdevices) > 0) {
         print_indent (level);
         g_print ("    \e[1;32mEnum sub-devices...\e[0;0m\n");
     }
 
-    while (child) {
+    while (subdevices) {
     
         if (opt_debug) {
-        
             print_indent (level);
             g_print ("      \e[32mSub-Device: \e[31m%s\e[0m\n",
-                gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (child->data)));
+                gupnp_device_info_get_friendly_name (GUPNP_DEVICE_INFO (subdevices->data)));
         }
 
         level = level + 1;
 
         /* Recursive pass */
-        device_proxy_available_cb (NULL, child->data, router);
+        device_proxy_available_cb (NULL, subdevices->data, router);
 
         level = level - 1;
 
-        g_object_unref (child->data);
-        child = g_list_delete_link (child, child);
+        g_object_unref (subdevices->data);
+        subdevices = g_list_delete_link (subdevices, subdevices);
     }
 
 }
