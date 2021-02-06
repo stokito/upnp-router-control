@@ -1328,14 +1328,27 @@ static void on_context_available (GUPnPContextManager *context_manager,
 	g_object_unref(cp);
 }
 
+static void on_context_unavailable (GUPnPContextManager *context_manager,
+							 GUPnPContext *context,
+						     gpointer user_data)
+{
+	g_print ("* Detected network unavailable, trying to reconnect...\n");
+}
+
+
 gboolean upnp_init()
 {
-    /* Create a new GUPnP Context. */
+  /* Create a new GUPnP Context. */
 	context_mngr = gupnp_context_manager_create (opt_bindport);
 
-	g_signal_connect(context_mngr, "context-available",
+  if (context_mngr) {
+    g_signal_connect(context_mngr, "context-available",
 					 G_CALLBACK(on_context_available),
                      NULL);    
- 
+    g_signal_connect(context_mngr, "context-unavailable",
+					 G_CALLBACK(on_context_unavailable),
+                     NULL);
+  }
+
     return TRUE;
 }
