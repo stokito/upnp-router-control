@@ -44,14 +44,40 @@ static GOptionEntry entries[] =
 };
 
 static void
-version()
+urc_print_version()
 {
     g_print("%s %s\n", PACKAGE, VERSION);
 }
 
-int 
+static void
+urc_activate_cb (GApplication *app, gpointer user_data)
+{
+  g_set_application_name(_("UPnP Router Control"));
+
+  gtk_window_set_default_icon_name ("upnp-router-control");
+  gtk_icon_theme_append_search_path(gtk_icon_theme_get_default (),
+          DATADIR G_DIR_SEPARATOR_S "icons");
+
+  /* Initialize the GUI */
+  urc_gui_init(app);
+
+  /* Enter in the main loop */
+  gtk_main();
+}
+
+static void
+urc_startup_cb (GApplication *app, gpointer user_data)
+{
+  /* Initialize the UPnP subsystem */
+  upnp_init();
+}
+
+int
 main(int argc, char** argv)
 {
+    GtkApplication *app;
+    int status;
+
     GError *error = NULL;
     GOptionContext *context = NULL;
     
@@ -67,32 +93,17 @@ main(int argc, char** argv)
     if (!g_option_context_parse (context, &argc, &argv, &error))
         g_warning ("option parsing failed: %s\n", error->message);
     
-    if(opt_version)
+    if (opt_version) {
         /* print version and exit */
-        version();
-    else
-    {
-        gtk_init(&argc, &argv);
-	
-        gtk_window_set_default_icon_name ("upnp-router-control");
-    
-        g_set_application_name(_("UPnP Router Control"));
-        
-        gtk_icon_theme_append_search_path(gtk_icon_theme_get_default (),
-			    DATADIR G_DIR_SEPARATOR_S "icons");
-        
-        /* Initialize the GUI */
-        gui_init();
-        
-        /* Initialize the UPnP subsystem */
-        if( ! upnp_init() )
-            return 1;
-        
-        /* Enter in the main loop */
-        gtk_main();        
-    
+        urc_print_version();
+        return EXIT_SUCCESS;
     }
-    
-    return 0;  
+    else {
+      app = gtk_application_new ("org.gtk.upnp_router_control", G_APPLICATION_FLAGS_NONE);
+      g_signal_connect (app, "activate", G_CALLBACK (urc_activate_cb), NULL);
+      g_signal_connect (app, "startup", G_CALLBACK (urc_startup_cb), NULL);
+      status = g_application_run (G_APPLICATION (app), argc, argv);
+      g_object_unref (app);
+      return status;
+    }
 }
-

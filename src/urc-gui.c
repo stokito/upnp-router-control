@@ -28,7 +28,8 @@
 #include "urc-upnp.h"
 #include "urc-graph.h"
 
-#define UI_FILE DATADIR"/upnp-router-control/upnp-router-control.glade"
+#define UI_FILE DATADIR"/upnp-router-control/upnp-router-control.ui"
+#define UI_HEADERMENU_FILE DATADIR"/upnp-router-control/upnp-router-control-headermenu.ui"
 
 enum Columns
 {
@@ -74,10 +75,14 @@ typedef struct
               *button_remove,
               *button_add,
               *router_icon,
-              *menuitem_refresh,
+              *refresh_button,
               *network_drawing_area;
 
+    GtkMenuButton *menu_button;
+
     AddPortWindow* add_port_window;
+
+    GMenuModel *headermenu;
 
 } GuiContext;
 
@@ -865,10 +870,10 @@ void gui_set_ports_buttons_callback_data(gpointer data)
 
 void gui_set_refresh_callback_data(gpointer data)
 {
-    g_signal_connect(gui->menuitem_refresh, "activate",
+    g_signal_connect(gui->refresh_button, "clicked",
                      G_CALLBACK(on_refresh_activate_cb), data);
 
-    gtk_widget_set_sensitive(gui->menuitem_refresh, TRUE);
+    gtk_widget_set_sensitive(gui->refresh_button, TRUE);
 }
 
 void gui_enable()
@@ -886,7 +891,7 @@ void gui_enable()
     gtk_widget_set_sensitive(gui->router_url_label, TRUE);
     gtk_widget_set_sensitive(gui->button_add, TRUE);
     gtk_widget_set_sensitive(gui->config_label, TRUE);
-    gtk_widget_set_sensitive(gui->menuitem_refresh, TRUE);
+    gtk_widget_set_sensitive(gui->refresh_button, TRUE);
 }
 
 void gui_disable()
@@ -937,40 +942,44 @@ void gui_disable()
 
     gtk_widget_set_sensitive(gui->config_label, FALSE);
 
-    gtk_widget_set_sensitive(gui->menuitem_refresh, FALSE);
+    gtk_widget_set_sensitive(gui->refresh_button, FALSE);
 
     disable_graph_data();
     gui_update_graph();
 
 }
 
+
 /* Menu About activate callback */
-static void on_about_activate_cb (GtkMenuItem *menuitem,
-                                  gpointer     user_data)
+static void on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
 {
     gchar* authors[] = {
-		"Daniele Napolitano <dnax88@gmail.com>",
-		"Giuseppe Cicalini <cicone@gmail.com> (basic cURL code)",
-		NULL
-	};
-    gchar* artists[] = {
-		"Icon design:\n\tFrédéric Bellaiche - http://www.quantum-bits.org",
-		NULL
-	};
-	/* Feel free to put your names here translators :-) */
-	gchar* translators = _("translator-credits");
+		  "Daniele Napolitano <dnax88@gmail.com>",
+		  "Giuseppe Cicalini <cicone@gmail.com> (basic cURL code)",
+		  NULL
+	  };
 
-	gtk_show_about_dialog (GTK_WINDOW(gui->main_window),
-             "authors", authors,
-		     "artists", artists,
-		     "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
-             "comments", _("A simple program to manage UPnP IGD compliant routers"),
-             "copyright", "Copyright © 2009-2010 Daniele Napolitano \"DnaX\"",
-             "version", VERSION,
-             "website", "http://launchpad.net/upnp-router-control",
-		     "logo-icon-name", "upnp-router-control",
-             NULL);
+    gchar* artists[] = {
+	  	"Frédéric Bellaiche http://www.quantum-bits.org",
+	  	NULL
+	  };
+
+	  /* Feel free to put your names here translators :-) */
+	  gchar* translators = _("translator-credits");
+
+	  gtk_show_about_dialog (GTK_WINDOW(gui->main_window),
+        "authors", authors,
+		    "artists", artists,
+		    "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
+        "comments", _("A simple program to manage UPnP IGD compliant routers"),
+        "copyright", "Copyright © 2009-2020 Daniele Napolitano \"DnaX\"",
+        "version", VERSION,
+        "license-type", GTK_LICENSE_GPL_3_0,
+        "website", "https://launchpad.net/upnp-router-control",
+		    "logo-icon-name", "upnp-router-control",
+        NULL);
 }
+
 
 static void gui_destroy()
 {
@@ -999,7 +1008,7 @@ static void gui_destroy()
 	gtk_main_quit();
 }
 
-void gui_init()
+void urc_gui_init(GApplication *app)
 {
     GtkBuilder* builder;
     GError* error = NULL;
@@ -1036,13 +1045,9 @@ void gui_init()
     gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
 
-    gui->menuitem_refresh = GTK_WIDGET (gtk_builder_get_object (builder, "menuitem_refresh"));
+    gui->refresh_button = GTK_WIDGET (gtk_builder_get_object (builder, "refresh_button"));
 
-    g_signal_connect(gtk_builder_get_object (builder, "menuitem_about"), "activate",
-                         G_CALLBACK(on_about_activate_cb), NULL);
-
-    g_signal_connect(gtk_builder_get_object (builder, "menuitem_exit"), "activate",
-                         G_CALLBACK(gui_destroy), NULL);
+    gui->menu_button = GTK_MENU_BUTTON (gtk_builder_get_object (builder, "menu_button"));
 
     g_signal_connect(G_OBJECT(gui->main_window), "delete-event",
                          G_CALLBACK(gui_destroy), NULL);
@@ -1053,6 +1058,26 @@ void gui_init()
                          G_CALLBACK(on_drawing_area_configure_event), NULL);
 
     gui_create_add_port_window(builder);
+    g_object_unref (G_OBJECT (builder));
+
+    builder = gtk_builder_new ();
+    if (!gtk_builder_add_from_file (builder, UI_HEADERMENU_FILE, &error))
+    {
+        g_error ("Couldn't load builder file: %s", error->message);
+        g_error_free (error);
+    }
+
+    gui->headermenu =  G_MENU_MODEL(gtk_builder_get_object (builder, "headermenu"));
+
+    // Menu actions.
+    const GActionEntry entries[] = {
+        { "about", on_about_activate_cb }
+    };
+
+    GActionGroup *actions = G_ACTION_GROUP( g_simple_action_group_new () );
+    gtk_widget_insert_action_group (gui->main_window, "app", actions);
+    g_action_map_add_action_entries (G_ACTION_MAP (actions), entries, G_N_ELEMENTS (entries), gui->main_window);
+    gtk_menu_button_set_menu_model(gui->menu_button, gui->headermenu);
 
     g_object_unref (G_OBJECT (builder));
 
@@ -1064,6 +1089,6 @@ void gui_init()
 
     g_print("* Showing GUI...\n");
 
+    gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(gui->main_window));
     gtk_widget_show_all(gui->main_window);
-
 }
