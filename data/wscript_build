@@ -17,7 +17,8 @@ for i in ["16x16", "22x22", "24x24", "32x32", "48x48"]:
 	bld.install_as('${DATADIR}/icons/hicolor/%s/apps/upnp-router-control.png' % i, 'apps_%s_upnp-router-control.png' % i)
 
 # Glade file
-bld.install_as('${DATADIR}/upnp-router-control/upnp-router-control.glade', 'upnp-router-control.glade')
+bld.install_as('${DATADIR}/upnp-router-control/upnp-router-control.ui', 'upnp-router-control.ui')
+bld.install_as('${DATADIR}/upnp-router-control/upnp-router-control-headermenu.ui', 'upnp-router-control-headermenu.ui')
 
 # Man page
 bld.install_as('${DATADIR}/man/man1/upnp-router-control.1', 'upnp-router-control.1')

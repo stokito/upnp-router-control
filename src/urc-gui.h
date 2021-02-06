@@ -22,7 +22,7 @@
 
 #include <glib.h>
 
-void gui_init();
+void urc_gui_init(GApplication *app);
 
 void gui_enable();
 

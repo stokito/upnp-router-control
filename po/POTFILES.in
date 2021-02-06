@@ -4,5 +4,6 @@ src/urc-main.c
 src/urc-upnp.c
 src/urc-gui.c
 src/urc-graph.c
-data/upnp-router-control.glade
+[type: gettext/glade]data/upnp-router-control.ui
+[type: gettext/glade]data/upnp-router-control-headermenu.ui
 data/upnp-router-control.desktop.in

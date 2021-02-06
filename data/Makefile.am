@@ -17,7 +17,11 @@ noinst_DATA = \
 
 gladedir = $(datadir)/upnp-router-control
 glade_DATA = \
-    upnp-router-control.glade
+    upnp-router-control.ui
+
+glade_headerdir = $(datadir)/upnp-router-control
+glade_header_DATA = \
+    upnp-router-control-headermenu.ui
 
 man_MANS = upnp-router-control.1
 
@@ -30,6 +34,7 @@ EXTRA_DIST = \
       $(icon_DATA)      \
       $(noinst_DATA)   \
       $(glade_DATA)     \
+      $(glade_header_DATA)	\
       $(desktop_DATA)   \
       $(man_MANS)
       $(NULL)
