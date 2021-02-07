@@ -436,6 +436,7 @@
             <property name="image">image_refresh</property>
             <property name="always_show_image">True</property>
             <property name="tooltip_text" translatable="yes">Refresh</property>
+            <accelerator key="F5" signal="clicked"/>
           </object>
           <packing>
             <property name="pack_type">start</property>
