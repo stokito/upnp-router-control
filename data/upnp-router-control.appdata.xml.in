@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2021 Daniele Napolitano <dnax88@gmil.com> -->
+<component type="desktop-application">
+  <id type="desktop">upnp-router-control.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>UPnP Router Control</name>
+  <summary>Simple program that manages UPnP compliant routers</summary>
+  <description>
+    <p>
+      A GTK application to access some parameters of the router like:
+      the network speed, the external IP and the model name. It can manage
+      port forwarding through a simple GUI interface.
+    </p>
+    <p>
+      UPnP Router Control uses the Internet Gateway Device Protocol v1,
+      so UPnP it must be enabled on your router in order to use its functions.
+    </p>
+  </description>
+
+  <url type="bugtracker">https://bugs.launchpad.net/upnp-router-control</url>
+  <url type="homepage">https://launchpad.net/upnp-router-control</url>
+
+  <screenshots>
+    <screenshot type="default">https://screenshots.debian.net/screenshots/000/005/553/large.png</screenshot>
+  </screenshots>
+
+  <updatecontact>dnax88@gmail.com</updatecontact>
+  <project_group>GNOME</project_group>
+  <translation type="gettext">upnp-router-control</translation>
+
+</component>
+

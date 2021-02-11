@@ -10,6 +10,14 @@ if bld.env['INTLTOOL']:
     obj.podir           = '../po'
     obj.flags		    = ['-d', '-u', '-c' ]
 
+# Appdata
+if bld.env['INTLTOOL']:
+    obj			        = bld.new_task_gen('intltool_in')
+    obj.source		    = 'upnp-router-control.appdata.xml.in'
+    obj.install_path	= '${DATADIR}/appdata'
+    obj.podir           = '../po'
+    obj.flags		    = ['-d', '-u', '-c' ]
+
 # Icons
 bld.install_as('${DATADIR}/icons/hicolor/scalable/apps/upnp-router-control.svg', 'apps_scalable_upnp-router-control.svg')
 

@@ -23,6 +23,12 @@ glade_headerdir = $(datadir)/upnp-router-control
 glade_header_DATA = \
     upnp-router-control-headermenu.ui
 
+# AppData
+@INTLTOOL_XML_RULE@
+appdatadir = $(datadir)/appdata
+appdata_in_files = upnp-router-control.appdata.xml.in
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+
 man_MANS = upnp-router-control.1
 
 @INTLTOOL_DESKTOP_RULE@
@@ -36,11 +42,13 @@ EXTRA_DIST = \
       $(glade_DATA)     \
       $(glade_header_DATA)	\
       $(desktop_DATA)   \
+      $(appdata_DATA)   \
       $(man_MANS)
       $(NULL)
 
 DISTCLEANFILES = \
-    $(desktop_DATA)
+    $(desktop_DATA) \
+    $(appdata_DATA)
 
 
 ###############################################################################
