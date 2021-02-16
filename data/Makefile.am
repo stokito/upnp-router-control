@@ -1,27 +1,19 @@
 icons = \
-	apps_16x16_upnp-router-control.png \
-	apps_22x22_upnp-router-control.png \
-	apps_24x24_upnp-router-control.png \
-	apps_32x32_upnp-router-control.png \
-	apps_48x48_upnp-router-control.png \
-	apps_scalable_upnp-router-control.svg \
+	apps_16x16_upnp-router-control.png      \
+	apps_22x22_upnp-router-control.png      \
+	apps_24x24_upnp-router-control.png      \
+	apps_32x32_upnp-router-control.png      \
+	apps_48x48_upnp-router-control.png      \
+	apps_scalable_upnp-router-control.svg   \
 	$(NULL)
 
 noinst_DATA = \
-	apps_16x16_upnp-router-control.svg \
-	apps_22x22_upnp-router-control.svg \
-	apps_24x24_upnp-router-control.svg \
-	apps_32x32_upnp-router-control.svg \
-	apps_48x48_upnp-router-control.svg \
+	apps_16x16_upnp-router-control.svg      \
+	apps_22x22_upnp-router-control.svg      \
+	apps_24x24_upnp-router-control.svg      \
+	apps_32x32_upnp-router-control.svg      \
+	apps_48x48_upnp-router-control.svg      \
 	$(NULL)
-
-gladedir = $(datadir)/upnp-router-control
-glade_DATA = \
-    upnp-router-control.ui
-
-glade_headerdir = $(datadir)/upnp-router-control
-glade_header_DATA = \
-    upnp-router-control-headermenu.ui
 
 # AppData
 @INTLTOOL_XML_RULE@
@@ -29,27 +21,30 @@ appdatadir = $(datadir)/appdata
 appdata_in_files = upnp-router-control.appdata.xml.in
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
-man_MANS = upnp-router-control.1
-
 @INTLTOOL_DESKTOP_RULE@
 desktopdir = $(datadir)/applications
 desktop_in_files = upnp-router-control.desktop.in
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
-EXTRA_DIST = \
-      $(icon_DATA)      \
-      $(noinst_DATA)   \
-      $(glade_DATA)     \
-      $(glade_header_DATA)	\
-      $(desktop_DATA)   \
-      $(appdata_DATA)   \
-      $(man_MANS)
-      $(NULL)
+man_MANS = upnp-router-control.1
 
-DISTCLEANFILES = \
-    $(desktop_DATA) \
-    $(appdata_DATA)
+EXTRA_DIST =                \
+    $(icon_DATA)            \
+    $(noinst_DATA)          \
+    $(desktop_in_files)     \
+    $(appdata_in_files)     \
+    $(man_MANS)             \
+    $(NULL)
 
+DISTCLEANFILES =        \
+    $(desktop_DATA)     \
+    $(appdata_DATA)     \
+    $(NULL)
+
+CLEANFILES =            \
+    $(desktop_DATA)     \
+    $(appdata_DATA)     \
+    $(NULL)
 
 ###############################################################################
 

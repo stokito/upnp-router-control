@@ -28,8 +28,7 @@
 #include "urc-upnp.h"
 #include "urc-graph.h"
 
-#define UI_FILE DATADIR"/upnp-router-control/upnp-router-control.ui"
-#define UI_HEADERMENU_FILE DATADIR"/upnp-router-control/upnp-router-control-headermenu.ui"
+#define URC_RESOURCE_BASE "/org/upnp-router-control/"
 
 enum Columns
 {
@@ -1018,7 +1017,7 @@ void urc_gui_init(GApplication *app)
     gui = g_malloc( sizeof(GuiContext) );
 
     builder = gtk_builder_new ();
-    if (!gtk_builder_add_from_file (builder, UI_FILE, &error))
+    if (!gtk_builder_add_from_resource (builder, URC_RESOURCE_BASE "ui/main.ui", &error))
     {
         g_error ("Couldn't load builder file: %s", error->message);
         g_error_free (error);
@@ -1061,7 +1060,7 @@ void urc_gui_init(GApplication *app)
     g_object_unref (G_OBJECT (builder));
 
     builder = gtk_builder_new ();
-    if (!gtk_builder_add_from_file (builder, UI_HEADERMENU_FILE, &error))
+    if (!gtk_builder_add_from_resource (builder, URC_RESOURCE_BASE "ui/headerbar-menu.ui", &error))
     {
         g_error ("Couldn't load builder file: %s", error->message);
         g_error_free (error);
@@ -1092,3 +1091,4 @@ void urc_gui_init(GApplication *app)
     gtk_application_add_window(GTK_APPLICATION(app), GTK_WINDOW(gui->main_window));
     gtk_widget_show_all(gui->main_window);
 }
+
