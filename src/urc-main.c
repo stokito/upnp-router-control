@@ -99,7 +99,7 @@ main(int argc, char** argv)
         return EXIT_SUCCESS;
     }
     else {
-      app = gtk_application_new ("org.gtk.upnp_router_control", G_APPLICATION_FLAGS_NONE);
+      app = gtk_application_new ("org.upnp-router-control", G_APPLICATION_FLAGS_NONE);
       g_signal_connect (app, "activate", G_CALLBACK (urc_activate_cb), NULL);
       g_signal_connect (app, "startup", G_CALLBACK (urc_startup_cb), NULL);
       status = g_application_run (G_APPLICATION (app), argc, argv);

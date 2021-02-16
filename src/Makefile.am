@@ -1,30 +1,46 @@
-INCLUDES =                                                  \
-       -DDATADIR=\""$(datadir)"\"					        \
-       -DPREFIX=\""$(prefix)"\" 			                \
-	   -DPACKAGE_DATADIR=\""$(datadir)/upnp-router-control"\"  \
-	   -DLOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"
-
-AM_CFLAGS = 						\
-	@GTK_CFLAGS@					\
+upnp_router_control_CFLAGS =    	\
+    @GTK_CFLAGS@                    \
     @GSSDP_LIBS@                    \
-	@GUPNP_CFLAGS@                  \
-	@LIBCURL_CFLAGS@
+    @GUPNP_CFLAGS@                  \
+    @LIBCURL_CFLAGS@                \
+    -DDATADIR=\""$(datadir)"\"                              \
+    -DPREFIX=\""$(prefix)"\"                                \
+    -DPACKAGE_DATADIR=\""$(datadir)/upnp-router-control"\"  \
+    -DLOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\"       \
+    $(NULL)
 
 bin_PROGRAMS = upnp-router-control
 
+RESOURCES =             \
+    urc-resources.c     \
+    urc-resources.h     \
+    $(NULL)
+
 upnp_router_control_SOURCES = \
-       urc-main.c \
-       urc-gui.c \
-       urc-gui.h \
-       urc-upnp.c \
-       urc-upnp.h \
-       urc-graph.c \
-       urc-graph.h
+    urc-main.c      \
+    urc-gui.c       \
+    urc-gui.h       \
+    urc-upnp.c      \
+    urc-upnp.h      \
+    urc-graph.c     \
+    urc-graph.h     \
+    $(RESOURCES)    \
+    $(NULL)
 
 upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GSSDP_LIBS@ @GUPNP_LIBS@ @LIBCURL_LIBS@ $(LIBCURL_LIBS) -lm
 
-MAINTAINERCLEANFILES =				\
-	*~			      				\
-	Makefile.in
+RESOURCES_DEP = $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies upnp-router-control.gresource.xml)
 
-AM_CPPFLAGS = $(LIBCURL_CFLAGS) 
+urc-resources.h urc-resources.c: upnp-router-control.gresource.xml $(RESOURCES_DEP)
+	$(GLIB_COMPILE_RESOURCES) --target=$@ --sourcedir=$(srcdir) --generate --c-name urc $(srcdir)/upnp-router-control.gresource.xml
+
+BUILT_SOURCES = 		\
+	$(RESOURCES)		\
+	$(NULL)
+
+
+CLEANFILES =            \
+    $(BUILT_SOURCES)    \
+    *~                  \
+    $(NULL)
+

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/upnp-router-control">
+    <file alias="ui/main.ui" compressed="true">upnp-router-control.ui</file>
+    <file alias="ui/headerbar-menu.ui" preprocess="xml-stripblanks">upnp-router-control-headermenu.ui</file>
+  </gresource>
+</gresources>

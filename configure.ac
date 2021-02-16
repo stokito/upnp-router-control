@@ -3,7 +3,7 @@ AC_INIT([upnp-router-control],
         [https://bugs.launchpad.net/upnp-router-control/+filebug],
         [upnp-router-control])
 
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_SRCDIR(src/urc-main.c)
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -35,6 +35,8 @@ IT_PROG_INTLTOOL(0.40.0)
 AM_GLIB_GNU_GETTEXT
 
 AC_SEARCH_LIBS([ceil], [m])
+
+AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources, glib-compile-resources)
 
 AC_ARG_ENABLE(libcurl,
               [  --disable-libcurl      compile UPnP Router Control without icon download support],
