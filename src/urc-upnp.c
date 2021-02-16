@@ -1269,7 +1269,6 @@ static void on_context_available (GUPnPContextManager *context_manager,
 						     gpointer user_data)
 {
 	GUPnPControlPoint *cp;
-    GSSDPClient *gssdp_client;
 	RouterInfo* router;
 
 	g_print ("* Starting UPnP Resource discovery... ");
@@ -1297,10 +1296,11 @@ static void on_context_available (GUPnPContextManager *context_manager,
     gssdp_resource_browser_set_active (GSSDP_RESOURCE_BROWSER (cp), TRUE);
 	gupnp_context_manager_manage_control_point(context_manager, cp);
 
-    g_print ("done\n");
+    client_ip = gssdp_client_get_host_ip (GSSDP_CLIENT(context));
 
-    gssdp_client = gssdp_client_new (NULL, NULL);
-    client_ip = gssdp_client_get_host_ip (gssdp_client);
+    g_print ("%s: ", gssdp_client_get_interface(GSSDP_CLIENT(context)) );
+    g_print ("host IP %s  ", client_ip);
+    g_print ("network %s \n", gssdp_client_get_network (GSSDP_CLIENT(context)) );
 
 	g_object_unref(cp);
 }
@@ -1315,17 +1315,17 @@ static void on_context_unavailable (GUPnPContextManager *context_manager,
 
 gboolean upnp_init()
 {
-  /* Create a new GUPnP Context. */
-	context_mngr = gupnp_context_manager_create (opt_bindport);
+    /* Create a new GUPnP Context. */
+    context_mngr = gupnp_context_manager_create (opt_bindport);
 
-  if (context_mngr) {
-    g_signal_connect(context_mngr, "context-available",
+    if (context_mngr) {
+        g_signal_connect(context_mngr, "context-available",
 					 G_CALLBACK(on_context_available),
                      NULL);    
-    g_signal_connect(context_mngr, "context-unavailable",
+        g_signal_connect(context_mngr, "context-unavailable",
 					 G_CALLBACK(on_context_unavailable),
                      NULL);
-  }
+    }
 
     return TRUE;
 }
