@@ -533,8 +533,7 @@
                 <property name="width_request">320</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Insert here a short description for this port
-</property>
+                <property name="label" translatable="yes">Insert here a short description for this port</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
                 <attributes>
@@ -584,8 +583,7 @@
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Insert here the port exposed by the router to Internet
-</property>
+                <property name="label" translatable="yes">Insert here the port exposed by the router to Internet</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
@@ -701,9 +699,7 @@
                     <property name="width_request">320</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Insert here the local IP where forward packets,
-usually IP of this computer
-</property>
+                    <property name="label" translatable="yes">Insert here the local IP where forward packets, usually IP of this computer</property>
                     <property name="wrap">True</property>
                     <property name="xalign">0</property>
                     <property name="yalign">0</property>
@@ -720,8 +716,7 @@ usually IP of this computer
                   <object class="GtkLabel" id="label11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Insert the the local port where forward the
-packets from router to your computer</property>
+                    <property name="label" translatable="yes">Insert the the local port where forward the packets from router to your computer</property>
                     <property name="wrap">True</property>
                     <property name="xalign">0</property>
                     <property name="yalign">0</property>
