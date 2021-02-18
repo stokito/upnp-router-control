@@ -29,5 +29,7 @@
   <project_group>GNOME</project_group>
   <translation type="gettext">upnp-router-control</translation>
 
+  <content_rating type="oars-1.1" />
+
 </component>
 
