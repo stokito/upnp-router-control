@@ -166,7 +166,7 @@ msgstr "Cronologia rete"
 
 #: ../src/upnp-router-control.ui.h:7
 msgid "Refresh"
-msgstr ""
+msgstr "Aggiorna"
 
 #: ../src/upnp-router-control.ui.h:8
 msgid "Add new port forward"
@@ -225,7 +225,7 @@ msgstr "Parametri avanzati"
 
 #: ../src/upnp-router-control-headermenu.ui.h:1
 msgid "_About"
-msgstr ""
+msgstr "_Informazioni"
 
 #~ msgid "_File"
 #~ msgstr "_File"
