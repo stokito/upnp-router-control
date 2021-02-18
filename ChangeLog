@@ -1,3 +1,18 @@
+2021-02-07 Daniele Napolitano <dnax88@gmail.com>
+    * 0.3 release
+    * [feature] Porting to Gtk3 along with GtkHeaderBar and client-side decoration
+    * [feature] Added refresh button to force the reload of the data
+    * Better handling ot the ports list (no more flikering on updates)
+    * Don't trust PortMappingNumberOfEntries value
+    * Fixed various bugs in the network graph
+    * Upgraded code for libgssdp-1.2 and libgupnp-1.2 (LP #1100236, LP #1828792)
+    * Removed libdownload dependency
+    * [bug fixed] LP #1802084: "enabled" status not filled in the post mapping list (thanks Daniel Steglich)
+    * [bug fixed] LP #1527534: Added support for IDG v2 (thanks miniupnp)
+    * [bug fixed] Debian #713706: Add -lm to LDADD to fix libm underlinkage (thanks Barry deFreese)
+    * [l18n] Added el.po en_GB.po gl.po pt_BR.po sv.po
+    * [l18n] Updated de.po es.po eu.po fr.po it.po nl.po pl.po ru.po
+
 2010-10-14 Daniele Napolitano <dnax88@gmail.com>
     * 0.2 release
     * [feature] New network history graph
