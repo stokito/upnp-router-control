@@ -41,8 +41,7 @@
               <object class="GtkImage" id="image1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="pixel_size">64</property>
-                <property name="icon_name">upnp-router-control</property>
+                <property name="resource">/org/upnp-router-control/icon/logo.svg</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>

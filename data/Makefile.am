@@ -13,6 +13,7 @@ noinst_DATA = \
 	apps_24x24_upnp-router-control.svg      \
 	apps_32x32_upnp-router-control.svg      \
 	apps_48x48_upnp-router-control.svg      \
+	apps_64x64_upnp-router-control.svg      \
 	$(NULL)
 
 # AppData
