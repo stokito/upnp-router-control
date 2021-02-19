@@ -1,19 +1,19 @@
 icons = \
-	apps_16x16_upnp-router-control.png      \
-	apps_22x22_upnp-router-control.png      \
-	apps_24x24_upnp-router-control.png      \
-	apps_32x32_upnp-router-control.png      \
-	apps_48x48_upnp-router-control.png      \
-	apps_scalable_upnp-router-control.svg   \
+	apps_16x16_org.upnproutercontrol.UPnPRouterControl.png      \
+	apps_22x22_org.upnproutercontrol.UPnPRouterControl.png      \
+	apps_24x24_org.upnproutercontrol.UPnPRouterControl.png      \
+	apps_32x32_org.upnproutercontrol.UPnPRouterControl.png      \
+	apps_48x48_org.upnproutercontrol.UPnPRouterControl.png      \
+	apps_scalable_org.upnproutercontrol.UPnPRouterControl.svg   \
 	$(NULL)
 
 noinst_DATA = \
-	apps_16x16_upnp-router-control.svg      \
-	apps_22x22_upnp-router-control.svg      \
-	apps_24x24_upnp-router-control.svg      \
-	apps_32x32_upnp-router-control.svg      \
-	apps_48x48_upnp-router-control.svg      \
-	apps_64x64_upnp-router-control.svg      \
+	apps_16x16_org.upnproutercontrol.UPnPRouterControl.svg      \
+	apps_22x22_org.upnproutercontrol.UPnPRouterControl.svg      \
+	apps_24x24_org.upnproutercontrol.UPnPRouterControl.svg      \
+	apps_32x32_org.upnproutercontrol.UPnPRouterControl.svg      \
+	apps_48x48_org.upnproutercontrol.UPnPRouterControl.svg      \
+	apps_64x64_org.upnproutercontrol.UPnPRouterControl.svg      \
 	$(NULL)
 
 # AppData
@@ -64,7 +64,7 @@ install-icons:
 	for icon in $(icons); do \
 		CONTEXT=`echo $$icon | cut -d_ -f1`; \
 		SIZE=`echo $$icon | cut -d_ -f2`; \
-		ICONFILE=`echo $$icon | cut -d_ -f3`; \
+		ICONFILE=org.upnproutercontrol.UPnPRouterControl
 		mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/$$SIZE/$$CONTEXT; \
 		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(datadir)/icons/hicolor/$$SIZE/$$CONTEXT/$$ICONFILE; \
 	done;

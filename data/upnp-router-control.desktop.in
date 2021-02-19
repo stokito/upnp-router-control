@@ -3,6 +3,6 @@ Type=Application
 _Name=UPnP Router Control
 _Comment=A simple program to manage UPnP IGD compliant routers
 Exec=upnp-router-control
-Icon=upnp-router-control
+Icon=org.upnproutercontrol.UPnPRouterControl
 Terminal=false
 Categories=Utility;

@@ -975,7 +975,7 @@ static void on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gp
         "version", VERSION,
         "license-type", GTK_LICENSE_GPL_3_0,
         "website", "https://launchpad.net/upnp-router-control",
-        "logo-icon-name", "upnp-router-control",
+        "logo-icon-name", "org.upnproutercontrol.UPnPRouterControl",
         NULL);
 }
 
