@@ -168,7 +168,7 @@ msgstr "Network history"
 
 #: ../src/upnp-router-control.ui.h:7
 msgid "Refresh"
-msgstr ""
+msgstr "Refresh"
 
 #: ../src/upnp-router-control.ui.h:8
 msgid "Add new port forward"
@@ -224,7 +224,7 @@ msgstr "Advanced parameters"
 
 #: ../src/upnp-router-control-headermenu.ui.h:1
 msgid "_About"
-msgstr ""
+msgstr "_About"
 
 #~ msgid "_File"
 #~ msgstr "_File"
