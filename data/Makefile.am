@@ -64,7 +64,7 @@ install-icons:
 	for icon in $(icons); do \
 		CONTEXT=`echo $$icon | cut -d_ -f1`; \
 		SIZE=`echo $$icon | cut -d_ -f2`; \
-		ICONFILE=org.upnproutercontrol.UPnPRouterControl
+		ICONFILE=`echo $$icon | cut -d_ -f3`; \
 		mkdir -p $(DESTDIR)$(datadir)/icons/hicolor/$$SIZE/$$CONTEXT; \
 		$(INSTALL_DATA) $(srcdir)/$$icon $(DESTDIR)$(datadir)/icons/hicolor/$$SIZE/$$CONTEXT/$$ICONFILE; \
 	done;
