@@ -7,7 +7,7 @@
   <project_license>GPL-3.0+</project_license>
   <summary>Simple program that manages UPnP compliant routers</summary>
 
-  <launchable>upnp-router-control.desktop</launchable>
+  <launchable type="desktop-id">upnp-router-control.desktop</launchable>
 
   <description>
     <p>
