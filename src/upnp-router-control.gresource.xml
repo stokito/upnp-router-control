@@ -3,6 +3,6 @@
   <gresource prefix="/org/upnp-router-control">
     <file alias="ui/main.ui" compressed="true">upnp-router-control.ui</file>
     <file alias="ui/headerbar-menu.ui" preprocess="xml-stripblanks">upnp-router-control-headermenu.ui</file>
-    <file alias="icon/logo.svg" compressed="true">../data/apps_64x64_upnp-router-control.svg</file>
+    <file alias="icons/upnp-router-control.svg" compressed="true">../data/apps_64x64_upnp-router-control.svg</file>
   </gresource>
 </gresources>
