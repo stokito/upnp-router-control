@@ -37,27 +37,6 @@ static GList *upspeed_values = NULL;
 // graph fullscale default value
 static guint net_max = 2;
 
-void init_graph()
-{
-    SpeedValue *speed;
-    gint i;
-
-    // fill speed graph lists
-    for(i = 0; i <= GRAPH_POINTS; i++) {
-        speed = g_malloc(sizeof(SpeedValue));
-        speed->speed = 0;
-        speed->valid = FALSE;
-        upspeed_values = g_list_prepend(upspeed_values, speed);
-    }
-
-    for(i = 0; i <= GRAPH_POINTS; i++) {
-        speed = g_malloc(sizeof(SpeedValue));
-        speed->speed = 0;
-        speed->valid = FALSE;
-        downspeed_values = g_list_prepend(downspeed_values, speed);
-    }
-}
-
 static void
 clear_graph_background()
 {
@@ -81,20 +60,22 @@ graph_draw_background (GtkWidget *widget)
 {
     cairo_t *cr;
     cairo_pattern_t *pat;
-    cairo_text_extents_t extents;
+    PangoLayout* layout;
+    PangoFontDescription* font_desc;
+    PangoRectangle extents;
     gchar *label;
+    PangoContext *pango_context;
 	GtkStyleContext *context;
 	GtkStateFlags state;
     GdkRGBA color;
     double draw_width, draw_height;
     GtkAllocation allocation;
 
-    const double fontsize = 8.0;
-    const double rmargin = 3.5 * fontsize;
-	const guint indent = 24;
+    const double fontsize = 6.4;
+    const double rmargin = 8 * fontsize;
+	const guint indent = 22;
 	const guint x_frame_count = 6;
 	guint y_frame_count = 3;
-    double dash[2] = { 1.0, 2.0 };
     double x_frame_size, y_frame_size;
     double x, y;
     gint i;
@@ -107,10 +88,21 @@ graph_draw_background (GtkWidget *widget)
 					                         allocation.height);
 	cr = cairo_create(background);
 
-    draw_width = allocation.width - 2 * FRAME_WIDTH;
-    draw_height = allocation.height - 2 * FRAME_WIDTH;
+    context = gtk_widget_get_style_context (widget);
+    state = gtk_widget_get_state_flags (widget);
+    gtk_style_context_get_color (context, state, &color);
+    pango_context = gtk_widget_get_pango_context (widget);
+
+    layout = pango_cairo_create_layout (cr);
+    font_desc = pango_font_description_copy (pango_context_get_font_description (pango_context));
+    pango_font_description_set_size (font_desc, fontsize * PANGO_SCALE);
+    pango_layout_set_font_description (layout, font_desc);
+    pango_font_description_free (font_desc);
 
 	cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);
+
+    draw_width = allocation.width - 2 * FRAME_WIDTH;
+    draw_height = allocation.height - 2 * FRAME_WIDTH;
 
     // determines the number of grids based on height
 	switch ( (int) (draw_height) / 30 )
@@ -120,8 +112,10 @@ graph_draw_background (GtkWidget *widget)
 		    y_frame_count = 1;
 		    break;
 	    case 2:
-	    case 3:
 		    y_frame_count = 2;
+		    break;
+        case 3:
+            y_frame_count = 3;
 		    break;
 	    case 4:
 		    y_frame_count = 4;
@@ -131,48 +125,46 @@ graph_draw_background (GtkWidget *widget)
 
 	}
 
-	context = gtk_widget_get_style_context (widget);
-	state = gtk_widget_get_state_flags (widget);
-    gtk_style_context_get_color (context, state, &color);
-		
-    cairo_set_font_size (cr, fontsize);
-
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (cr, 1);
 
     // white to gray faded background
     pat = cairo_pattern_create_linear (0.0, 0.0,  0.0, draw_height - 15.0);
-    cairo_pattern_add_color_stop_rgb (pat, 0, 1, 1, 1);
-    cairo_pattern_add_color_stop_rgb (pat, 1, 0.9, 0.9, 0.9);
-    cairo_rectangle (cr, rmargin + indent, 0, draw_width - rmargin - indent, draw_height - 15.0);
+    cairo_pattern_add_color_stop_rgba  (pat, 0, 0.3 , 0.3, 0.3, 0.1);
+    cairo_pattern_add_color_stop_rgba  (pat, 1, 0.8, 0.8, 0.8, 0.1);
+    cairo_rectangle (cr, indent, 0, draw_width - rmargin - indent, draw_height - 15.0);
     cairo_set_source (cr, pat);
     cairo_fill(cr);
     cairo_pattern_destroy (pat);
-
-    // draw grid
-	cairo_set_dash (cr, dash, 2, 0);
-	gdk_cairo_set_source_rgba (cr, &color);
 
     // drawing vertical grid
     x_frame_size = (draw_width - rmargin - indent) / x_frame_count;
     for(i = 0; i <= x_frame_count; i++) {
 
-        x = rmargin + indent + (x_frame_size * i);
+        x = (x_frame_size * i) + indent;
 
-        if(i == 0)
+        if (i == 0)
             label = g_strdup_printf(_("%u seconds"), GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
-
         else
             label = g_strdup_printf("%u", GRAPH_POINTS - (GRAPH_POINTS / x_frame_count) * i);
 
-        cairo_text_extents (cr, label, &extents);
-		cairo_move_to (cr, x - extents.width/2, draw_height+2);
-		cairo_show_text (cr, label);
+        gdk_cairo_set_source_rgba (cr, &color);
+        pango_layout_set_text (layout, label, -1);
+        pango_layout_get_extents (layout, NULL, &extents);
+		cairo_move_to (cr, x - 1.0 * extents.width / PANGO_SCALE / 2, draw_height - 6);
+		pango_cairo_show_layout (cr, layout);
 		g_free(label);
+
+        if (i == 0 || i == x_frame_count) {
+            cairo_set_source_rgb (cr, 0.6, 0.6, 0.6);
+        }
+        else {
+            cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, 0.6);
+        }
 
 		cairo_move_to (cr, x, 0);
         cairo_line_to (cr, x, draw_height - 10.0);
-
+        cairo_stroke(cr);
     }
 
     // drawing horizontal grid
@@ -187,18 +179,26 @@ graph_draw_background (GtkWidget *widget)
         if(label_value > 1024)
             label = g_strdup_printf("%0.1f MiB/s", label_value / 1024);
 
-        cairo_text_extents (cr, label, &extents);
-		cairo_move_to (cr, rmargin + indent - extents.width - 10 , y + extents.height/2);
-		cairo_show_text (cr, label);
+        gdk_cairo_set_source_rgba (cr, &color);        
+        pango_layout_set_text (layout, label, -1);
+        pango_layout_get_extents (layout, NULL, &extents);
+		cairo_move_to (cr, draw_width - extents.width / PANGO_SCALE - 10 , y - 1.0 * extents.height / PANGO_SCALE / 2);
+		pango_cairo_show_layout (cr, layout);
 		g_free(label);
 
-        cairo_move_to (cr, rmargin + indent - 5, y);
-        cairo_line_to (cr, draw_width - rmargin + indent + 5, y);
+        if (i == 0 || i == y_frame_count) {
+            cairo_set_source_rgb (cr, 0.6, 0.6, 0.6);
+        }
+        else {
+            cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, 0.6);
+        }
 
-    }
-    cairo_set_source_rgba (cr, 0.0, 0.0, 0.0, 0.75);
-    cairo_stroke(cr);
+        cairo_move_to (cr, indent - 1, y);
+        cairo_line_to (cr, draw_width - rmargin + 4, y);
+        cairo_stroke(cr);
+    }    
 
+    g_object_unref(layout);
     cairo_destroy (cr);
 }
 
@@ -413,10 +413,17 @@ on_drawing_area_configure_event (GtkWidget         *widget,
 		                         gpointer           data_ptr)
 {
     clear_graph_background();
+    clear_graph_data ();
+    return TRUE;
+}
 
-	clear_graph_data ();
-
-	return TRUE;
+gboolean
+on_drawing_area_style_updated (GtkWidget         *widget,
+		                       gpointer           data_ptr)
+{
+    clear_graph_background();
+    clear_graph_data ();
+    return TRUE;
 }
 
 
@@ -442,3 +449,37 @@ on_drawing_area_draw (GtkWidget      *widget,
 
     return FALSE;
 }
+
+void
+urc_init_network_graph(GtkWidget *drawing_area)
+{
+    SpeedValue *speed;
+    gint i;
+
+    // fill speed graph lists
+    for(i = 0; i <= GRAPH_POINTS; i++) {
+        speed = g_malloc(sizeof(SpeedValue));
+        speed->speed = 0;
+        speed->valid = FALSE;
+        upspeed_values = g_list_prepend(upspeed_values, speed);
+    }
+
+    for(i = 0; i <= GRAPH_POINTS; i++) {
+        speed = g_malloc(sizeof(SpeedValue));
+        speed->speed = 0;
+        speed->valid = FALSE;
+        downspeed_values = g_list_prepend(downspeed_values, speed);
+    }
+
+    // Connect signals.
+    g_signal_connect(G_OBJECT(drawing_area), "draw",
+                        G_CALLBACK(on_drawing_area_draw), NULL);
+    g_signal_connect(G_OBJECT(drawing_area), "configure-event",
+                        G_CALLBACK(on_drawing_area_configure_event), NULL);
+    g_signal_connect(G_OBJECT(drawing_area), "style-updated",
+                        G_CALLBACK (on_drawing_area_style_updated), NULL);
+
+    gtk_widget_set_events (GTK_WIDGET (drawing_area), GDK_EXPOSURE_MASK);
+
+}
+
