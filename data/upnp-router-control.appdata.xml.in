@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2021 Daniele Napolitano <dnax88@gmil.com> -->
+<!-- Copyright 2021 Daniele Napolitano <dnax88@gmail.com> -->
 <component type="desktop-application">
-  <id type="desktop">upnp-router-control.desktop</id>
+  <id>org.upnproutercontrol.UPnPRouterControl</id>
+  <name>UPnP Router Control</name>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
-  <name>UPnP Router Control</name>
   <summary>Simple program that manages UPnP compliant routers</summary>
+
+  <launchable>upnp-router-control.desktop</launchable>
+
   <description>
     <p>
       A GTK application to access some parameters of the router like:
@@ -22,14 +25,56 @@
   <url type="homepage">https://launchpad.net/upnp-router-control</url>
 
   <screenshots>
-    <screenshot type="default">https://screenshots.debian.net/screenshots/000/005/553/large.png</screenshot>
+    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/02/Schermata_del_2021-02-10_22-49-19.png</screenshot>
   </screenshots>
 
-  <updatecontact>dnax88@gmail.com</updatecontact>
+  <update_contact>dnax88@gmail.com</update_contact>
   <project_group>GNOME</project_group>
   <translation type="gettext">upnp-router-control</translation>
 
-  <content_rating type="oars-1.1" />
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+
+    <release version="0.2" date="2010-10-14">
+
+      <description>
+        <p>
+          This new release fixes a lot of bugs of previous version and comes
+          with some new feature like network history graph.
+        </p>
+        <p>Updated and added translations.</p>
+        <p><b>Features:</b></p>
+        <ul>
+          <li>New network history graph</li>
+          <li>Support for device icon download</li>
+          <li>Show total bytes sent and received</li>
+        </ul>
+      </description>
+
+      <url>https://launchpad.net/upnp-router-control/trunk/0.2</url>
+
+      <issues>
+        <issue url="https://bugs.launchpad.net/bugs/645965">lp#645965</issue>
+        <issue url="https://bugs.launchpad.net/bugs/654198">lp#654198</issue>
+      </issues>
+
+    </release>
+
+    <release version="0.1" date="2010-02-09">
+
+      <descritpion>
+        <p>First release. Basic port forwarding management.</p>
+      </descritpion>
+
+      <url>https://launchpad.net/upnp-router-control/trunk/0.1</url>
+
+      <issues>
+        <issue url="https://bugs.launchpad.net/bugs/514490">lp#514490</issue>
+      </issues>
+
+    </release>
+
+  </releases>
 
 </component>
-
