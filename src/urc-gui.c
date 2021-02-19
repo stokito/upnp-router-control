@@ -24,9 +24,9 @@
 
 #include <gtk/gtk.h>
 
-#include "urc-gui.h"
-#include "urc-upnp.h"
 #include "urc-graph.h"
+#include "urc-upnp.h"
+#include "urc-gui.h"
 
 #define URC_RESOURCE_BASE "/org/upnp-router-control/"
 
@@ -968,14 +968,14 @@ static void on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gp
 
 	  gtk_show_about_dialog (GTK_WINDOW(gui->main_window),
         "authors", authors,
-		    "artists", artists,
-		    "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
+        "artists", artists,
+        "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
         "comments", _("A simple program to manage UPnP IGD compliant routers"),
         "copyright", "Copyright © 2009-2020 Daniele Napolitano \"DnaX\"",
         "version", VERSION,
         "license-type", GTK_LICENSE_GPL_3_0,
         "website", "https://launchpad.net/upnp-router-control",
-		    "logo-icon-name", "upnp-router-control",
+        "logo-icon-name", "upnp-router-control",
         NULL);
 }
 
@@ -1051,13 +1051,11 @@ void urc_gui_init(GApplication *app)
     g_signal_connect(G_OBJECT(gui->main_window), "delete-event",
                          G_CALLBACK(gui_destroy), NULL);
 
-    g_signal_connect(G_OBJECT(gui->network_drawing_area), "draw",
-                         G_CALLBACK(on_drawing_area_draw), NULL);
-    g_signal_connect(G_OBJECT(gui->network_drawing_area), "configure-event",
-                         G_CALLBACK(on_drawing_area_configure_event), NULL);
-
     gui_create_add_port_window(builder);
     g_object_unref (G_OBJECT (builder));
+
+    gtk_icon_theme_add_resource_path (gtk_icon_theme_get_default (),
+                                    URC_RESOURCE_BASE"/icons");
 
     builder = gtk_builder_new ();
     if (!gtk_builder_add_from_resource (builder, URC_RESOURCE_BASE "ui/headerbar-menu.ui", &error))
@@ -1084,7 +1082,7 @@ void urc_gui_init(GApplication *app)
 
     gui_disable();
 
-    init_graph();
+    urc_init_network_graph(gui->network_drawing_area);
 
     g_print("* Showing GUI...\n");
 

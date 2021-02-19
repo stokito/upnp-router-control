@@ -17,6 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifndef __URC_GRAPH_H__
+#define __URC_GRAPH_H__
+
 #include <gtk/gtk.h>
 
 typedef struct
@@ -26,7 +29,7 @@ typedef struct
 } SpeedValue;
 
 void
-init_graph();
+urc_init_network_graph(GtkWidget *drawing_area);
 
 void
 update_download_graph_data(SpeedValue *speed);
@@ -37,12 +40,4 @@ update_upload_graph_data(SpeedValue *speed);
 void
 disable_graph_data();
 
-gboolean
-on_drawing_area_configure_event (GtkWidget         *widget,
-		                         GdkEventConfigure *event,
-		                         gpointer           data_ptr);
-
-gboolean
-on_drawing_area_draw (GtkWidget      *widget,
-                              cairo_t   *cr,
-                              gpointer        user_data);
+#endif /* __URC_GRAPH_H__ */
