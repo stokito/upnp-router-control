@@ -3,12 +3,12 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-17 09:44+0100\n"
+"POT-Creation-Date: 2021-02-20 13:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,11 +59,6 @@ msgstr ""
 
 #: ../src/urc-gui.c:544 ../src/urc-gui.c:931 ../src/upnp-router-control.ui.h:6
 msgid "Total sent:"
-msgstr ""
-
-#: ../src/urc-gui.c:562 ../src/urc-gui.c:616 ../src/urc-gui.c:920
-#: ../src/urc-gui.c:923 ../src/urc-gui.c:926 ../src/urc-gui.c:931
-msgid "n.a."
 msgstr ""
 
 #: ../src/urc-gui.c:681 ../src/urc-gui.c:683 ../src/urc-gui.c:685
@@ -142,7 +137,7 @@ msgstr ""
 msgid "A simple program to manage UPnP IGD compliant routers"
 msgstr ""
 
-#: ../src/urc-graph.c:163
+#: ../src/urc-graph.c:149
 #, c-format
 msgid "%u seconds"
 msgstr ""
