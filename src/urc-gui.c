@@ -559,7 +559,7 @@ void gui_disable_download_speed()
     	return;
 
     gtk_widget_set_sensitive(gui->down_rate_label, FALSE);
-    gtk_label_set_text (GTK_LABEL(gui->down_rate_label), _("n.a.") );
+    gtk_label_set_text (GTK_LABEL(gui->down_rate_label), "—" );
 }
 
 /* Update router speeds, values in KiB/sec */
@@ -613,7 +613,7 @@ void gui_disable_upload_speed()
     	return;
 
     gtk_widget_set_sensitive(gui->up_rate_label, FALSE);
-    gtk_label_set_text (GTK_LABEL(gui->up_rate_label), _("n.a.") );
+    gtk_label_set_text (GTK_LABEL(gui->up_rate_label), "—" );
 }
 
 /* Update router speeds, values in KiB/sec */
@@ -917,18 +917,18 @@ void gui_disable()
     gtk_widget_set_sensitive(gui->ip_label, FALSE);
     g_free(str);
 
-    gtk_label_set_markup (GTK_LABEL(gui->down_rate_label), _("n.a."));
+    gtk_label_set_markup (GTK_LABEL(gui->down_rate_label), "—");
     gtk_widget_set_sensitive(gui->down_rate_label, FALSE);
 
-    gtk_label_set_markup (GTK_LABEL(gui->up_rate_label), _("n.a."));
+    gtk_label_set_markup (GTK_LABEL(gui->up_rate_label), "—");
     gtk_widget_set_sensitive(gui->up_rate_label, FALSE);
 
-    str = g_strdup_printf("<b>%s</b> %s", _("Total received:"), _("n.a.") );
+    str = g_strdup_printf("<b>%s</b> %s", _("Total received:"), "—" );
     gtk_label_set_markup (GTK_LABEL(gui->total_received_label), str);
     gtk_widget_set_sensitive(gui->total_received_label, FALSE);
     g_free(str);
 
-    str = g_strdup_printf("<b>%s</b> %s", _("Total sent:"), _("n.a.") );
+    str = g_strdup_printf("<b>%s</b> %s", _("Total sent:"), "—" );
     gtk_label_set_markup (GTK_LABEL(gui->total_sent_label), str);
     gtk_widget_set_sensitive(gui->total_sent_label, FALSE);
     g_free(str);

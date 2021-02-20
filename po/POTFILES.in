@@ -7,4 +7,4 @@ src/urc-graph.c
 [type: gettext/glade]src/upnp-router-control.ui
 [type: gettext/glade]src/upnp-router-control-headermenu.ui
 data/upnp-router-control.desktop.in
-[type: gettext/xml]data/upnp-router-control.appdata.xml.in
+[type: gettext/xml]data/org.upnproutercontrol.UPnPRouterControl.appdata.xml.in
