@@ -83,10 +83,12 @@ graph_draw_background (GtkWidget *widget)
     
     gtk_widget_get_allocation (widget, &allocation);
 
-	background = cairo_image_surface_create( CAIRO_FORMAT_ARGB32,
-	                                         allocation.width,
-					                         allocation.height);
-	cr = cairo_create(background);
+    background = gdk_window_create_similar_surface (gtk_widget_get_window (GTK_WIDGET (widget)),
+                                                    CAIRO_CONTENT_COLOR_ALPHA,
+                                                            allocation.width,
+                                                            allocation.height);
+
+	  cr = cairo_create(background);
 
     context = gtk_widget_get_style_context (widget);
     state = gtk_widget_get_state_flags (widget);
@@ -266,10 +268,11 @@ graph_draw_data (GtkWidget *widget)
     
     gtk_widget_get_allocation (widget, &allocation);
 
-	graph = cairo_image_surface_create( CAIRO_FORMAT_ARGB32,
-	                                    allocation.width,
-					                    allocation.height);
-	cr = cairo_create(graph);
+    graph = gdk_window_create_similar_surface (gtk_widget_get_window (GTK_WIDGET (widget)),
+                                                  CAIRO_CONTENT_COLOR_ALPHA,
+                                                  allocation.width,
+                                                  allocation.height);
+	  cr = cairo_create(graph);
 
     draw_width = allocation.width - 2 * FRAME_WIDTH;
     draw_height = allocation.height - 2 * FRAME_WIDTH;
