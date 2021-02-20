@@ -73,9 +73,9 @@ graph_draw_background (GtkWidget *widget)
 
     const double fontsize = 6.4;
     const double rmargin = 8 * fontsize;
-	const guint indent = 22;
-	const guint x_frame_count = 6;
-	guint y_frame_count = 3;
+    const guint indent = 22;
+    const guint x_frame_count = 6;
+    guint y_frame_count = 3;
     double x_frame_size, y_frame_size;
     double x, y;
     gint i;
@@ -137,7 +137,7 @@ graph_draw_background (GtkWidget *widget)
     cairo_fill(cr);
     cairo_pattern_destroy (pat);
 
-    // drawing vertical grid
+    // drawing vertical grid and horizontal scale
     x_frame_size = (draw_width - rmargin - indent) / x_frame_count;
     for(i = 0; i <= x_frame_count; i++) {
 
@@ -167,22 +167,29 @@ graph_draw_background (GtkWidget *widget)
         cairo_stroke(cr);
     }
 
-    // drawing horizontal grid
+    // drawing horizontal grid and vertical scale
     y_frame_size = (draw_height - 15.0) / y_frame_count;
     for(i = 0; i <= y_frame_count; i++) {
         y = y_frame_size * i;
+        
+        if (i == y_frame_count) {
+            label = g_strdup("0 byte/s");
+        }
+        else {
+            label_value = net_max - ((float) net_max / y_frame_count) * i;
 
-        label_value = net_max - ((float) net_max / y_frame_count) * i;
-
-        if(label_value < 1024)
-            label = g_strdup_printf("%0.1f KiB/s", label_value);
-        if(label_value > 1024)
-            label = g_strdup_printf("%0.1f MiB/s", label_value / 1024);
+            if(label_value < G_GUINT64_CONSTANT(1024))
+                label = g_strdup_printf("%.1f KiB/s", label_value);
+            if(label_value >= G_GUINT64_CONSTANT(1024))
+                label = g_strdup_printf("%.0f MiB/s", round(label_value / G_GUINT64_CONSTANT(1024)));
+            if(label_value >= G_GUINT64_CONSTANT(1048576))
+                label = g_strdup_printf("%.0f GiB/s", round(label_value / G_GUINT64_CONSTANT(1048576)));
+        }
 
         gdk_cairo_set_source_rgba (cr, &color);        
         pango_layout_set_text (layout, label, -1);
         pango_layout_get_extents (layout, NULL, &extents);
-		cairo_move_to (cr, draw_width - extents.width / PANGO_SCALE - 10 , y - 1.0 * extents.height / PANGO_SCALE / 2);
+		cairo_move_to (cr, draw_width - rmargin + 8, y - 1.0 * extents.height / PANGO_SCALE / 2);
 		pango_cairo_show_layout (cr, layout);
 		g_free(label);
 
@@ -193,7 +200,7 @@ graph_draw_background (GtkWidget *widget)
             cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, 0.6);
         }
 
-        cairo_move_to (cr, indent - 1, y);
+        cairo_move_to (cr, indent - 0.5, y);
         cairo_line_to (cr, draw_width - rmargin + 4, y);
         cairo_stroke(cr);
     }    
@@ -248,9 +255,9 @@ graph_draw_data (GtkWidget *widget)
     cairo_t *cr;
     GtkAllocation allocation;
     double draw_width, draw_height;
-    const double fontsize = 8.0;
-    const double rmargin = 3.5 * fontsize;
-	const guint indent = 24;
+    const double fontsize = 6.4;
+    const double rmargin = 8 * fontsize;
+	  const guint indent = 22;
     double x, y;
     gint i;
     GList *list;
@@ -282,7 +289,7 @@ graph_draw_data (GtkWidget *widget)
     if(speed_value->valid == TRUE) {
         // 2 is: FRAME_WIDTH / 2
         y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
-        x = draw_width;
+        x = draw_width - rmargin;
         cairo_move_to (cr, x, y + 0.5);
     }
 
@@ -293,7 +300,7 @@ graph_draw_data (GtkWidget *widget)
         if(speed_value->valid == TRUE) {
             // 2 is: FRAME_WIDTH / 2
             y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
-            x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
+            x = indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
 
             cairo_line_to (cr, x, y + 0.5);
 
@@ -316,7 +323,7 @@ graph_draw_data (GtkWidget *widget)
     if(speed_value->valid == TRUE) {
         // 2 is: FRAME_WIDTH / 2
         y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
-        x = draw_width;
+        x = draw_width - rmargin;
         cairo_move_to (cr, x, y + 0.5);
     }
 
@@ -328,7 +335,7 @@ graph_draw_data (GtkWidget *widget)
             // 2 is: FRAME_WIDTH / 2
             // 15 is: bottom space
             y = draw_height - 15 - 2 - speed_value->speed * (draw_height - 15 - 2) / net_max;
-            x = rmargin + indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
+            x = indent + ((draw_width - rmargin - indent) / GRAPH_POINTS) * i;
 
             cairo_line_to (cr, x, y + 0.5);
 
