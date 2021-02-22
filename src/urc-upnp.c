@@ -1315,17 +1315,26 @@ static void on_context_unavailable (GUPnPContextManager *context_manager,
 
 gboolean upnp_init()
 {
+    GUPnPWhiteList *white_list;
+
     /* Create a new GUPnP Context. */
     context_mngr = gupnp_context_manager_create (opt_bindport);
+    g_assert (context_mngr != NULL);
 
-    if (context_mngr) {
-        g_signal_connect(context_mngr, "context-available",
-					 G_CALLBACK(on_context_available),
-                     NULL);    
-        g_signal_connect(context_mngr, "context-unavailable",
-					 G_CALLBACK(on_context_unavailable),
-                     NULL);
+    if (opt_bindif != NULL) {
+            white_list = gupnp_context_manager_get_white_list
+                                        (context_mngr);
+            gupnp_white_list_add_entry (white_list, opt_bindif);
+            gupnp_white_list_set_enabled (white_list, TRUE);
     }
+
+    g_signal_connect(context_mngr, "context-available",
+				 G_CALLBACK(on_context_available),
+                 NULL);
+    g_signal_connect(context_mngr, "context-unavailable",
+				 G_CALLBACK(on_context_unavailable),
+                 NULL);
+
 
     return TRUE;
 }
