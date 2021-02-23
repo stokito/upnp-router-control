@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-17 09:44+0100\n"
-"PO-Revision-Date: 2011-09-26 18:16+0000\n"
-"Last-Translator: Fran Diéguez <Unknown>\n"
+"POT-Creation-Date: 2021-02-20 13:50+0100\n"
+"PO-Revision-Date: 2021-02-19 15:16+0000\n"
+"Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
 "Language-Team: Galician <gl@li.org>\n"
-"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2019-09-10 18:12+0000\n"
-"X-Generator: Launchpad (build 19044)\n"
+"X-Launchpad-Export-Date: 2021-02-23 18:52+0000\n"
+"X-Generator: Launchpad (build f759833f01c7f0b01b31b10cf317a55893ebb0ad)\n"
+"Language: gl\n"
 
 #: ../src/urc-main.c:55 ../data/upnp-router-control.desktop.in.h:1
 msgid "UPnP Router Control"
@@ -61,11 +61,6 @@ msgstr "Total recibidos:"
 #: ../src/urc-gui.c:544 ../src/urc-gui.c:931 ../src/upnp-router-control.ui.h:6
 msgid "Total sent:"
 msgstr "Total enviados:"
-
-#: ../src/urc-gui.c:562 ../src/urc-gui.c:616 ../src/urc-gui.c:920
-#: ../src/urc-gui.c:923 ../src/urc-gui.c:926 ../src/urc-gui.c:931
-msgid "n.a."
-msgstr "n. d."
 
 #: ../src/urc-gui.c:681 ../src/urc-gui.c:683 ../src/urc-gui.c:685
 #: ../src/urc-gui.c:687 ../src/urc-gui.c:703 ../src/urc-gui.c:910
@@ -139,6 +134,7 @@ msgstr "non dispoñíbel"
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
+"  Daniele Napolitano https://launchpad.net/~dnax88\n"
 "  Fran Diéguez https://launchpad.net/~frandieguez"
 
 #: ../src/urc-gui.c:973 ../data/upnp-router-control.desktop.in.h:2
@@ -147,7 +143,7 @@ msgstr ""
 "Un programa sinxelo para administrar routers compatíbeis co protocolo UPnP "
 "IGD"
 
-#: ../src/urc-graph.c:163
+#: ../src/urc-graph.c:149
 #, c-format
 msgid "%u seconds"
 msgstr "%u segundos"
@@ -230,12 +226,3 @@ msgstr "Parámetros avanzados"
 #: ../src/upnp-router-control-headermenu.ui.h:1
 msgid "_About"
 msgstr ""
-
-#~ msgid "_File"
-#~ msgstr "_Ficheiro"
-
-#~ msgid "_Help"
-#~ msgstr "_Axuda"
-
-#~ msgid "_Switch router"
-#~ msgstr "_Cambiar router"
