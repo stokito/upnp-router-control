@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-17 09:44+0100\n"
+"POT-Creation-Date: 2021-02-23 19:28+0100\n"
 "PO-Revision-Date: 2010-09-23 04:58+0000\n"
 "Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -20,130 +20,125 @@ msgstr ""
 msgid "UPnP Router Control"
 msgstr "Controllo router UPnP"
 
-#: ../src/urc-gui.c:136
+#: ../src/urc-gui.c:153
 msgid "Unable to set this port forward"
 msgstr "Impossibile impostare questa nuova porta"
 
-#: ../src/urc-gui.c:319
+#: ../src/urc-gui.c:344
 msgid "Unable to remove this port forward"
 msgstr "Impossibile rimuovere questa porta"
 
-#: ../src/urc-gui.c:382
+#: ../src/urc-gui.c:407
 msgid "Enabled"
 msgstr "Abilitato"
 
-#: ../src/urc-gui.c:383
+#: ../src/urc-gui.c:408
 msgid "Description"
 msgstr "Descrizione"
 
-#: ../src/urc-gui.c:384
+#: ../src/urc-gui.c:409
 msgid "Protocol"
 msgstr "Protocollo"
 
-#: ../src/urc-gui.c:385
+#: ../src/urc-gui.c:410
 msgid "Int. Port"
 msgstr "Porta int."
 
-#: ../src/urc-gui.c:386
+#: ../src/urc-gui.c:411
 msgid "Ext. Port"
 msgstr "Porta ext."
 
-#: ../src/urc-gui.c:387
+#: ../src/urc-gui.c:412
 msgid "Local IP"
 msgstr "IP locale"
 
-#: ../src/urc-gui.c:498 ../src/urc-gui.c:926 ../src/upnp-router-control.ui.h:5
+#: ../src/urc-gui.c:523 ../src/urc-gui.c:903 ../src/upnp-router-control.ui.h:5
 msgid "Total received:"
 msgstr "Totale ricevuti:"
 
-#: ../src/urc-gui.c:544 ../src/urc-gui.c:931 ../src/upnp-router-control.ui.h:6
+#: ../src/urc-gui.c:569 ../src/urc-gui.c:908 ../src/upnp-router-control.ui.h:6
 msgid "Total sent:"
 msgstr "Totale inviati:"
 
-#: ../src/urc-gui.c:562 ../src/urc-gui.c:616 ../src/urc-gui.c:920
-#: ../src/urc-gui.c:923 ../src/urc-gui.c:926 ../src/urc-gui.c:931
-msgid "n.a."
-msgstr "n.d."
-
-#: ../src/urc-gui.c:681 ../src/urc-gui.c:683 ../src/urc-gui.c:685
-#: ../src/urc-gui.c:687 ../src/urc-gui.c:703 ../src/urc-gui.c:910
+#: ../src/urc-gui.c:706 ../src/urc-gui.c:708 ../src/urc-gui.c:710
+#: ../src/urc-gui.c:712 ../src/urc-gui.c:728 ../src/urc-gui.c:887
 msgid "WAN status:"
 msgstr "Stato WAN:"
 
-#: ../src/urc-gui.c:681
+#: ../src/urc-gui.c:706
 msgid "Connected"
 msgstr "Connesso"
 
-#: ../src/urc-gui.c:683
+#: ../src/urc-gui.c:708
 msgid "Disconnected"
 msgstr "Disconnesso"
 
-#: ../src/urc-gui.c:685
+#: ../src/urc-gui.c:710
 msgid "Connecting"
 msgstr "In connessione"
 
-#: ../src/urc-gui.c:687
+#: ../src/urc-gui.c:712
 msgid "Disconnecting"
 msgstr "In disconnessione"
 
-#: ../src/urc-gui.c:703 ../src/urc-gui.c:739
+#: ../src/urc-gui.c:728 ../src/urc-gui.c:764
 msgid "unknown"
 msgstr "sconosciuto"
 
-#: ../src/urc-gui.c:720 ../src/urc-gui.c:722 ../src/urc-gui.c:739
-#: ../src/urc-gui.c:915
+#: ../src/urc-gui.c:745 ../src/urc-gui.c:747 ../src/urc-gui.c:764
+#: ../src/urc-gui.c:892
 msgid "IP:"
 msgstr "IP:"
 
-#: ../src/urc-gui.c:720
+#: ../src/urc-gui.c:745
 msgid "none"
 msgstr "nessuno"
 
-#: ../src/urc-gui.c:797 ../src/urc-gui.c:905
+#: ../src/urc-gui.c:785 ../src/urc-gui.c:882
 msgid "Router name:"
 msgstr "Nome router:"
 
-#: ../src/urc-gui.c:804
+#: ../src/urc-gui.c:792
 msgid "Brand"
 msgstr "Produttore"
 
-#: ../src/urc-gui.c:806
+#: ../src/urc-gui.c:794
 msgid "Brand website:"
 msgstr "Sito web produttore:"
 
-#: ../src/urc-gui.c:808
+#: ../src/urc-gui.c:796
 msgid "Model Description:"
 msgstr "Descrizione modello:"
 
-#: ../src/urc-gui.c:810
+#: ../src/urc-gui.c:798
 msgid "Model Name:"
 msgstr "Nome modello:"
 
-#: ../src/urc-gui.c:812
+#: ../src/urc-gui.c:800
 msgid "Model Number:"
 msgstr "Numero modello:"
 
-#: ../src/urc-gui.c:827
+#: ../src/urc-gui.c:815
 msgid "Open the router config in the default browser"
 msgstr "Apri la configurazione del router nel browser predefinito"
 
-#: ../src/urc-gui.c:842 ../src/urc-gui.c:905 ../src/urc-gui.c:910
-#: ../src/urc-gui.c:915 ../src/urc-gui.c:936
+#: ../src/urc-gui.c:819 ../src/urc-gui.c:882 ../src/urc-gui.c:887
+#: ../src/urc-gui.c:892 ../src/urc-gui.c:913
 msgid "not available"
 msgstr "non disponibile"
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:967
+#: ../src/urc-gui.c:944
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Daniele Napolitano https://launchpad.net/~dnax88"
 
-#: ../src/urc-gui.c:973 ../data/upnp-router-control.desktop.in.h:2
+#: ../src/urc-gui.c:950 ../data/upnp-router-control.desktop.in.h:2
 msgid "A simple program to manage UPnP IGD compliant routers"
 msgstr "Un semplice programma per gestire router compatibili con UPnP IGD"
 
-#: ../src/urc-graph.c:163
+#: ../src/urc-graph.c:149
 #, c-format
 msgid "%u seconds"
 msgstr "%u secondi"
@@ -153,12 +148,12 @@ msgid "Config:"
 msgstr "Configurazione:"
 
 #: ../src/upnp-router-control.ui.h:2
-msgid "Click for map a new port"
-msgstr "Clicca per mappare una nuova porta"
+msgid "_Add"
+msgstr "_Aggiungi"
 
 #: ../src/upnp-router-control.ui.h:3
-msgid "Click for remove a port mapping"
-msgstr "Clicca per rimuovere una porta mappata"
+msgid "_Remove"
+msgstr "_Rimuovi"
 
 #: ../src/upnp-router-control.ui.h:4
 msgid "Network history"
@@ -173,45 +168,53 @@ msgid "Add new port forward"
 msgstr "Aggiungi una nuova porta"
 
 #: ../src/upnp-router-control.ui.h:9
+msgid "_Cancel"
+msgstr "A_nnulla"
+
+#: ../src/upnp-router-control.ui.h:10
+msgid "_Apply"
+msgstr "_Applica"
+
+#: ../src/upnp-router-control.ui.h:11
 msgid "Description:"
 msgstr "Descrizione:"
 
-#: ../src/upnp-router-control.ui.h:10
+#: ../src/upnp-router-control.ui.h:12
 msgid "Insert here a short description for this port"
 msgstr "Inserisci qui una breve descrizione per questa porta"
 
-#: ../src/upnp-router-control.ui.h:11
+#: ../src/upnp-router-control.ui.h:13
 msgid "External port:"
 msgstr "Porta esterna:"
 
-#: ../src/upnp-router-control.ui.h:12
+#: ../src/upnp-router-control.ui.h:14
 msgid "Insert here the port exposed by the router to Internet"
 msgstr "Inserisci qui la porta esposta dal router su Internet"
 
-#: ../src/upnp-router-control.ui.h:13
+#: ../src/upnp-router-control.ui.h:15
 msgid "Protocol:"
 msgstr "Protocollo:"
 
-#: ../src/upnp-router-control.ui.h:14
+#: ../src/upnp-router-control.ui.h:16
 msgid "Select here the protocol used, usually TCP"
 msgstr "Seleziona qui il protocollo usato, di solito TCP"
 
-#: ../src/upnp-router-control.ui.h:15
+#: ../src/upnp-router-control.ui.h:17
 msgid "Local IP:"
 msgstr "IP locale:"
 
-#: ../src/upnp-router-control.ui.h:16
+#: ../src/upnp-router-control.ui.h:18
 msgid "Local port:"
 msgstr "Porta locale:"
 
-#: ../src/upnp-router-control.ui.h:17
+#: ../src/upnp-router-control.ui.h:19
 msgid ""
 "Insert here the local IP where forward packets, usually IP of this computer"
 msgstr ""
 "Inserisci qui l'IP locale dove trasferire i pacchetti,di solito l'IP di "
 "questo computer"
 
-#: ../src/upnp-router-control.ui.h:18
+#: ../src/upnp-router-control.ui.h:20
 msgid ""
 "Insert the the local port where forward the packets from router to your "
 "computer"
@@ -219,13 +222,22 @@ msgstr ""
 "Inserisci la porta locale dove trasferire i pacchetti dal tuo router al tuo "
 "computer"
 
-#: ../src/upnp-router-control.ui.h:19
+#: ../src/upnp-router-control.ui.h:21
 msgid "Advanced parameters"
 msgstr "Parametri avanzati"
 
 #: ../src/upnp-router-control-headermenu.ui.h:1
 msgid "_About"
 msgstr "_Informazioni"
+
+#~ msgid "n.a."
+#~ msgstr "n.d."
+
+#~ msgid "Click for map a new port"
+#~ msgstr "Clicca per mappare una nuova porta"
+
+#~ msgid "Click for remove a port mapping"
+#~ msgstr "Clicca per rimuovere una porta mappata"
 
 #~ msgid "_File"
 #~ msgstr "_File"
