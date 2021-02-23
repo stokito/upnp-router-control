@@ -106,51 +106,76 @@ void gui_set_router_icon(gchar *image_path)
     gtk_widget_set_size_request(gui->router_icon, 64, 64);
 }
 
-static void gui_add_port_window_close(GtkWidget *button,
-                                      gpointer   user_data)
+static void
+gui_add_port_window_close(GtkWidget *button,
+                          gpointer   user_data)
+{
+    gtk_widget_hide (gui->add_port_window->window);
+}
+
+static void
+gui_add_port_window_apply(GtkWidget *button,
+                          gpointer   user_data)
 {
     PortForwardInfo* port_info;
     GError* error = NULL;
+    GtkWidget* spinner;
+    gchar const *btn_label;
 
-    if( user_data != NULL )
+    // Creating the PortForwardInfo structure
+    port_info = g_malloc( sizeof(PortForwardInfo) );
+
+    port_info->description = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_desc)) );
+    port_info->protocol = g_strdup( gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT (gui->add_port_window->add_proto)) );
+    port_info->internal_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_local_port) );
+    port_info->external_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_ext_port) );
+    port_info->internal_host = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_local_ip)) );
+    port_info->remote_host = "";
+    port_info->lease_time = 0;
+    port_info->enabled = TRUE;
+
+    // Set spinner on on the apply button and remove temporarily the label
+    spinner = gtk_spinner_new();
+    btn_label = g_strdup(gtk_button_get_label (GTK_BUTTON(gui->add_port_window->button_apply)));
+    gtk_button_set_label (GTK_BUTTON(gui->add_port_window->button_apply), NULL);
+    gtk_button_set_image (GTK_BUTTON(gui->add_port_window->button_apply), spinner);
+    gtk_button_set_always_show_image (GTK_BUTTON(gui->add_port_window->button_apply), TRUE);
+    gtk_spinner_start (GTK_SPINNER(spinner));
+
+    // Try to add the new port mapping.
+    if(add_port_mapping(user_data, port_info, &error) != TRUE)
     {
-        port_info = g_malloc( sizeof(PortForwardInfo) );
+        // We have errors.
+        GtkWidget* dialog;
+        dialog = gtk_message_dialog_new(GTK_WINDOW(gui->add_port_window->window),
+                                        GTK_DIALOG_MODAL,
+                                        GTK_MESSAGE_ERROR,
+                                        GTK_BUTTONS_OK,
+                                        _("Unable to set this port forward"));
 
-        port_info->description = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_desc)) );
-        port_info->protocol = g_strdup( gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT (gui->add_port_window->add_proto)) );
-        port_info->internal_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_local_port) );
-        port_info->external_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_ext_port) );
-        port_info->internal_host = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_local_ip)) );
-        port_info->remote_host = "";
-        port_info->lease_time = 0;
-        port_info->enabled = TRUE;
-
-        if(add_port_mapping(user_data, port_info, &error) != TRUE)
-        {
-        	GtkWidget* dialog;
-
-        	dialog = gtk_message_dialog_new(GTK_WINDOW(gui->add_port_window->window),
-					GTK_DIALOG_MODAL,
-					GTK_MESSAGE_ERROR,
-					GTK_BUTTONS_OK,
-					_("Unable to set this port forward"));
-
-			gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
-		                                            "%s", error->message);
-		    gtk_dialog_run(GTK_DIALOG(dialog));
-			gtk_widget_destroy(dialog);
-			g_error_free (error);
-
-        }
-
-        g_free(port_info->description);
-        g_free(port_info->protocol);
-        g_free(port_info->internal_host);
-        g_free(port_info);
+        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
+	                                            "%d: %s", error->code, error->message);
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
     }
 
-    gtk_widget_hide (gui->add_port_window->window);
+    // Stop the spinner and restore the button label
+    gtk_spinner_stop(GTK_SPINNER(spinner));
+    gtk_button_set_label(GTK_BUTTON(gui->add_port_window->button_apply), btn_label);
+    gtk_button_set_image (GTK_BUTTON(gui->add_port_window->button_apply), NULL);
 
+    g_free(port_info->description);
+    g_free(port_info->protocol);
+    g_free(port_info->internal_host);
+    g_free(port_info);
+
+    if (error == NULL) {
+        // No errors, close the dialog.
+        gtk_widget_hide (gui->add_port_window->window);
+    }
+    else {
+        g_error_free (error);
+    }
 }
 
 static void gui_add_port_window_on_port_change (GtkSpinButton *spinbutton,
@@ -181,12 +206,12 @@ static void gui_run_add_port_window(GtkWidget *button,
     									 0,
     									 0,
     									 NULL,
-    									 G_CALLBACK(gui_add_port_window_close),
+										 G_CALLBACK(gui_add_port_window_apply),
     									 NULL);
 
     /* Connect new signal with new data */
     g_signal_connect(gui->add_port_window->button_apply, "clicked",
-                         G_CALLBACK(gui_add_port_window_close), user_data);
+                         G_CALLBACK(gui_add_port_window_apply), user_data);
 
     gtk_widget_show_all (gui->add_port_window->window);
 }
@@ -310,24 +335,25 @@ static void on_button_remove_clicked (GtkWidget *button,
 
     if(delete_port_mapped (user_data, protocol, external_port, remote_host, &error) != TRUE)
     {
-    	GtkWidget* dialog;
+        // We have errors.
+        GtkWidget* dialog;
 
         dialog = gtk_message_dialog_new(GTK_WINDOW(gui->main_window),
-				GTK_DIALOG_MODAL,
-				GTK_MESSAGE_ERROR,
-				GTK_BUTTONS_OK,
-				_("Unable to remove this port forward"));
+                                        GTK_DIALOG_MODAL,
+                                        GTK_MESSAGE_ERROR,
+                                        GTK_BUTTONS_OK,
+                                        _("Unable to remove this port forward"));
 
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
-		                                            "%s", error->message);
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
-		g_error_free (error);
-	}
-
-	// delete row from the local list
-	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
-
+        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
+	                                            "%d: %s", error->code, error->message);
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        g_error_free (error);
+    }
+    else {
+        // delete row from the local list
+	    gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
+    }
 }
 
 
