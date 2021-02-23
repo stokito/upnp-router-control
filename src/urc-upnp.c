@@ -66,7 +66,12 @@ gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protoco
                                     NULL,
                                     &local_error);
 
-    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+    if (local_error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action, &local_error, NULL);
+    gupnp_service_proxy_action_unref (action);
 
     if (local_error == NULL) {
 	    g_print("\e[36m*** Removed entry:\e[0m Port %d (%s)\n", external_port, protocol);
@@ -74,7 +79,9 @@ gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protoco
 	    error = NULL;
 	    return TRUE;
     }
-    else {
+
+    out:
+    if (local_error != NULL) {
         g_warning ("\e[31m[EE]\e[0m DeletePortMapping: %s (%i)\n", local_error->message, local_error->code);
 
         *error = g_error_copy(local_error);
@@ -82,6 +89,8 @@ gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protoco
 
         return FALSE;
     }
+
+    return FALSE;
 }
 
 gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_info, GError **error)
@@ -116,7 +125,12 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
                                     NULL,
                                     &local_error);
 
-    g_clear_pointer (&action, gupnp_service_proxy_action_unref);
+    if (local_error != NULL) {
+        goto out;
+    }
+
+    gupnp_service_proxy_action_get_result (action, &local_error, NULL);
+    gupnp_service_proxy_action_unref (action);
 
     if (local_error == NULL) {
 
@@ -140,7 +154,9 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 	    return TRUE;
 
     }
-    else {
+
+    out:
+    if (local_error != NULL) {
         g_printerr ("\e[31m[EE]\e[0m AddPortMapping: %s (%i)\n", local_error->message, local_error->code);
 
         *error = g_error_copy(local_error);
@@ -148,6 +164,8 @@ gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo* port_
 
         return FALSE;
     }
+
+    return FALSE;
 }
 
 static PortForwardInfo* get_mapped_port(RouterInfo *router, guint index)
