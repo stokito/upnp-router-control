@@ -759,7 +759,7 @@ static gboolean get_connection_status_timeout(gpointer data)
 {
     get_conn_status( (RouterInfo *) data );
 
-    ((RouterInfo *) data)->connection_status_timeout = g_timeout_add_seconds(10, get_connection_status_timeout, data);
+    ((RouterInfo *) data)->connection_status_timeout = g_timeout_add_seconds(20, get_connection_status_timeout, data);
 
     return FALSE;
 }
@@ -768,7 +768,7 @@ static gboolean get_external_ip_timeout(gpointer data)
 {
     get_external_ip( (RouterInfo *) data );
 
-    ((RouterInfo *) data)->external_ip_timeout = g_timeout_add_seconds(10, get_external_ip_timeout, data);
+    ((RouterInfo *) data)->external_ip_timeout = g_timeout_add_seconds(30, get_external_ip_timeout, data);
 
     return FALSE;
 }
@@ -1195,14 +1195,14 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                                 service_proxy_event_cb,
                                                 router);
 
-                /* Start port request timeout at 5 sec */
-                router->port_request_timeout = g_timeout_add_seconds (5, get_mapped_ports_list_timeout, router);
+                /* Start port request timeout at 2 sec */
+                router->port_request_timeout = g_timeout_add_seconds (2, get_mapped_ports_list_timeout, router);
 
-                /* Start connection status request timeout at 6 sec */
-                router->connection_status_timeout = g_timeout_add_seconds (6, get_connection_status_timeout, router);
+                /* Start connection status request timeout at 3 sec */
+                router->connection_status_timeout = g_timeout_add_seconds (3, get_connection_status_timeout, router);
 
-                /* Start external IP request timeout at 7 sec */
-                router->external_ip_timeout = g_timeout_add_seconds (7, get_external_ip_timeout, router);
+                /* Start external IP request timeout at 4 sec */
+                router->external_ip_timeout = g_timeout_add_seconds (4, get_external_ip_timeout, router);
 
             }
             else
