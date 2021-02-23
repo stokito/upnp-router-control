@@ -62,7 +62,6 @@ typedef struct
     GtkWidget *main_window,
               *treeview,
               *router_name_label,
-              *router_url_eventbox,
               *router_url_label,
               *config_label,
               *wan_status_label,
@@ -769,43 +768,6 @@ void gui_disable_ext_ip()
     g_free(str);
 }
 
-/* onMouseOver URL label callback */
-static gboolean on_mouseover_cb (GtkWidget        *widget,
-                                 GdkEventCrossing *event,
-                                 gpointer          user_data)
-{
-    GdkCursor *cursor;
-    cursor = gdk_cursor_new_for_display (gdk_display_get_default(), GDK_HAND2);
-    gdk_window_set_cursor (gtk_widget_get_window(widget), cursor);
-    return FALSE;
-}
-
-/* onMouseOut URL label callback */
-static gboolean on_mouseout_cb (GtkWidget        *widget,
-                                GdkEventCrossing *event,
-                                gpointer          user_data)
-{
-    GdkCursor *cursor;
-    cursor = gdk_cursor_new_for_display (gdk_display_get_default(), GDK_LEFT_PTR);
-    gdk_window_set_cursor (gtk_widget_get_window (widget), cursor);
-
-    return FALSE;
-}
-
-/* onClick URL label callback */
-static gboolean on_mousepress_cb (GtkWidget      *widget,
-                                  GdkEventButton *event,
-                                  gpointer        user_data)
-{
-    gchar* str;
-    guint ret;
-    str = g_strdup_printf("xdg-open %s", (gchar*) user_data);
-    ret = system(str);
-    g_free(str);
-
-    return FALSE;
-}
-
 /* Set router informations */
 void gui_set_router_info (const gchar *router_friendly_name,
                           const gchar *router_conf_url,
@@ -843,7 +805,7 @@ void gui_set_router_info (const gchar *router_friendly_name,
 
     if(router_conf_url != NULL) {
 
-        str = g_strdup_printf( "<span color=\"blue\"><u>%s</u></span>", router_conf_url);
+        str = g_strdup_printf( "<a href=\"%s\">%s</a>", router_conf_url, router_conf_url);
         gtk_label_set_markup (GTK_LABEL(gui->router_url_label), str);
         g_free(str);
 
@@ -851,17 +813,6 @@ void gui_set_router_info (const gchar *router_friendly_name,
         gtk_widget_set_sensitive(gui->config_label, TRUE);
 
         gtk_widget_set_tooltip_text(gui->router_url_label, _("Open the router config in the default browser"));
-
-        g_signal_connect ( G_OBJECT(gui->router_url_eventbox), "enter-notify-event",
-		    		         G_CALLBACK(on_mouseover_cb), NULL
-		                   );
-	    g_signal_connect ( G_OBJECT(gui->router_url_eventbox), "leave-notify-event",
-		    		         G_CALLBACK(on_mouseout_cb), NULL
-		                   );
-
-	    g_signal_connect ( G_OBJECT(gui->router_url_eventbox), "button-release-event",
-		    		         G_CALLBACK(on_mousepress_cb), (gchar *) router_conf_url
-		                   );
 
 	} else {
 
@@ -959,7 +910,7 @@ void gui_disable()
     gtk_widget_set_sensitive(gui->total_sent_label, FALSE);
     g_free(str);
 
-    gtk_label_set_markup (GTK_LABEL(gui->router_url_label), _("not available"));
+    gtk_label_set_text (GTK_LABEL(gui->router_url_label), _("not available"));
     gtk_widget_set_sensitive(gui->router_url_label, FALSE);
 
     gtk_widget_set_sensitive(gui->button_add, FALSE);
@@ -1061,7 +1012,6 @@ void urc_gui_init(GApplication *app)
     gui->ip_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip_label"));
     gui->down_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "down_rate_label"));
     gui->up_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "up_rate_label"));
-    gui->router_url_eventbox = GTK_WIDGET (gtk_builder_get_object (builder, "router_url_eventbox"));
     gui->router_icon = GTK_WIDGET (gtk_builder_get_object (builder, "image1"));
     gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "network_graph"));
     gui->total_received_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_received_label"));
