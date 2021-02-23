@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-17 09:44+0100\n"
-"PO-Revision-Date: 2011-02-14 10:25+0000\n"
+"POT-Creation-Date: 2021-02-20 13:50+0100\n"
+"PO-Revision-Date: 2021-02-19 15:16+0000\n"
 "Last-Translator: Jacob Kiers <jacob@jacobkiers.net>\n"
 "Language-Team: Dutch <nl@li.org>\n"
-"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2019-09-10 18:12+0000\n"
-"X-Generator: Launchpad (build 19044)\n"
+"X-Launchpad-Export-Date: 2021-02-23 18:52+0000\n"
+"X-Generator: Launchpad (build f759833f01c7f0b01b31b10cf317a55893ebb0ad)\n"
+"Language: nl\n"
 
 #: ../src/urc-main.c:55 ../data/upnp-router-control.desktop.in.h:1
 msgid "UPnP Router Control"
@@ -61,11 +61,6 @@ msgstr "Totaal ontvangen"
 #: ../src/urc-gui.c:544 ../src/urc-gui.c:931 ../src/upnp-router-control.ui.h:6
 msgid "Total sent:"
 msgstr "Totaal verstuurd:"
-
-#: ../src/urc-gui.c:562 ../src/urc-gui.c:616 ../src/urc-gui.c:920
-#: ../src/urc-gui.c:923 ../src/urc-gui.c:926 ../src/urc-gui.c:931
-msgid "n.a."
-msgstr "n.b."
 
 #: ../src/urc-gui.c:681 ../src/urc-gui.c:683 ../src/urc-gui.c:685
 #: ../src/urc-gui.c:687 ../src/urc-gui.c:703 ../src/urc-gui.c:910
@@ -143,13 +138,13 @@ msgstr ""
 "  Heureka https://launchpad.net/~jan-de-ridder\n"
 "  Jacob Kiers https://launchpad.net/~jacobkiers\n"
 "  Jurien https://launchpad.net/~f-dreumel\n"
-"  cumulus007 https://launchpad.net/~cumulus-007"
+"  user109519 https://launchpad.net/~cumulus-007"
 
 #: ../src/urc-gui.c:973 ../data/upnp-router-control.desktop.in.h:2
 msgid "A simple program to manage UPnP IGD compliant routers"
 msgstr "Een eenvoudig programma om UPnP IGD-ondersteunde routers te beheren"
 
-#: ../src/urc-graph.c:163
+#: ../src/urc-graph.c:149
 #, c-format
 msgid "%u seconds"
 msgstr "%u seconden"
@@ -233,12 +228,3 @@ msgstr "Geavanceerde parameters"
 #: ../src/upnp-router-control-headermenu.ui.h:1
 msgid "_About"
 msgstr ""
-
-#~ msgid "_File"
-#~ msgstr "_Bestand"
-
-#~ msgid "_Help"
-#~ msgstr "_Help"
-
-#~ msgid "_Switch router"
-#~ msgstr "Router wi_sselen"
