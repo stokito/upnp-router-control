@@ -38,6 +38,10 @@ BUILT_SOURCES = 		\
 	$(RESOURCES)		\
 	$(NULL)
 
+EXTRA_DIST =                            \
+    upnp-router-control.gresource.xml   \
+    upnp-router-control.ui              \
+    upnp-router-control-headermenu.ui
 
 CLEANFILES =            \
     $(BUILT_SOURCES)    \
