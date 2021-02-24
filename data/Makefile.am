@@ -30,7 +30,7 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 man_MANS = upnp-router-control.1
 
 EXTRA_DIST =                \
-    $(icon_DATA)            \
+    $(icons)                \
     $(noinst_DATA)          \
     $(desktop_in_files)     \
     $(appdata_in_files)     \
