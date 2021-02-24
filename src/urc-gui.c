@@ -948,7 +948,7 @@ static void on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gp
         "artists", artists,
         "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
         "comments", _("A simple program to manage UPnP IGD compliant routers"),
-        "copyright", "Copyright © 2009-2020 Daniele Napolitano \"DnaX\"",
+        "copyright", "Copyright © 2009-2021 Daniele Napolitano \"DnaX\"",
         "version", VERSION,
         "license-type", GTK_LICENSE_GPL_3_0,
         "website", "https://launchpad.net/upnp-router-control",

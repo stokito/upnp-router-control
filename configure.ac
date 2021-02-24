@@ -1,5 +1,5 @@
 AC_INIT([upnp-router-control],
-        [0.2],
+        [0.3],
         [https://bugs.launchpad.net/upnp-router-control/+filebug],
         [upnp-router-control])
 

@@ -1,7 +1,7 @@
-UPnP Router Control 0.2
+UPnP Router Control 0.3
 ***********************
 
-Copyright (C) 2010  Daniele Napolitano <dnax88@gmail.com>
+Copyright (C) 2021  Daniele Napolitano <dnax88@gmail.com>
 
 A UPnP router manager for IGD-compliant routers
 
@@ -10,28 +10,23 @@ Compilation and installation
 ============================
 
 In order to compile UPnP Port Mapper you need following software packages:
-	- GTK+ library ( >= 2.16 )
-	- GUPnP library
-	- cURL library (optional)
+    - GTK+ library ( >= 3.10 )
+    - GSSDP library
+    - GUPnP library
+    - cURL library (optional)
 
 To configure run:
-	./waf configure --prefix=/usr
+	./configure --prefix=/usr
 
 Configure automatically searches for all required components and packages.
 
+If you want to exclude the libcurl dependency and the router icon downloading,
+add --disable-libcurl to the configure commnd.
+
 To compile and install run:
-	./waf build
-	sudo ./waf install
+	make
+	sudo make install
 
-
-Known working routers
-=====================
-
-* Netgear DGN2000
-* Belkin F5D8236-4 N Wireless Router
-* U.S. Robotics USR 8054
-* Linksys WRT54G3G-EU (3G/UMTS Broadband)
-* TP-Link TD-W89541G (ADSL2+ Router)
 
 Information
 ===========
