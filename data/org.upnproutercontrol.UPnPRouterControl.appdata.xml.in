@@ -45,14 +45,14 @@
           are related also to the network graph like fullscale detection, HiDPI, support for non ASCII locales,
           react to changes of Gtk theme and mitigation of delays in router responses.
         </p>
-        <p>Other changesments:</p>
+        <p>Other changements:</p>
         <ul>
           <li>Added refresh button to force the reload of the data</li>
           <li>Support for IGD v2</li>
           <li>Ported code to newer libgssdp-1.2 and libgupnp-1.2</li>
           <li>Better handling of the ports list (no more flikering on updates)</li>
           <li>Languages: Added el.po en_GB.po gl.po pt_BR.po sv.po (updated the others)</li>
-        <ul>
+        </ul>
       </description>
 
       <url>https://launchpad.net/upnp-router-control/trunk/0.3</url>
