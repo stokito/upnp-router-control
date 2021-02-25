@@ -36,6 +36,38 @@
 
   <releases>
 
+    <release version="0.3" date="2021-02-24">
+
+      <description>
+        <p>
+          Finally ported to Gtk3 along with nice looking GtkHeaderBar and client-side-decorations,
+          but also under the hood the are lot of fixes and improvements as well. Lot of improvements
+          are related also to the network graph like fullscale detection, HiDPI, support for non ASCII locales,
+          react to changes of Gtk theme and mitigation of delays in router responses.
+        </p>
+        <p>Other changesments:</p>
+        <ul>
+          <li>Added refresh button to force the reload of the data</li>
+          <li>Support for IGD v2</li>
+          <li>Ported code to newer libgssdp-1.2 and libgupnp-1.2</li>
+          <li>Better handling of the ports list (no more flikering on updates)</li>
+          <li>Languages: Added el.po en_GB.po gl.po pt_BR.po sv.po (updated the others)</li>
+        <ul>
+      </description>
+
+      <url>https://launchpad.net/upnp-router-control/trunk/0.3</url>
+
+      <issues>
+        <issue url="https://bugs.launchpad.net/bugs/772589">lp#772589</issue>
+        <issue url="https://bugs.launchpad.net/bugs/1527534">lp#1527534</issue>
+        <issue url="https://bugs.launchpad.net/bugs/1802084">lp#1802084</issue>
+        <issue url="https://bugs.launchpad.net/bugs/1100236">lp#1100236</issue>
+        <issue url="https://bugs.launchpad.net/bugs/1828792">lp#1828792</issue>
+        <issue url="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=713706">deb#713706</issue>
+      </issues>
+
+    </release>
+
     <release version="0.2" date="2010-10-14">
 
       <description>
@@ -44,7 +76,7 @@
           with some new feature like network history graph.
         </p>
         <p>Updated and added translations.</p>
-        <p><b>Features:</b></p>
+        <p>Features:</p>
         <ul>
           <li>New network history graph</li>
           <li>Support for device icon download</li>
