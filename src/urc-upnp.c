@@ -860,17 +860,19 @@ gpointer download_router_icon (gpointer data)
         curl_easy_setopt(curl_handle, CURLOPT_MAXFILESIZE, 512000);
         /* 1 minute of timeout */
         curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
+        /* Discard HTTP 4xx and 5xxx responses. */
+        curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, true);
 
         ret = curl_easy_perform(curl_handle);
 
         fclose(local_file);
 
-        if(ret != 0) {
-            g_print("\e[31m[EE]\e[0m Error downloading icon of the router: %s\n", error_buffer);
-
-        } else {
+        if(ret == CURLE_OK) {
             g_print("\e[32mRouter icon downloaded\e[0;0m\n");
             gui_set_router_icon(filename);
+
+        } else {
+            g_print("\e[31m[EE]\e[0m Failed downloading router icon: %s\n", error_buffer);
         }
 
         curl_easy_cleanup(curl_handle);
