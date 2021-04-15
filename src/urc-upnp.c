@@ -861,7 +861,7 @@ gpointer download_router_icon (gpointer data)
         /* 1 minute of timeout */
         curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
         /* Discard HTTP 4xx and 5xxx responses. */
-        curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, true);
+        curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, TRUE);
 
         ret = curl_easy_perform(curl_handle);
 
@@ -882,7 +882,6 @@ gpointer download_router_icon (gpointer data)
     }
 
     g_free(filename);
-    g_free(data);
 
     return 0;
 }
@@ -981,11 +980,13 @@ static void urc_set_main_device(GUPnPServiceProxy *proxy,
     router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
     router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
     router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
+    g_print ("UPnP descriptor: %s\n", gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
 
     router_icon_url = gupnp_device_info_get_icon_url (GUPNP_DEVICE_INFO (proxy),
                                    NULL, -1, -1, -1, FALSE,
                                    &icon_mime_type, &icon_depth,
                                    &icon_width, &icon_height);
+
 
     if (opt_debug) {
 
@@ -1083,7 +1084,6 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             return;
 
         urc_set_main_device(proxy, router, TRUE);
-        is_managed_device = TRUE;
 
     }
     /* There is only a WANConnectionDevice? */
@@ -1094,11 +1094,10 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
             return;
 
         urc_set_main_device(proxy, router, FALSE);
-        is_managed_device = TRUE;
     }
 
     /* Enum services (only on managed devices) */
-    if (is_managed_device) {
+    if (router->main_device != NULL) {
 
         services = gupnp_device_info_list_services (GUPNP_DEVICE_INFO (proxy));
 
