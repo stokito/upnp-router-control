@@ -415,7 +415,7 @@ static gboolean update_data_rate_cb (gpointer data)
 	    else {
 
             // UPnP query time
-            duration_secs = 1 + ((double)end_time - begin_time) * G_USEC_PER_SEC;
+            duration_secs = 1 + ((double)end_time - begin_time) / G_USEC_PER_SEC;
 
 	        if(opt_debug)
 	            g_print("\e[34mGetTotalBytesReceived() duration: %fs\e[0m\n", duration_secs);
@@ -470,7 +470,7 @@ static gboolean update_data_rate_cb (gpointer data)
 	    else {
 
 	        // UPnP query time
-	        duration_secs = 1 + ((double)end_time - begin_time) * G_USEC_PER_SEC;
+	        duration_secs = 1 + ((double)end_time - begin_time) / G_USEC_PER_SEC;
 
             if(opt_debug)
 	            g_print("\e[34mGetTotalBytesSent() duration:     %fs\e[0m\n", duration_secs);
