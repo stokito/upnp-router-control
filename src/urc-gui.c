@@ -86,7 +86,8 @@ typedef struct
 
 static GuiContext* gui;
 
-void gui_set_router_icon(gchar *image_path)
+void
+gui_set_router_icon (gchar *image_path)
 {
     static GdkPixbuf *pixbuf = NULL;
 
@@ -106,15 +107,15 @@ void gui_set_router_icon(gchar *image_path)
 }
 
 static void
-gui_add_port_window_close(GtkWidget *button,
-                          gpointer   user_data)
+gui_add_port_window_close (GtkWidget *button,
+                           gpointer   user_data)
 {
     gtk_widget_hide (gui->add_port_window->window);
 }
 
 static void
-gui_add_port_window_apply(GtkWidget *button,
-                          gpointer   user_data)
+gui_add_port_window_apply (GtkWidget *button,
+                           gpointer   user_data)
 {
     PortForwardInfo* port_info;
     GError* error = NULL;
@@ -153,7 +154,7 @@ gui_add_port_window_apply(GtkWidget *button,
                                         _("Unable to set this port forward"));
 
         gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
-	                                            "%d: %s", error->code, error->message);
+                                                "%d: %s", error->code, error->message);
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
     }
@@ -177,36 +178,38 @@ gui_add_port_window_apply(GtkWidget *button,
     }
 }
 
-static void gui_add_port_window_on_port_change (GtkSpinButton *spinbutton,
-                                                gpointer       user_data)
+static void
+gui_add_port_window_on_port_change (GtkSpinButton *spinbutton,
+                                    gpointer       user_data)
 {
-	guint num = 0;
+    guint num = 0;
 
-	// sync values only in "easy" mode
-	if(gtk_expander_get_expanded(GTK_EXPANDER(gui->add_port_window->expander)) == FALSE)
-	{
-		num = (guint) gtk_spin_button_get_value(spinbutton);
-		gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), num);
-	}
+    // sync values only in "easy" mode
+    if(gtk_expander_get_expanded(GTK_EXPANDER(gui->add_port_window->expander)) == FALSE)
+    {
+        num = (guint) gtk_spin_button_get_value(spinbutton);
+        gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), num);
+    }
 }
 
-static void gui_run_add_port_window(GtkWidget *button,
-                                    gpointer   user_data)
+static void
+gui_run_add_port_window (GtkWidget *button,
+                         gpointer   user_data)
 {
 
-	gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_desc), "");
+    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_desc), "");
     gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_ext_port), 0);
     gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_local_ip), get_client_ip());
     gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), 0);
 
     /* Disconnect previous signals */
     g_signal_handlers_disconnect_matched(gui->add_port_window->button_apply,
-    									 G_SIGNAL_MATCH_FUNC,
-    									 0,
-    									 0,
-    									 NULL,
-										 G_CALLBACK(gui_add_port_window_apply),
-    									 NULL);
+                                         G_SIGNAL_MATCH_FUNC,
+                                         0,
+                                         0,
+                                         NULL,
+                                         G_CALLBACK(gui_add_port_window_apply),
+                                         NULL);
 
     /* Connect new signal with new data */
     g_signal_connect(gui->add_port_window->button_apply, "clicked",
@@ -215,7 +218,8 @@ static void gui_run_add_port_window(GtkWidget *button,
     gtk_widget_show_all (gui->add_port_window->window);
 }
 
-static void gui_create_add_port_window(GtkBuilder* builder)
+static void 
+gui_create_add_port_window (GtkBuilder* builder)
 {
     AddPortWindow* add_port_window;
 
@@ -253,7 +257,8 @@ static void gui_create_add_port_window(GtkBuilder* builder)
 }
 
 /* Clean the Treeview */
-void gui_clear_ports_list_treeview (void)
+void
+gui_clear_ports_list_treeview (void)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
@@ -270,7 +275,8 @@ void gui_clear_ports_list_treeview (void)
 }
 
 /* Add a port mapped in the treeview list */
-void gui_add_mapped_ports(const GSList *port_list)
+void
+gui_add_mapped_ports (const GSList *port_list)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
@@ -304,8 +310,9 @@ void gui_add_mapped_ports(const GSList *port_list)
 }
 
 /* Button remove callback */
-static void on_button_remove_clicked (GtkWidget *button,
-                                      gpointer   user_data)
+static void
+on_button_remove_clicked (GtkWidget *button,
+                          gpointer   user_data)
 {
     GtkTreeModel *model;
     GtkTreeIter   iter;
@@ -321,9 +328,9 @@ static void on_button_remove_clicked (GtkWidget *button,
 
     if(!gtk_tree_selection_get_selected(selection, NULL, &iter))
     {
-    	/* no selection */
-    	gtk_widget_set_sensitive(button, FALSE);
-    	return;
+        /* no selection */
+        gtk_widget_set_sensitive(button, FALSE);
+        return;
     }
 
     gtk_tree_model_get(model, &iter,
@@ -344,74 +351,51 @@ static void on_button_remove_clicked (GtkWidget *button,
                                         _("Unable to remove this port forward"));
 
         gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG(dialog),
-	                                            "%d: %s", error->code, error->message);
+                                                "%d: %s", error->code, error->message);
         gtk_dialog_run(GTK_DIALOG(dialog));
         gtk_widget_destroy(dialog);
         g_error_free (error);
     }
     else {
         // delete row from the local list
-	    gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
+        gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
     }
 }
 
-
-/* Callback for enable checkbox */
-/*static void list_enable_toggled_cb (GtkCellRendererToggle *widget,
-                             gchar                 *path,
-                             GtkWidget             *treeview)
-{
-    gboolean enabled;
-
-    GtkTreeIter iter;
-    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(gui->treeview));
-
-    if (!gtk_tree_model_get_iter_from_string(model, &iter, path))
-        return;
-
-    gtk_tree_model_get(model, &iter,
-                       UPNP_COLUMN_ENABLED, &enabled,
-                       -1);
-
-    // set value in store
-    gtk_list_store_set(GTK_LIST_STORE(model), &iter,
-                        UPNP_COLUMN_ENABLED, !enabled,
-                        -1);
-
-}*/
-
-static gboolean gui_on_treeview_selection (GtkTreeSelection *selection,
-                       GtkTreeModel     *model,
-                       GtkTreePath      *path,
-                       gboolean          path_currently_selected,
-                       gpointer          userdata)
+static gboolean
+gui_on_treeview_selection (GtkTreeSelection *selection,
+                           GtkTreeModel     *model,
+                           GtkTreePath      *path,
+                           gboolean          path_currently_selected,
+                           gpointer          userdata)
 {
 
-	if (!path_currently_selected)
-		gtk_widget_set_sensitive(gui->button_remove, TRUE);
+    if (!path_currently_selected)
+        gtk_widget_set_sensitive(gui->button_remove, TRUE);
 
-	else
-		gtk_widget_set_sensitive(gui->button_remove, FALSE);
+    else
+        gtk_widget_set_sensitive(gui->button_remove, FALSE);
 
 
-	return TRUE; /* allow selection state to change */
+    return TRUE; /* allow selection state to change */
 }
 
 
 /* Initialize model for Treeview */
-static void gui_init_treeview()
+static void
+gui_init_treeview()
 {
     GtkTreeModel *model;
     GtkTreeSelection *selection;
     int i;
-    char         *headers[8] = {_("Enabled"),
-                                _("Description"),
-                                _("Protocol"),
-                                _("Int. Port"),
-                                _("Ext. Port"),
-                                _("Local IP"),
-                                /*_("Remote IP"),*/
-                                NULL };
+    char *headers[8] = {_("Enabled"),
+                        _("Description"),
+                        _("Protocol"),
+                        _("Int. Port"),
+                        _("Ext. Port"),
+                        _("Local IP"),
+                        /*_("Remote IP"),*/
+                        NULL };
 
     GtkListStore *store;
 
@@ -430,71 +414,73 @@ static void gui_init_treeview()
     g_assert (selection != NULL);
 
     for (i = 0; headers[i] != NULL; i++) {
-                GtkCellRenderer   *renderer;
-                GtkTreeViewColumn *column;
+        GtkCellRenderer   *renderer;
+        GtkTreeViewColumn *column;
 
-                column = gtk_tree_view_column_new ();
-                if(i == 0)
-                {
-                    renderer = gtk_cell_renderer_toggle_new ();
-                    gtk_tree_view_column_pack_end (column, renderer, FALSE);
+        column = gtk_tree_view_column_new ();
+        if(i == 0)
+        {
+            renderer = gtk_cell_renderer_toggle_new ();
+            gtk_tree_view_column_pack_end (column, renderer, FALSE);
 
-                    gtk_tree_view_column_add_attribute (column,
-                                                    renderer,
-                                                    "active", i);
+            gtk_tree_view_column_add_attribute (column,
+                                            renderer,
+                                            "active", i);
 
-                    /* enable/disable port mapping callback */
-                    /*g_signal_connect(G_OBJECT(renderer), "toggled",
-                         G_CALLBACK(list_enable_toggled_cb),
-                         NULL);*/
+            /* enable/disable port mapping callback */
+            /*g_signal_connect(G_OBJECT(renderer), "toggled",
+                 G_CALLBACK(list_enable_toggled_cb),
+                 NULL);*/
 
-                    g_object_set(renderer,
-                     "radio", FALSE,
-                     "activatable", TRUE,
-                      NULL);
-                }
-                else
-                {
-                    renderer = gtk_cell_renderer_text_new ();
-                    gtk_tree_view_column_pack_end (column, renderer, TRUE);
-                    gtk_tree_view_column_set_title (column, headers[i]);
+            g_object_set(renderer,
+             "radio", FALSE,
+             "activatable", TRUE,
+              NULL);
+        }
+        else
+        {
+            renderer = gtk_cell_renderer_text_new ();
+            gtk_tree_view_column_pack_end (column, renderer, TRUE);
+            gtk_tree_view_column_set_title (column, headers[i]);
 
-                    gtk_tree_view_column_add_attribute (column,
-                                                    renderer,
-                                                    "text", i);
-                }
-
-                gtk_tree_view_column_set_sort_column_id(column, i);
-
-                gtk_tree_view_column_set_sizing(column,
-                                                GTK_TREE_VIEW_COLUMN_FIXED);
-
-                gtk_tree_view_insert_column (GTK_TREE_VIEW (gui->treeview),
-                                             column, -1);
-
-                gtk_tree_view_column_set_sizing(column,
-                                                GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-
-                gtk_tree_view_column_set_resizable (column, TRUE);
+            gtk_tree_view_column_add_attribute (column,
+                                            renderer,
+                                            "text", i);
         }
 
-        gtk_tree_view_set_model (GTK_TREE_VIEW (gui->treeview),
-                                 model);
-        gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+        gtk_tree_view_column_set_sort_column_id(column, i);
 
-        gtk_tree_selection_set_select_function(selection, gui_on_treeview_selection, NULL, NULL);
+        gtk_tree_view_column_set_sizing(column,
+                                        GTK_TREE_VIEW_COLUMN_FIXED);
+
+        gtk_tree_view_insert_column (GTK_TREE_VIEW (gui->treeview),
+                                     column, -1);
+
+        gtk_tree_view_column_set_sizing(column,
+                                        GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+
+        gtk_tree_view_column_set_resizable (column, TRUE);
+    }
+
+    gtk_tree_view_set_model (GTK_TREE_VIEW (gui->treeview),
+                             model);
+    gtk_tree_selection_set_mode (selection, GTK_SELECTION_SINGLE);
+
+    gtk_tree_selection_set_select_function(selection, gui_on_treeview_selection, NULL, NULL);
 
 }
 
-void gui_disable_total_received()
+void
+gui_disable_total_received()
 {
    if(gui->total_received_label == NULL)
-    	return;
+        return;
 
     gtk_widget_set_sensitive(gui->total_received_label, FALSE);
 }
 
-void gui_set_total_received (const unsigned int total_received)
+void
+gui_set_total_received (const unsigned int total_received)
 {
     gchar* str;
     gchar* unit;
@@ -524,7 +510,7 @@ void gui_set_total_received (const unsigned int total_received)
     g_free(unit);
 
     if(gui->total_received_label == NULL)
-    	return;
+        return;
 
     gtk_label_set_markup (GTK_LABEL(gui->total_received_label), str);
     g_free(str);
@@ -532,15 +518,17 @@ void gui_set_total_received (const unsigned int total_received)
     gtk_widget_set_sensitive(gui->total_received_label, TRUE);
 }
 
-void gui_disable_total_sent()
+void
+gui_disable_total_sent()
 {
    if(gui->total_sent_label == NULL)
-    	return;
+        return;
 
     gtk_widget_set_sensitive(gui->total_sent_label, FALSE);
 }
 
-void gui_set_total_sent (const unsigned int total_sent)
+void
+gui_set_total_sent (const unsigned int total_sent)
 {
     gchar* str;
     gchar* unit;
@@ -570,7 +558,7 @@ void gui_set_total_sent (const unsigned int total_sent)
     g_free(unit);
 
     if(gui->total_sent_label == NULL)
-    	return;
+        return;
 
     gtk_label_set_markup (GTK_LABEL(gui->total_sent_label), str);
     g_free(str);
@@ -578,17 +566,19 @@ void gui_set_total_sent (const unsigned int total_sent)
     gtk_widget_set_sensitive(gui->total_sent_label, TRUE);
 }
 
-void gui_disable_download_speed()
+void
+gui_disable_download_speed()
 {
     if(gui->down_rate_label == NULL)
-    	return;
+        return;
 
     gtk_widget_set_sensitive(gui->down_rate_label, FALSE);
     gtk_label_set_text (GTK_LABEL(gui->down_rate_label), "—" );
 }
 
 /* Update router speeds, values in KiB/sec */
-void gui_set_download_speed(const gdouble down_speed)
+void
+gui_set_download_speed(const gdouble down_speed)
 {
     gchar* str;
     gchar* unit;
@@ -623,7 +613,7 @@ void gui_set_download_speed(const gdouble down_speed)
     g_free(unit);
 
     if(gui->down_rate_label == NULL)
-    	return;
+        return;
 
     gtk_label_set_text (GTK_LABEL(gui->down_rate_label), str);
     g_free(str);
@@ -632,17 +622,19 @@ void gui_set_download_speed(const gdouble down_speed)
 
 }
 
-void gui_disable_upload_speed()
+void
+gui_disable_upload_speed()
 {
     if(gui->up_rate_label == NULL)
-    	return;
+        return;
 
     gtk_widget_set_sensitive(gui->up_rate_label, FALSE);
     gtk_label_set_text (GTK_LABEL(gui->up_rate_label), "—" );
 }
 
 /* Update router speeds, values in KiB/sec */
-void gui_set_upload_speed(const gdouble up_speed)
+void
+gui_set_upload_speed(const gdouble up_speed)
 {
     gchar* str;
     gchar* unit;
@@ -677,7 +669,7 @@ void gui_set_upload_speed(const gdouble up_speed)
     g_free(unit);
 
     if(gui->up_rate_label == NULL)
-    	return;
+        return;
 
     gtk_label_set_text (GTK_LABEL(gui->up_rate_label), str);
     g_free(str);
@@ -686,7 +678,8 @@ void gui_set_upload_speed(const gdouble up_speed)
 
 }
 
-void gui_update_graph()
+void
+gui_update_graph()
 {
     if(gui->network_drawing_area == NULL)
         return;
@@ -695,12 +688,13 @@ void gui_update_graph()
 }
 
 /* Set WAN state label */
-void gui_set_conn_status(const gchar *state)
+void
+gui_set_conn_status(const gchar *state)
 {
     gchar* str = NULL;
 
     if(gui->wan_status_label == NULL)
-    	return;
+        return;
 
     if(g_strcmp0("Connected", state) == 0)
             str = g_strdup_printf( "<b>%s</b> <span color=\"#009000\"><b>%s</b></span>", _("WAN status:"), _("Connected") );
@@ -718,12 +712,13 @@ void gui_set_conn_status(const gchar *state)
 }
 
 /* Set WAN state label unknown */
-void gui_disable_conn_status()
+void
+gui_disable_conn_status()
 {
     gchar* str = NULL;
 
     if(gui->wan_status_label == NULL)
-    	return;
+        return;
 
     str = g_strdup_printf("<b>%s</b> %s", _("WAN status:"), _("unknown"));
 
@@ -734,12 +729,13 @@ void gui_disable_conn_status()
 }
 
 /* Set external IP address */
-void gui_set_ext_ip(const gchar *ip)
+void
+gui_set_ext_ip(const gchar *ip)
 {
     gchar* str;
 
     if(gui->ip_label == NULL)
-    	return;
+        return;
 
     if(ip == NULL)
         str = g_strdup_printf( "<b>%s</b> %s", _("IP:"), _("none"));
@@ -754,12 +750,13 @@ void gui_set_ext_ip(const gchar *ip)
 }
 
 /* Set external IP address */
-void gui_disable_ext_ip()
+void
+gui_disable_ext_ip()
 {
     gchar* str = NULL;
 
     if(gui->ip_label == NULL)
-    	return;
+        return;
 
     str = g_strdup_printf( "<b>%s</b> %s", _("IP:"), _("unknown"));
 
@@ -769,13 +766,14 @@ void gui_disable_ext_ip()
 }
 
 /* Set router informations */
-void gui_set_router_info (const gchar *router_friendly_name,
-                          const gchar *router_conf_url,
-                          const gchar *router_brand,
-                          const gchar *router_brand_website,
-                          const gchar *router_model_description,
-                          const gchar *router_model_name,
-                          const gchar *router_model_number)
+void
+gui_set_router_info (const gchar *router_friendly_name,
+                     const gchar *router_conf_url,
+                     const gchar *router_brand,
+                     const gchar *router_brand_website,
+                     const gchar *router_model_description,
+                     const gchar *router_model_name,
+                     const gchar *router_model_number)
 {
     gchar* str;
 
@@ -814,23 +812,24 @@ void gui_set_router_info (const gchar *router_friendly_name,
 
         gtk_widget_set_tooltip_text(gui->router_url_label, _("Open the router config in the default browser"));
 
-	} else {
+    } else {
 
-	    gtk_label_set_label(GTK_LABEL(gui->router_url_label), _("not available"));
+        gtk_label_set_label(GTK_LABEL(gui->router_url_label), _("not available"));
         gtk_widget_set_sensitive(gui->config_label, FALSE);
     }
 
 }
 
 /* updates all values */
-static void on_refresh_activate_cb (GtkMenuItem *menuitem,
-                                  gpointer     user_data)
+static void
+on_refresh_activate_cb (GtkMenuItem *menuitem,
+                        gpointer     user_data)
 {
-
     urc_upnp_refresh_data ((RouterInfo *) user_data);
 }
 
-void gui_set_ports_buttons_callback_data(gpointer data)
+void
+gui_set_ports_buttons_callback_data(gpointer data)
 {
     g_signal_connect(gui->button_remove, "clicked",
                      G_CALLBACK(on_button_remove_clicked), data);
@@ -841,7 +840,8 @@ void gui_set_ports_buttons_callback_data(gpointer data)
     gtk_widget_set_sensitive(gui->button_add, TRUE);
 }
 
-void gui_set_refresh_callback_data(gpointer data)
+void
+gui_set_refresh_callback_data(gpointer data)
 {
     g_signal_connect(gui->refresh_button, "clicked",
                      G_CALLBACK(on_refresh_activate_cb), data);
@@ -849,7 +849,8 @@ void gui_set_refresh_callback_data(gpointer data)
     gtk_widget_set_sensitive(gui->refresh_button, TRUE);
 }
 
-void gui_enable()
+void
+gui_enable()
 {
     if(gui == NULL || gui->main_window == NULL)
         return;
@@ -867,7 +868,8 @@ void gui_enable()
     gtk_widget_set_sensitive(gui->refresh_button, TRUE);
 }
 
-void gui_disable()
+void
+gui_disable()
 {
     if(gui == NULL || gui->main_window == NULL)
         return;
@@ -924,23 +926,24 @@ void gui_disable()
 
 
 /* Menu About activate callback */
-static void on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
+static void
+on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
 {
     gchar* authors[] = {
-		  "Daniele Napolitano <dnax88@gmail.com>",
-		  "Giuseppe Cicalini <cicone@gmail.com> (basic cURL code)",
-		  NULL
-	  };
+        "Daniele Napolitano <dnax88@gmail.com>",
+        "Giuseppe Cicalini <cicone@gmail.com> (basic cURL code)",
+        NULL
+    };
 
     gchar* artists[] = {
-	  	"Frédéric Bellaiche http://www.quantum-bits.org",
-	  	NULL
-	  };
+        "Frédéric Bellaiche http://www.quantum-bits.org",
+        NULL
+    };
 
-	  /* Feel free to put your names here translators :-) */
-	  gchar* translators = _("translator-credits");
+    /* Feel free to put your names here translators :-) */
+    gchar* translators = _("translator-credits");
 
-	  gtk_show_about_dialog (GTK_WINDOW(gui->main_window),
+    gtk_show_about_dialog (GTK_WINDOW(gui->main_window),
         "authors", authors,
         "artists", artists,
         "translator-credits", strcmp("translator-credits", translators) ? translators : NULL,
@@ -954,34 +957,36 @@ static void on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gp
 }
 
 
-static void gui_destroy()
+static void
+gui_destroy()
 {
-	g_print("* Destroying GUI...\n");
+    g_print("* Destroying GUI...\n");
 
-	gtk_widget_destroy(gui->add_port_window->window);
-	g_free(gui->add_port_window);
+    gtk_widget_destroy(gui->add_port_window->window);
+    g_free(gui->add_port_window);
 
-	gui_disable();
+    gui_disable();
 
-	gtk_widget_destroy(gui->main_window);
+    gtk_widget_destroy(gui->main_window);
 
-	gui->down_rate_label = NULL;
-	gui->up_rate_label = NULL;
-	gui->total_received_label = NULL;
-	gui->total_sent_label = NULL;
-	gui->wan_status_label = NULL;
-	gui->ip_label = NULL;
-	gui->treeview = NULL;
-	gui->network_drawing_area = NULL;
+    gui->down_rate_label = NULL;
+    gui->up_rate_label = NULL;
+    gui->total_received_label = NULL;
+    gui->total_sent_label = NULL;
+    gui->wan_status_label = NULL;
+    gui->ip_label = NULL;
+    gui->treeview = NULL;
+    gui->network_drawing_area = NULL;
 
-	gui->main_window = NULL;
+    gui->main_window = NULL;
 
-	g_free(gui);
+    g_free(gui);
 
-	gtk_main_quit();
+    gtk_main_quit();
 }
 
-void urc_gui_init(GApplication *app)
+void
+urc_gui_init(GApplication *app)
 {
     GtkBuilder* builder;
     GError* error = NULL;

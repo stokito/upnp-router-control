@@ -36,11 +36,11 @@ guint opt_bindport = 0;
 /* Options schema */
 static GOptionEntry entries[] = 
 {
-  { "if", 'i', 0, G_OPTION_ARG_STRING, &opt_bindif, "The network interface used (autodetect if omitted)", NULL },
-  { "port", 'p', 0, G_OPTION_ARG_INT, &opt_bindport, "Use a specific source port", NULL },
-  { "version", 0, 0, G_OPTION_ARG_NONE, &opt_version, "Show version and exit", NULL },
-  { "debug", 0, 0, G_OPTION_ARG_NONE, &opt_debug, "Allow debug messages", NULL },
-  { NULL }
+    { "if", 'i', 0, G_OPTION_ARG_STRING, &opt_bindif, "The network interface used (all if omitted)", NULL },
+    { "port", 'p', 0, G_OPTION_ARG_INT, &opt_bindport, "Use a specific source port", NULL },
+    { "version", 0, 0, G_OPTION_ARG_NONE, &opt_version, "Show version and exit", NULL },
+    { "debug", 0, 0, G_OPTION_ARG_NONE, &opt_debug, "Allow debug messages", NULL },
+    { NULL }
 };
 
 static void
@@ -52,24 +52,24 @@ urc_print_version()
 static void
 urc_activate_cb (GApplication *app, gpointer user_data)
 {
-  g_set_application_name(_("UPnP Router Control"));
+    g_set_application_name(_("UPnP Router Control"));
 
-  gtk_window_set_default_icon_name ("upnp-router-control");
-  gtk_icon_theme_append_search_path(gtk_icon_theme_get_default (),
+    gtk_window_set_default_icon_name ("upnp-router-control");
+    gtk_icon_theme_append_search_path(gtk_icon_theme_get_default (),
           DATADIR G_DIR_SEPARATOR_S "icons");
 
-  /* Initialize the GUI */
-  urc_gui_init(app);
+    /* Initialize the GUI */
+    urc_gui_init(app);
 
-  /* Enter in the main loop */
-  gtk_main();
+    /* Enter in the main loop */
+    gtk_main();
 }
 
 static void
 urc_startup_cb (GApplication *app, gpointer user_data)
 {
-  /* Initialize the UPnP subsystem */
-  upnp_init();
+    /* Initialize the UPnP subsystem */
+    upnp_init();
 }
 
 int

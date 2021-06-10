@@ -67,13 +67,17 @@ typedef struct
 } RouterInfo;
 
 /* Functions */
-const gchar* get_client_ip();
+const gchar*
+get_client_ip();
 
-gboolean upnp_init();
+gboolean
+upnp_init();
 
-gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host, GError **error);
+gboolean
+delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protocol, const guint external_port, const gchar *remote_host, GError **error);
 
-gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo *port_info, GError **error);
+gboolean
+add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo *port_info, GError **error);
 
 void
 urc_upnp_refresh_data (RouterInfo *router);

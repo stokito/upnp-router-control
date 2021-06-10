@@ -41,18 +41,18 @@ static void
 clear_graph_background()
 {
     if (background) {
-		cairo_surface_destroy(background);
-		background = NULL;
-	}
+        cairo_surface_destroy(background);
+        background = NULL;
+    }
 }
 
 static void
 clear_graph_data()
 {
     if (graph) {
-		cairo_surface_destroy(graph);
-		graph = NULL;
-	}
+        cairo_surface_destroy(graph);
+        graph = NULL;
+    }
 }
 
 static void
@@ -65,8 +65,8 @@ graph_draw_background (GtkWidget *widget)
     PangoRectangle extents;
     gchar *label;
     PangoContext *pango_context;
-	GtkStyleContext *context;
-	GtkStateFlags state;
+    GtkStyleContext *context;
+    GtkStateFlags state;
     GdkRGBA color;
     double draw_width, draw_height;
     GtkAllocation allocation;
@@ -88,7 +88,7 @@ graph_draw_background (GtkWidget *widget)
                                                             allocation.width,
                                                             allocation.height);
 
-	  cr = cairo_create(background);
+      cr = cairo_create(background);
 
     context = gtk_widget_get_style_context (widget);
     state = gtk_widget_get_state_flags (widget);
@@ -101,31 +101,31 @@ graph_draw_background (GtkWidget *widget)
     pango_layout_set_font_description (layout, font_desc);
     pango_font_description_free (font_desc);
 
-	cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);
+    cairo_translate (cr, FRAME_WIDTH, FRAME_WIDTH);
 
     draw_width = allocation.width - 2 * FRAME_WIDTH;
     draw_height = allocation.height - 2 * FRAME_WIDTH;
 
     // determines the number of grids based on height
-	switch ( (int) (draw_height) / 30 )
-	{
-	    case 0:
-	    case 1:
-		    y_frame_count = 1;
-		    break;
-	    case 2:
-		    y_frame_count = 2;
-		    break;
+    switch ( (int) (draw_height) / 30 )
+    {
+        case 0:
+        case 1:
+            y_frame_count = 1;
+            break;
+        case 2:
+            y_frame_count = 2;
+            break;
         case 3:
             y_frame_count = 3;
-		    break;
-	    case 4:
-		    y_frame_count = 4;
-		    break;
-	    default:
-		    y_frame_count = 5;
+            break;
+        case 4:
+            y_frame_count = 4;
+            break;
+        default:
+            y_frame_count = 5;
 
-	}
+    }
 
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (cr, 1);
@@ -153,9 +153,9 @@ graph_draw_background (GtkWidget *widget)
         gdk_cairo_set_source_rgba (cr, &color);
         pango_layout_set_text (layout, label, -1);
         pango_layout_get_extents (layout, NULL, &extents);
-		cairo_move_to (cr, x - 1.0 * extents.width / PANGO_SCALE / 2, draw_height - 6);
-		pango_cairo_show_layout (cr, layout);
-		g_free(label);
+        cairo_move_to (cr, x - 1.0 * extents.width / PANGO_SCALE / 2, draw_height - 6);
+        pango_cairo_show_layout (cr, layout);
+        g_free(label);
 
         if (i == 0 || i == x_frame_count) {
             cairo_set_source_rgb (cr, 0.6, 0.6, 0.6);
@@ -164,7 +164,7 @@ graph_draw_background (GtkWidget *widget)
             cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, 0.6);
         }
 
-		cairo_move_to (cr, x, 0);
+        cairo_move_to (cr, x, 0);
         cairo_line_to (cr, x, draw_height - 10.0);
         cairo_stroke(cr);
     }
@@ -191,9 +191,9 @@ graph_draw_background (GtkWidget *widget)
         gdk_cairo_set_source_rgba (cr, &color);        
         pango_layout_set_text (layout, label, -1);
         pango_layout_get_extents (layout, NULL, &extents);
-		cairo_move_to (cr, draw_width - rmargin + 8, y - 1.0 * extents.height / PANGO_SCALE / 2);
-		pango_cairo_show_layout (cr, layout);
-		g_free(label);
+        cairo_move_to (cr, draw_width - rmargin + 8, y - 1.0 * extents.height / PANGO_SCALE / 2);
+        pango_cairo_show_layout (cr, layout);
+        g_free(label);
 
         if (i == 0 || i == y_frame_count) {
             cairo_set_source_rgb (cr, 0.6, 0.6, 0.6);
@@ -259,7 +259,7 @@ graph_draw_data (GtkWidget *widget)
     double draw_width, draw_height;
     const double fontsize = 6.4;
     const double rmargin = 8 * fontsize;
-	  const guint indent = 22;
+      const guint indent = 22;
     double x, y;
     gint i;
     GList *list;
@@ -272,7 +272,7 @@ graph_draw_data (GtkWidget *widget)
                                                   CAIRO_CONTENT_COLOR_ALPHA,
                                                   allocation.width,
                                                   allocation.height);
-	  cr = cairo_create(graph);
+      cr = cairo_create(graph);
 
     draw_width = allocation.width - 2 * FRAME_WIDTH;
     draw_height = allocation.height - 2 * FRAME_WIDTH;
@@ -357,7 +357,8 @@ graph_draw_data (GtkWidget *widget)
     graph_set_fullscale(tmp_net_max);
 }
 
-void update_download_graph_data(SpeedValue *speed)
+void
+update_download_graph_data(SpeedValue *speed)
 {
     GList *tmp_elem;
 
@@ -375,7 +376,8 @@ void update_download_graph_data(SpeedValue *speed)
     clear_graph_data();
 }
 
-void update_upload_graph_data(SpeedValue *speed)
+void
+update_upload_graph_data(SpeedValue *speed)
 {
     GList *tmp_elem;
 
@@ -393,7 +395,8 @@ void update_upload_graph_data(SpeedValue *speed)
     clear_graph_data();
 }
 
-void disable_graph_data()
+void
+disable_graph_data()
 {
     GList *elem;
 
@@ -419,8 +422,8 @@ void disable_graph_data()
 
 gboolean
 on_drawing_area_configure_event (GtkWidget         *widget,
-		                         GdkEventConfigure *event,
-		                         gpointer           data_ptr)
+                                 GdkEventConfigure *event,
+                                 gpointer           data_ptr)
 {
     clear_graph_background();
     clear_graph_data ();
@@ -429,7 +432,7 @@ on_drawing_area_configure_event (GtkWidget         *widget,
 
 gboolean
 on_drawing_area_style_updated (GtkWidget         *widget,
-		                       gpointer           data_ptr)
+                               gpointer           data_ptr)
 {
     clear_graph_background();
     clear_graph_data ();
