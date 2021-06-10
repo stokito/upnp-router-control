@@ -713,7 +713,7 @@ static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int leve
 
     if (error == NULL) {
 
-        if (string_buffer != NULL && g_strcmp0(string_buffer, "") != 0) {
+        if (string_buffer != NULL && strnlen(string_buffer, 32) > 0) {
             char** connect_result = NULL;
             connect_result = g_strsplit(string_buffer, ",", 2);
 
