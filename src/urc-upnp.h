@@ -56,10 +56,8 @@ typedef struct
     gboolean nat_enabled;
     gboolean connected;
 
-    /* no-event request timers */
-    guint port_request_timeout;
-    guint connection_status_timeout;
-    guint external_ip_timeout;
+    /* no-event refresh timer */
+    guint refresh_timeout;
 
     guint data_rate_timer;
 
@@ -77,12 +75,7 @@ gboolean delete_port_mapped(GUPnPServiceProxy *wan_service, const gchar *protoco
 
 gboolean add_port_mapping(GUPnPServiceProxy *wan_service, PortForwardInfo *port_info, GError **error);
 
-void discovery_mapped_ports_list (RouterInfo *router);
-
-gboolean get_conn_status (RouterInfo *router);
-
-gboolean get_external_ip (RouterInfo *router);
-
-gboolean get_nat_rsip_status (RouterInfo *router);
+void
+urc_upnp_refresh_data (RouterInfo *router);
 
 #endif /* __URC_UPNP_H__ */

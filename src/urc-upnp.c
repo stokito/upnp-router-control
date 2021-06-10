@@ -746,31 +746,25 @@ static gchar* get_default_connection_service (GUPnPServiceProxy *proxy, int leve
     return connect_service;
 }
 
-static gboolean get_mapped_ports_list_timeout(gpointer data)
+static gboolean
+urc_upnp_refresh_data_timeout(gpointer data)
 {
-    discovery_mapped_ports_list( (RouterInfo *) data );
+    urc_upnp_refresh_data( (RouterInfo *) data );
 
-    ((RouterInfo *) data)->port_request_timeout = g_timeout_add_seconds(10, get_mapped_ports_list_timeout, data);
+    // Every 5 minutes.
+    ((RouterInfo *) data)->refresh_timeout = g_timeout_add_seconds(300, urc_upnp_refresh_data_timeout, data);
 
     return FALSE;
 }
 
-static gboolean get_connection_status_timeout(gpointer data)
+void
+urc_upnp_refresh_data(RouterInfo *router)
 {
-    get_conn_status( (RouterInfo *) data );
-
-    ((RouterInfo *) data)->connection_status_timeout = g_timeout_add_seconds(20, get_connection_status_timeout, data);
-
-    return FALSE;
-}
-
-static gboolean get_external_ip_timeout(gpointer data)
-{
-    get_external_ip( (RouterInfo *) data );
-
-    ((RouterInfo *) data)->external_ip_timeout = g_timeout_add_seconds(30, get_external_ip_timeout, data);
-
-    return FALSE;
+    g_print("Refresh data...\n");
+    get_conn_status( (RouterInfo *) router);
+    get_external_ip( (RouterInfo *) router);
+    get_nat_rsip_status( (RouterInfo *) router);
+    discovery_mapped_ports_list( (RouterInfo *) router);
 }
 
 
@@ -787,9 +781,6 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
     /* Numebr of port mapped entries */
     if(g_strcmp0("PortMappingNumberOfEntries", variable) == 0)
     {
-        /* deactivate manual request timer */
-        g_source_remove(router->port_request_timeout);
-
         g_print("\e[33mEvent:\e[0;0m Ports mapped: %d\n", g_value_get_uint(value));
 
         discovery_mapped_ports_list(router);
@@ -797,9 +788,6 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
     /* Got external IP */
     else if(g_strcmp0("ExternalIPAddress", variable) == 0)
     {
-        /* deactivate manual request timer */
-        g_source_remove(router->external_ip_timeout);
-
         if(router->external_ip != NULL)
             g_free(router->external_ip);
 
@@ -815,9 +803,6 @@ static void service_proxy_event_cb (GUPnPServiceProxy *proxy,
     /* WAN connection status changed */
     else if(g_strcmp0("ConnectionStatus", variable) == 0)
     {
-        /* deactivate manual request timer */
-        g_source_remove(router->connection_status_timeout);
-
         gui_set_conn_status (g_value_get_string(value));
 
         if(g_strcmp0("Connected", g_value_get_string(value)) == 0)
@@ -1196,14 +1181,11 @@ static void device_proxy_available_cb (GUPnPControlPoint *cp,
                                                 service_proxy_event_cb,
                                                 router);
 
-                /* Start port request timeout at 2 sec */
-                router->port_request_timeout = g_timeout_add_seconds (2, get_mapped_ports_list_timeout, router);
-
-                /* Start connection status request timeout at 3 sec */
-                router->connection_status_timeout = g_timeout_add_seconds (3, get_connection_status_timeout, router);
-
-                /* Start external IP request timeout at 4 sec */
-                router->external_ip_timeout = g_timeout_add_seconds (4, get_external_ip_timeout, router);
+                /**
+                 * Because some routers are not notify about changes,
+                 * let's polling the data every 5 minutes.
+                 */
+                router->refresh_timeout = g_timeout_add_seconds (300, urc_upnp_refresh_data_timeout, router);
 
             }
             else
@@ -1253,9 +1235,7 @@ static void device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 
     if(router->udn == gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy)) ) {
 
-    	g_source_remove (router->port_request_timeout);
-    	g_source_remove (router->connection_status_timeout);
-    	g_source_remove (router->external_ip_timeout);
+        g_source_remove (router->refresh_timeout);
     	g_source_remove (router->data_rate_timer);
     	gui_set_router_icon (NULL);
     	gui_disable ();

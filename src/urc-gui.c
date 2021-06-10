@@ -827,10 +827,7 @@ static void on_refresh_activate_cb (GtkMenuItem *menuitem,
                                   gpointer     user_data)
 {
 
-    get_conn_status ((RouterInfo *) user_data);
-    get_external_ip ((RouterInfo *) user_data);
-    get_nat_rsip_status ((RouterInfo *) user_data);
-    discovery_mapped_ports_list((RouterInfo *) user_data);
+    urc_upnp_refresh_data ((RouterInfo *) user_data);
 }
 
 void gui_set_ports_buttons_callback_data(gpointer data)
