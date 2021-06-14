@@ -527,10 +527,10 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Insert here a short description for this port</property>
                 <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <attributes>
-                  <attribute name="style" value="italic"/>
-                </attributes>
+                <property name="margin_bottom">12</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -559,8 +559,6 @@
                   <object class="GtkSpinButton" id="add_ext_port">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="caps_lock_warning">False</property>
                     <property name="adjustment">adjustment1</property>
                     <property name="numeric">True</property>
                   </object>
@@ -578,10 +576,10 @@
                 <property name="label" translatable="yes">Insert here the port exposed by the router to Internet</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <attributes>
-                  <attribute name="style" value="italic"/>
-                </attributes>
+                <property name="margin_bottom">12</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -624,10 +622,10 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Select here the protocol used, usually TCP</property>
                 <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <attributes>
-                  <attribute name="style" value="italic"/>
-                </attributes>
+                <property name="margin_bottom">12</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -668,6 +666,7 @@
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Local IP:</property>
                     <property name="xalign">0</property>
+                    <property name="margin_top">12</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -688,16 +687,15 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label8">
-                    <property name="width_request">320</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Insert here the local IP where forward packets, usually IP of this computer</property>
                     <property name="wrap">True</property>
                     <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <attributes>
-                      <attribute name="style" value="italic"/>
-                    </attributes>
+                    <property name="margin_bottom">12</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -711,10 +709,10 @@
                     <property name="label" translatable="yes">Insert the the local port where forward the packets from router to your computer</property>
                     <property name="wrap">True</property>
                     <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <attributes>
-                      <attribute name="style" value="italic"/>
-                    </attributes>
+                    <property name="margin_bottom">12</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -727,12 +725,11 @@
                     <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <property name="xscale">0</property>
+                    <property name="margin_top">12</property>
                     <child>
                       <object class="GtkEntry" id="add_local_ip">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="caps_lock_warning">False</property>
                       </object>
                     </child>
                   </object>
@@ -751,8 +748,6 @@
                       <object class="GtkSpinButton" id="add_local_port">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="caps_lock_warning">False</property>
                         <property name="adjustment">adjustment2</property>
                         <property name="numeric">True</property>
                       </object>
