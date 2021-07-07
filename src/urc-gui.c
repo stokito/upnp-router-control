@@ -72,7 +72,6 @@ typedef struct
               *total_sent_label,
               *button_remove,
               *button_add,
-              *router_icon,
               *refresh_button,
               *network_drawing_area;
 
@@ -85,26 +84,6 @@ typedef struct
 } GuiContext;
 
 static GuiContext* gui;
-
-void
-gui_set_router_icon (gchar *image_path)
-{
-    static GdkPixbuf *pixbuf = NULL;
-
-    if(pixbuf != NULL)
-        g_object_unref(pixbuf);
-
-    if(image_path == NULL || !g_file_test(image_path, G_FILE_TEST_EXISTS))
-        gtk_image_set_from_icon_name(GTK_IMAGE(gui->router_icon), "upnp-router-control", 64);
-
-    else {
-        // load the image and resize it
-        pixbuf = gdk_pixbuf_new_from_file_at_size(image_path, 64, 64, NULL);
-        gtk_image_set_from_pixbuf(GTK_IMAGE(gui->router_icon), pixbuf);
-
-    }
-    gtk_widget_set_size_request(gui->router_icon, 64, 64);
-}
 
 static void
 gui_add_port_window_close (GtkWidget *button,
@@ -1014,7 +993,6 @@ urc_gui_init(GApplication *app)
     gui->ip_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip_label"));
     gui->down_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "down_rate_label"));
     gui->up_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "up_rate_label"));
-    gui->router_icon = GTK_WIDGET (gtk_builder_get_object (builder, "image1"));
     gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "network_graph"));
     gui->total_received_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_received_label"));
     gui->total_sent_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_sent_label"));

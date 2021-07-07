@@ -24,10 +24,6 @@
 #include <libgupnp/gupnp.h>
 #include <libgssdp/gssdp.h>
 
-#ifdef HAVE_LIBCURL
-#include <curl/curl.h>
-#endif
-
 #include "urc-gui.h"
 #include "urc-upnp.h"
 
@@ -817,63 +813,6 @@ service_proxy_event_cb (GUPnPServiceProxy *proxy,
         g_print("\e[33mEvent:\e[0;0m %s [Not managed]", variable);
 }
 
-#ifdef HAVE_LIBCURL
-gpointer
-download_router_icon (gpointer data)
-{
-    FILE *local_file;
-    gchar *filename;
-    CURL *curl_handle;
-    CURLcode ret;
-    char error_buffer[CURL_ERROR_SIZE];
-
-    if(data == NULL)
-        return 0;
-
-    filename = g_strconcat(g_get_tmp_dir(), "/upnp-router-control.icon", NULL);
-
-    g_print("\e[36mDownloading router icon...\e[0;0m\n");
-
-    curl_handle = curl_easy_init();
-
-    if(curl_handle) {
-
-        local_file = fopen(filename, "w");
-
-        curl_easy_setopt(curl_handle, CURLOPT_URL, (char*)data);
-        curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, local_file);
-        curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, error_buffer);
-        /* do not download images > 500KiB */
-        curl_easy_setopt(curl_handle, CURLOPT_MAXFILESIZE, 512000);
-        /* 1 minute of timeout */
-        curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
-        /* Discard HTTP 4xx and 5xxx responses. */
-        curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, TRUE);
-
-        ret = curl_easy_perform(curl_handle);
-
-        fclose(local_file);
-
-        if(ret == CURLE_OK) {
-            g_print("\e[32mRouter icon downloaded\e[0;0m\n");
-            gui_set_router_icon(filename);
-
-        } else {
-            g_print("\e[31m[EE]\e[0m Failed downloading router icon: %s\n", error_buffer);
-        }
-
-        curl_easy_cleanup(curl_handle);
-
-    } else {
-        g_print("\e[31m[EE]\e[0m Error loading libcurl, will not download router icon");
-    }
-
-    g_free(filename);
-
-    return 0;
-}
-#endif /* HAVE_LIBCURL */
-
 static gchar*
 parse_presentation_url(gchar *presentation_url, const gchar *device_location)
 {
@@ -951,10 +890,6 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
                     RouterInfo        *router,
                     gboolean           is_complaiant_igd_device)
 {
-
-    gchar *router_icon_url, *icon_mime_type;
-    int icon_depth, icon_width, icon_height;
-
     if (is_complaiant_igd_device) {
         g_print ("*** Selected IGD compliant device\n");
     }
@@ -974,12 +909,6 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
     router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
     g_print ("UPnP descriptor: %s\n", gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
 
-    router_icon_url = gupnp_device_info_get_icon_url (GUPNP_DEVICE_INFO (proxy),
-                                   NULL, -1, -1, -1, FALSE,
-                                   &icon_mime_type, &icon_depth,
-                                   &icon_width, &icon_height);
-
-
     if (opt_debug) {
 
         g_print ("   Model description: %s\n", router->model_description);
@@ -989,22 +918,7 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
         g_print ("    Presentation URL: %s\n", router->http_address);
         g_print ("                 UPC: %s\n", router->upc);
         g_print ("  Unique Device Name: %s\n", router->udn);
-
-        if(router_icon_url != NULL) {
-
-            g_print ("            Icon URL: %s\n", router_icon_url);
-            g_print ("      Icon mime/type: %s\n", icon_mime_type);
-            g_print ("          Icon depth: %d\n", icon_depth);
-            g_print ("          Icon width: %d\n", icon_width);
-            g_print ("         Icon height: %d\n", icon_height);
-            g_free (icon_mime_type);
-        }
     }
-
-    #ifdef HAVE_LIBCURL
-    // start the download in a separate thread
-    g_thread_new("down_router_ico", download_router_icon, router_icon_url);
-    #endif
 
     router->http_address = parse_presentation_url(router->http_address,
                            gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
@@ -1243,7 +1157,6 @@ device_proxy_unavailable_cb (GUPnPControlPoint *cp,
 
         g_source_remove (router->refresh_timeout);
         g_source_remove (router->data_rate_timer);
-        gui_set_router_icon (NULL);
         gui_disable ();
 
         router->main_device = NULL;

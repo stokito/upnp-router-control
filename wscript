@@ -14,9 +14,6 @@ APPNAME='upnp-router-control'
 srcdir = '.'
 blddir = '_build_'
 
-def set_options(opt):
-    opt.add_option('--disable-libcurl', action='store_true', default=False, help='Compile UPnP Router Control without icon download support')
-
 def configure(conf):
 
     import Options
@@ -26,11 +23,6 @@ def configure(conf):
     conf.check_cfg(package='gtk+-3.0', uselib_store='GTK', atleast_version='3.0', mandatory=True, args='--cflags --libs')
     conf.check_cfg(package='gssdp-1.2', uselib_store='GSSDP', mandatory=True, args='--cflags --libs')
     conf.check_cfg(package='gupnp-1.2', uselib_store='GUPNP', mandatory=True, args='--cflags --libs')
-
-    if Options.options.disable_libcurl == False:
-        conf.check_cfg(package='libcurl', uselib_store='LIBCURL', mandatory=False, args='--cflags --libs')
-    else:
-        print("Disabling libcurl support")
 
     conf.define('PACKAGE', APPNAME)
     conf.define('VERSION', VERSION)

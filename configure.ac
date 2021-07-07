@@ -38,12 +38,6 @@ AC_SEARCH_LIBS([ceil], [m])
 
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources, glib-compile-resources)
 
-AC_ARG_ENABLE(libcurl,
-              [  --disable-libcurl      compile UPnP Router Control without icon download support],
-              [libcurl=$enableval],
-              [libcurl="yes"])
-
-
 #### Check for GTK+ 3 ####
 PKG_CHECK_MODULES(GTK, gtk+-3.0,,
 	AC_MSG_ERROR([GTK+-3 is required to compile upnp-router-control]))
@@ -65,24 +59,6 @@ PKG_CHECK_MODULES(GUPNP, gupnp-1.2,,
 AC_SUBST(GUPNP_CFLAGS)
 AC_SUBST(GUPNP_LIBS)
 
-#### Check for libcurl ####
-if test "$enable_libcurl" = "no"
-then
-   echo "Disabling libcurl support"
-else
-	PKG_CHECK_MODULES(LIBCURL, libcurl,
-	HAVE_LIBCURL="yes", HAVE_LIBCURL="no")
-
-	if test "x$HAVE_LIBCURL" = "xyes"
-	then
-	   AC_DEFINE(HAVE_LIBCURL, 1, [libcurl available])
-	fi
-fi
-
-AM_CONDITIONAL(LIBCURL, test -n "$LIBCURL_LIBS")
-
-AC_SUBST(LIBCURL_CFLAGS)
-AC_SUBST(LIBCURL_LIBS)
 
 AC_CONFIG_FILES([
 Makefile

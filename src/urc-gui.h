@@ -85,7 +85,4 @@ gui_add_mapped_ports(const GSList *port_list);
 void
 gui_clear_ports_list_treeview(void);
 
-void
-gui_set_router_icon(gchar *image_path);
-
 #endif /* __URC_GUI_H__ */
