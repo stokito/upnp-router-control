@@ -62,10 +62,12 @@ typedef struct
     GtkWidget *main_window,
               *treeview,
               *router_name_label,
+              *router_name_hbox,
               *router_url_label,
               *config_label,
               *wan_status_label,
               *ip_label,
+              *net_graph_box,
               *down_rate_label,
               *up_rate_label,
               *total_received_label,
@@ -73,7 +75,9 @@ typedef struct
               *button_remove,
               *button_add,
               *refresh_button,
-              *network_drawing_area;
+              *network_drawing_area,
+              *receiving_color,
+              *sending_color;
 
     GtkMenuButton *menu_button;
 
@@ -485,13 +489,13 @@ gui_set_total_received (const unsigned int total_received)
         value = total_received;
         unit = g_strdup("B");
     }
-    str = g_strdup_printf("<b>%s</b> %0.1f %s", _("Total received:"), value, unit);
+    str = g_strdup_printf("%0.1f %s", value, unit);
     g_free(unit);
 
     if(gui->total_received_label == NULL)
         return;
 
-    gtk_label_set_markup (GTK_LABEL(gui->total_received_label), str);
+    gtk_label_set_text (GTK_LABEL(gui->total_received_label), str);
     g_free(str);
 
     gtk_widget_set_sensitive(gui->total_received_label, TRUE);
@@ -533,16 +537,16 @@ gui_set_total_sent (const unsigned int total_sent)
         value = total_sent;
         unit = g_strdup("B");
     }
-    str = g_strdup_printf("<b>%s</b> %0.1f %s", _("Total sent:"), value, unit);
+    str = g_strdup_printf("%0.1f %s", value, unit);
     g_free(unit);
 
     if(gui->total_sent_label == NULL)
         return;
 
-    gtk_label_set_markup (GTK_LABEL(gui->total_sent_label), str);
+    gtk_label_set_text (GTK_LABEL(gui->total_sent_label), str);
     g_free(str);
 
-    gtk_widget_set_sensitive(gui->total_sent_label, TRUE);
+    gtk_widget_set_sensitive(gui->net_graph_box, TRUE);
 }
 
 void
@@ -597,7 +601,7 @@ gui_set_download_speed(const gdouble down_speed)
     gtk_label_set_text (GTK_LABEL(gui->down_rate_label), str);
     g_free(str);
 
-    gtk_widget_set_sensitive(gui->down_rate_label, TRUE);
+    gtk_widget_set_sensitive(gui->net_graph_box, TRUE);
 
 }
 
@@ -672,17 +676,19 @@ gui_set_conn_status(const gchar *state)
 {
     gchar* str = NULL;
 
-    if(gui->wan_status_label == NULL)
+    if (gui->wan_status_label == NULL)
         return;
 
-    if(g_strcmp0("Connected", state) == 0)
-            str = g_strdup_printf( "<b>%s</b> <span color=\"#009000\"><b>%s</b></span>", _("WAN status:"), _("Connected") );
-    if(g_strcmp0("Disconnected", state) == 0)
-            str = g_strdup_printf( "<b>%s</b> <span color=\"#900000\"><b>%s</b></span>", _("WAN status:"), _("Disconnected"));
-    if(g_strcmp0("Connecting", state) == 0)
-            str = g_strdup_printf( "<b>%s</b> <span color=\"#0000a0\"><b>%s</b></span>", _("WAN status:"), _("Connecting"));
-    if(g_strcmp0("Disconnecting", state) == 0)
-            str = g_strdup_printf( "<b>%s</b> <span color=\"#c04000\"><b>%s</b></span>", _("WAN status:"), _("Disconnecting"));
+    if (g_strcmp0("Connected", state) == 0)
+        str = g_strdup_printf( "<b>%s</b> <span color=\"#009000\"><b>%s</b></span>", _("WAN status:"), _("Connected") );
+    else if (g_strcmp0("Disconnected", state) == 0)
+        str = g_strdup_printf( "<b>%s</b> <span color=\"#900000\"><b>%s</b></span>", _("WAN status:"), _("Disconnected"));
+    else if (g_strcmp0("Connecting", state) == 0)
+        str = g_strdup_printf( "<b>%s</b> <span color=\"#0000a0\"><b>%s</b></span>", _("WAN status:"), _("Connecting"));
+    else if (g_strcmp0("Disconnecting", state) == 0)
+        str = g_strdup_printf( "<b>%s</b> <span color=\"#c04000\"><b>%s</b></span>", _("WAN status:"), _("Disconnecting"));
+    else
+        str = g_strdup_printf( "<b>%s</b> %s", _("WAN status:"), state);
 
     gtk_label_set_markup (GTK_LABEL(gui->wan_status_label), str);
 
@@ -759,13 +765,12 @@ gui_set_router_info (const gchar *router_friendly_name,
     if(gui == NULL || gui->main_window == NULL)
         return;
 
-    str = g_strdup_printf( "<b>%s</b> %s", _("Router name:"), router_friendly_name);
-    gtk_label_set_markup (GTK_LABEL(gui->router_name_label), str);
-    g_free(str);
+    gtk_label_set_text (GTK_LABEL(gui->router_name_label), router_friendly_name);
 
-    gtk_widget_set_sensitive(gui->router_name_label, TRUE);
+    gtk_widget_set_sensitive(gui->router_name_hbox, TRUE);
 
-    str = g_strdup_printf( "<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
+    str = g_strdup_printf( "<b>%s</b>\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
+                           router_friendly_name,
                            _("Brand"),
                            router_brand,
                            _("Brand website:"),
@@ -834,13 +839,10 @@ gui_enable()
     if(gui == NULL || gui->main_window == NULL)
         return;
 
-    gtk_widget_set_sensitive(gui->router_name_label, TRUE);
+    gtk_widget_set_sensitive(gui->router_name_hbox, TRUE);
     gtk_widget_set_sensitive(gui->wan_status_label, TRUE);
     gtk_widget_set_sensitive(gui->ip_label, TRUE);
-    gtk_widget_set_sensitive(gui->down_rate_label, TRUE);
-    gtk_widget_set_sensitive(gui->up_rate_label, TRUE);
-    gtk_widget_set_sensitive(gui->total_received_label, TRUE);
-    gtk_widget_set_sensitive(gui->total_sent_label, TRUE);
+    gtk_widget_set_sensitive(gui->net_graph_box, TRUE);
     gtk_widget_set_sensitive(gui->router_url_label, TRUE);
     gtk_widget_set_sensitive(gui->button_add, TRUE);
     gtk_widget_set_sensitive(gui->config_label, TRUE);
@@ -857,10 +859,8 @@ gui_disable()
 
     gui_clear_ports_list_treeview();
 
-    str = g_strdup_printf("<b>%s</b> %s", _("Router name:"), _("not available") );
-    gtk_label_set_markup (GTK_LABEL(gui->router_name_label), str);
-    gtk_widget_set_sensitive(gui->router_name_label, FALSE);
-    g_free(str);
+    gtk_label_set_text (GTK_LABEL(gui->router_name_label), _("not available"));
+    gtk_widget_set_sensitive(gui->router_name_hbox, FALSE);
 
     str = g_strdup_printf("<b>%s</b> %s", _("WAN status:"), _("not available") );
     gtk_label_set_markup (GTK_LABEL(gui->wan_status_label), str);
@@ -872,21 +872,11 @@ gui_disable()
     gtk_widget_set_sensitive(gui->ip_label, FALSE);
     g_free(str);
 
-    gtk_label_set_markup (GTK_LABEL(gui->down_rate_label), "—");
-    gtk_widget_set_sensitive(gui->down_rate_label, FALSE);
-
-    gtk_label_set_markup (GTK_LABEL(gui->up_rate_label), "—");
-    gtk_widget_set_sensitive(gui->up_rate_label, FALSE);
-
-    str = g_strdup_printf("<b>%s</b> %s", _("Total received:"), "—" );
-    gtk_label_set_markup (GTK_LABEL(gui->total_received_label), str);
-    gtk_widget_set_sensitive(gui->total_received_label, FALSE);
-    g_free(str);
-
-    str = g_strdup_printf("<b>%s</b> %s", _("Total sent:"), "—" );
-    gtk_label_set_markup (GTK_LABEL(gui->total_sent_label), str);
-    gtk_widget_set_sensitive(gui->total_sent_label, FALSE);
-    g_free(str);
+    gtk_label_set_text (GTK_LABEL(gui->down_rate_label), "—");
+    gtk_label_set_text (GTK_LABEL(gui->up_rate_label), "—");
+    gtk_label_set_text (GTK_LABEL(gui->total_received_label), "—");
+    gtk_label_set_text (GTK_LABEL(gui->total_sent_label), "—");
+    gtk_widget_set_sensitive(gui->net_graph_box, FALSE);
 
     gtk_label_set_text (GTK_LABEL(gui->router_url_label), _("not available"));
     gtk_widget_set_sensitive(gui->router_url_label, FALSE);
@@ -900,7 +890,6 @@ gui_disable()
 
     disable_graph_data();
     gui_update_graph();
-
 }
 
 
@@ -965,6 +954,19 @@ gui_destroy()
 }
 
 void
+gui_on_colors_change(GuiContext *gui) {
+    GdkRGBA color;
+    gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (gui->receiving_color),
+                                &color);
+    urc_graph_set_receiving_color(color);
+    
+    gtk_color_chooser_get_rgba (GTK_COLOR_CHOOSER (gui->sending_color),
+                                &color);
+    urc_graph_set_sending_color(color);
+    gui_update_graph();
+}
+
+void
 urc_gui_init(GApplication *app)
 {
     GtkBuilder* builder;
@@ -987,25 +989,43 @@ urc_gui_init(GApplication *app)
     gui->treeview = GTK_WIDGET (gtk_builder_get_object (builder, "treeview1"));
 
     gui->router_name_label = GTK_WIDGET (gtk_builder_get_object (builder, "router_name_label"));
+    gui->router_name_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_name"));
+
     gui->router_url_label = GTK_WIDGET (gtk_builder_get_object (builder, "router_url_label"));
     gui->config_label = GTK_WIDGET (gtk_builder_get_object (builder, "label_config"));
     gui->wan_status_label = GTK_WIDGET (gtk_builder_get_object (builder, "wan_status_label"));
     gui->ip_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip_label"));
+    gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "network_graph"));
+
+    // Network data labels.
+    gui->net_graph_box = GTK_WIDGET (gtk_builder_get_object (builder, "net_graph_box"));
     gui->down_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "down_rate_label"));
     gui->up_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "up_rate_label"));
-    gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "network_graph"));
-    gui->total_received_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_received_label"));
-    gui->total_sent_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_sent_label"));
+    gui->total_received_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_received_value"));
+    gui->total_sent_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_sent_value"));
 
+    // Color buttons.
+    gui->receiving_color = GTK_WIDGET (gtk_builder_get_object (builder, "receiving_color"));
+    gui->sending_color = GTK_WIDGET (gtk_builder_get_object (builder, "sending_color"));
+
+    // Port management buttons.
     gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
 
     gui->refresh_button = GTK_WIDGET (gtk_builder_get_object (builder, "refresh_button"));
-
     gui->menu_button = GTK_MENU_BUTTON (gtk_builder_get_object (builder, "menu_button"));
 
+    // Sets the graph color default values
+    gui_on_colors_change(gui);
+
+    g_signal_connect_swapped (G_OBJECT(gui->receiving_color), "color-set",
+                     G_CALLBACK(gui_on_colors_change), gui);
+
+    g_signal_connect_swapped (G_OBJECT(gui->sending_color), "color-set",
+                     G_CALLBACK(gui_on_colors_change), gui);
+
     g_signal_connect(G_OBJECT(gui->main_window), "delete-event",
-                         G_CALLBACK(gui_destroy), NULL);
+                     G_CALLBACK(gui_destroy), NULL);
 
     gui_create_add_port_window(builder);
     g_object_unref (G_OBJECT (builder));

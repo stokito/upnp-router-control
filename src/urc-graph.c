@@ -37,6 +37,20 @@ static GList *upspeed_values = NULL;
 // graph fullscale default value
 static guint net_max = 2;
 
+GdkRGBA urc_receiving_color;
+GdkRGBA urc_sending_color;
+
+
+void
+urc_graph_set_receiving_color(GdkRGBA color) {
+    urc_receiving_color = color;
+}
+
+void
+urc_graph_set_sending_color(GdkRGBA color) {
+    urc_sending_color = color;
+}
+
 static void
 clear_graph_background()
 {
@@ -282,7 +296,7 @@ graph_draw_data (GtkWidget *widget)
     /* draw load lines */
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_DEFAULT);
     cairo_set_dash (cr, NULL, 0, 0);
-    cairo_set_line_width (cr, 1.00);
+    cairo_set_line_width (cr, 1.50);
 
     /* upload speed */
     list = upspeed_values;
@@ -316,7 +330,7 @@ graph_draw_data (GtkWidget *widget)
     }
 
     // upload line color
-    cairo_set_source_rgb (cr, 0.52, 0.28, 0.60);
+    gdk_cairo_set_source_rgba(cr, &urc_receiving_color);
     cairo_stroke(cr);
 
     /* download speed */
@@ -349,7 +363,7 @@ graph_draw_data (GtkWidget *widget)
         list = list->next;
     }
     // download line color
-    cairo_set_source_rgb (cr, 0.18, 0.49, 0.70);
+    gdk_cairo_set_source_rgba(cr, &urc_sending_color);
     cairo_stroke(cr);
 
     cairo_destroy (cr);

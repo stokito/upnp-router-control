@@ -40,4 +40,10 @@ update_upload_graph_data(SpeedValue *speed);
 void
 disable_graph_data();
 
+void
+urc_graph_set_receiving_color(GdkRGBA color);
+
+void
+urc_graph_set_sending_color(GdkRGBA color);
+
 #endif /* __URC_GRAPH_H__ */
