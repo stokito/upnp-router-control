@@ -465,32 +465,8 @@ gui_disable_total_received()
 void
 gui_set_total_received (const unsigned int total_received)
 {
-    gchar* str;
-    gchar* unit;
-    float value;
-
-    if(total_received >= 1073741824)
-    {
-        value = total_received / 1073741824.0;
-        unit = g_strdup("GiB");
-    }
-    else if(total_received >= 1048576)
-    {
-        value = total_received / 1048576.0;
-        unit = g_strdup("MiB");
-    }
-    else if(total_received >= 1024)
-    {
-        value = total_received / 1024.0;
-        unit = g_strdup("KiB");
-    }
-    else
-    {
-        value = total_received;
-        unit = g_strdup("B");
-    }
-    str = g_strdup_printf("%0.1f %s", value, unit);
-    g_free(unit);
+    gchar *str;
+    str = g_format_size_full(total_received, G_FORMAT_SIZE_IEC_UNITS);
 
     if(gui->total_received_label == NULL)
         return;
@@ -513,32 +489,8 @@ gui_disable_total_sent()
 void
 gui_set_total_sent (const unsigned int total_sent)
 {
-    gchar* str;
-    gchar* unit;
-    float value;
-
-    if(total_sent >= 1073741824)
-    {
-        value = total_sent / 1073741824.0;
-        unit = g_strdup("GiB");
-    }
-    else if(total_sent >= 1048576)
-    {
-        value = total_sent / 1048576.0;
-        unit = g_strdup("MiB");
-    }
-    else if(total_sent >= 1024)
-    {
-        value = total_sent / 1024.0;
-        unit = g_strdup("KiB");
-    }
-    else
-    {
-        value = total_sent;
-        unit = g_strdup("B");
-    }
-    str = g_strdup_printf("%0.1f %s", value, unit);
-    g_free(unit);
+    gchar *str;
+    str = g_format_size_full(total_sent, G_FORMAT_SIZE_IEC_UNITS);
 
     if(gui->total_sent_label == NULL)
         return;
@@ -563,37 +515,18 @@ gui_disable_download_speed()
 void
 gui_set_download_speed(const gdouble down_speed)
 {
-    gchar* str;
-    gchar* unit;
-    gfloat value;
+    gchar *bytes, *str;
     SpeedValue *speed;
 
     speed = g_malloc (sizeof(SpeedValue));
-
     speed->speed = down_speed;
     speed->valid = TRUE;
 
     update_download_graph_data(speed);
 
-    /* Method of divisions is too expensive? */
-    /* Down speed */
-    if(down_speed >= 1048576)
-    {
-        value = down_speed / 1048576.0;
-        unit = g_strdup("GiB/s");
-    }
-    else if(down_speed >= 1024)
-    {
-        value = down_speed / 1024.0;
-        unit = g_strdup("MiB/s");
-    }
-    else
-    {
-        value = down_speed;
-        unit = g_strdup("KiB/s");
-    }
-    str = g_strdup_printf("%0.1f %s", value, unit);
-    g_free(unit);
+    bytes = g_format_size_full(down_speed * 1024, G_FORMAT_SIZE_IEC_UNITS);
+    str = g_strdup_printf("%s/s", bytes);
+    g_free(bytes);
 
     if(gui->down_rate_label == NULL)
         return;
@@ -619,9 +552,7 @@ gui_disable_upload_speed()
 void
 gui_set_upload_speed(const gdouble up_speed)
 {
-    gchar* str;
-    gchar* unit;
-    gfloat value;
+    gchar *bytes, *str;
     SpeedValue *speed;
 
     speed = g_malloc (sizeof(SpeedValue));
@@ -631,25 +562,9 @@ gui_set_upload_speed(const gdouble up_speed)
 
     update_upload_graph_data(speed);
 
-    /* Method of divisions is too expensive? */
-    /* Up speed */
-    if(up_speed >= 1048576)
-    {
-        value = up_speed / 1048576.0;
-        unit = g_strdup("GiB/s");
-    }
-    else  if(up_speed >= 1024)
-    {
-        value = up_speed / 1024.0;
-        unit = g_strdup("MiB/s");
-    }
-    else
-    {
-        value = up_speed;
-        unit = g_strdup("KiB/s");
-    }
-    str = g_strdup_printf("%0.1f %s", value, unit);
-    g_free(unit);
+    bytes = g_format_size_full(up_speed * 1024, G_FORMAT_SIZE_IEC_UNITS);
+    str = g_strdup_printf("%s/s", bytes);
+    g_free(bytes);
 
     if(gui->up_rate_label == NULL)
         return;

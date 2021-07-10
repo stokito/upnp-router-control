@@ -77,7 +77,7 @@ graph_draw_background (GtkWidget *widget)
     PangoLayout* layout;
     PangoFontDescription* font_desc;
     PangoRectangle extents;
-    gchar *label;
+    gchar *bytes, *label;
     PangoContext *pango_context;
     GtkStyleContext *context;
     GtkStateFlags state;
@@ -194,12 +194,9 @@ graph_draw_background (GtkWidget *widget)
         else {
             label_value = net_max - ((float) net_max / y_frame_count) * i;
 
-            if(label_value < G_GUINT64_CONSTANT(1024))
-                label = g_strdup_printf("%.1f KiB/s", label_value);
-            if(label_value >= G_GUINT64_CONSTANT(1024))
-                label = g_strdup_printf("%.0f MiB/s", round(label_value / G_GUINT64_CONSTANT(1024)));
-            if(label_value >= G_GUINT64_CONSTANT(1048576))
-                label = g_strdup_printf("%.0f GiB/s", round(label_value / G_GUINT64_CONSTANT(1048576)));
+            bytes = g_format_size_full(label_value * 1024, G_FORMAT_SIZE_IEC_UNITS);
+            label = g_strdup_printf("%s/s", bytes);
+            g_free(bytes);
         }
 
         gdk_cairo_set_source_rgba (cr, &color);        
