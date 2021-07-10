@@ -25,7 +25,9 @@
   <url type="homepage">https://launchpad.net/upnp-router-control</url>
 
   <screenshots>
-    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/02/Schermata_del_2021-02-10_22-49-19.png</screenshot>
+    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/07/urc1.png</screenshot>
+    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/07/urc2.png</screenshot>
+    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/07/urc3.png</screenshot>
   </screenshots>
 
   <update_contact>dnax88@gmail.com</update_contact>
