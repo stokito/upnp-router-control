@@ -1,3 +1,12 @@
+2021-07-10 Daniele Napolitano <dnax88@gmail.com>
+    * 0.3.1 release
+    * [feature] Possibility to change network graph colors
+    * [bug fixed] Fixed subdevice detection (no ports showed and no net status)
+    * [bug fixed] Fixed network speed errors
+    * [bug fixed] Fixed graph speed scale labels
+    * [bug fixed] LP #769573: Better check DefaultConnectionDevice return
+    * [bug fixed] LP #1923601: Handle errors on downloading router icon (removed icon support)
+
 2021-02-24 Daniele Napolitano <dnax88@gmail.com>
     * 0.3 release
     * [feature] Ported to Gtk3 along with GtkHeaderBar and client-side decoration

@@ -1,5 +1,5 @@
 AC_INIT([upnp-router-control],
-        [0.3],
+        [0.3.1],
         [https://bugs.launchpad.net/upnp-router-control/+filebug],
         [upnp-router-control])
 
@@ -39,20 +39,20 @@ AC_SEARCH_LIBS([ceil], [m])
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources, glib-compile-resources)
 
 #### Check for GTK+ 3 ####
-PKG_CHECK_MODULES(GTK, gtk+-3.0,,
-	AC_MSG_ERROR([GTK+-3 is required to compile upnp-router-control]))
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.10,,
+	AC_MSG_ERROR([GTK3 >= 3.10 is required to compile upnp-router-control]))
 
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
-#### Check for gssdp1.0 ####
+#### Check for gssdp1.2 ####
 PKG_CHECK_MODULES(GSSDP, gssdp-1.2,,
 	AC_MSG_ERROR([libgssdp-1.2 is required to compile upnp-router-control]))
 
 AC_SUBST(GSSDP_CFLAGS)
 AC_SUBST(GSSDP_LIBS)
 
-#### Check for gupnp1.0 ####
+#### Check for gupnp1.2 ####
 PKG_CHECK_MODULES(GUPNP, gupnp-1.2,,
 	AC_MSG_ERROR([libgupnp-1.2 is required to compile upnp-router-control]))
 

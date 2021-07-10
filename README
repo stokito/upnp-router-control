@@ -1,5 +1,5 @@
-UPnP Router Control 0.3
-***********************
+UPnP Router Control 0.3.1
+*************************
 
 Copyright (C) 2021  Daniele Napolitano <dnax88@gmail.com>
 
@@ -9,19 +9,15 @@ A UPnP router manager for IGD-compliant routers
 Compilation and installation
 ============================
 
-In order to compile UPnP Port Mapper you need following software packages:
+In order to compile UPnP Router Control you need following software packages:
     - GTK+ library ( >= 3.10 )
-    - GSSDP library
-    - GUPnP library
-    - cURL library (optional)
+    - GSSDP library ( >= 1.2 )
+    - GUPnP library ( >= 1.2 )
 
 To configure run:
 	./configure --prefix=/usr
 
 Configure automatically searches for all required components and packages.
-
-If you want to exclude the libcurl dependency and the router icon downloading,
-add --disable-libcurl to the configure commnd.
 
 To compile and install run:
 	make
