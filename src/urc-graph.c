@@ -327,7 +327,7 @@ graph_draw_data (GtkWidget *widget)
     }
 
     // upload line color
-    gdk_cairo_set_source_rgba(cr, &urc_receiving_color);
+    gdk_cairo_set_source_rgba(cr, &urc_sending_color);
     cairo_stroke(cr);
 
     /* download speed */
@@ -360,7 +360,7 @@ graph_draw_data (GtkWidget *widget)
         list = list->next;
     }
     // download line color
-    gdk_cairo_set_source_rgba(cr, &urc_sending_color);
+    gdk_cairo_set_source_rgba(cr, &urc_receiving_color);
     cairo_stroke(cr);
 
     cairo_destroy (cr);
