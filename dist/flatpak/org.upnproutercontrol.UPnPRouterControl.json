@@ -31,7 +31,7 @@
          "sources":[
             {
                "type":"git",
-               "url":"https://gitlab.gnome.org/DnaX/upnp-router-control.git",
+               "url":"https://gitlab.gnome.org/DnaX/upnp-router-control.git"
             }
          ],
          "modules":[
