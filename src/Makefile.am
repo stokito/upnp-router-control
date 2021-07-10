@@ -2,7 +2,6 @@ upnp_router_control_CFLAGS =    	\
     @GTK_CFLAGS@                    \
     @GSSDP_LIBS@                    \
     @GUPNP_CFLAGS@                  \
-    @LIBCURL_CFLAGS@                \
     -DDATADIR=\""$(datadir)"\"                              \
     -DPREFIX=\""$(prefix)"\"                                \
     -DPACKAGE_DATADIR=\""$(datadir)/upnp-router-control"\"  \
@@ -27,7 +26,7 @@ upnp_router_control_SOURCES = \
     $(RESOURCES)    \
     $(NULL)
 
-upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GSSDP_LIBS@ @GUPNP_LIBS@ @LIBCURL_LIBS@ $(LIBCURL_LIBS) -lm
+upnp_router_control_LDADD = @GTK_LIBS@ @INTLLIBS@ @GSSDP_LIBS@ @GUPNP_LIBS@ -lm
 
 RESOURCES_DEP = $(shell $(GLIB_COMPILE_RESOURCES) --generate-dependencies upnp-router-control.gresource.xml)
 

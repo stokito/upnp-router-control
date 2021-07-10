@@ -22,6 +22,7 @@
     <property name="window_position">center</property>
     <property name="default_width">600</property>
     <property name="default_height">250</property>
+    <property name="icon-name">org.upnproutercontrol.UPnPRouterControl</property>
     <child>
       <object class="GtkBox" id="vbox2">
         <property name="visible">True</property>
@@ -50,13 +51,31 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="router_name_label">
+              <object class="GtkBox" id="hbox_name">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label">&lt;b&gt;Name:&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
-                <property name="selectable">True</property>
-                <property name="xalign">0</property>
+                <property name="spacing">4</property>
+                <child>
+                  <object class="GtkLabel" id="router_name_title">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Router name:</property>
+                    <property name="xalign">0</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="router_name_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_markup">True</property>
+                    <property name="selectable">True</property>
+                    <property name="ellipsize">end</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -112,41 +131,13 @@
                 <property name="xalign">1</property>
                 <property name="xscale">0</property>
                 <child>
-                  <object class="GtkBox" id="hbox_wan_ip">
+                  <object class="GtkLabel" id="wan_status_label">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">False</property>
-                    <property name="spacing">10</property>
-                    <child>
-                      <object class="GtkLabel" id="wan_status_label">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">False</property>
-                        <property name="label">&lt;b&gt;State:&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                        <property name="xalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="ip_label">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can_focus">False</property>
-                        <property name="label">&lt;b&gt;IP:&lt;/b&gt;</property>
-                        <property name="use_markup">True</property>
-                        <property name="selectable">True</property>
-                        <property name="xalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
+                    <property name="label">&lt;b&gt;State:&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="xalign">0</property>
                   </object>
                 </child>
               </object>
@@ -163,87 +154,14 @@
                 <property name="xalign">1</property>
                 <property name="xscale">0</property>
                 <child>
-                  <object class="GtkBox" id="hbox_network_rate">
+                  <object class="GtkLabel" id="ip_label">
                     <property name="visible">True</property>
+                    <property name="sensitive">False</property>
                     <property name="can_focus">False</property>
-                    <property name="spacing">4</property>
-                    <child>
-                      <object class="GtkBox" id="hbox_down_rate">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="spacing">8</property>
-                        <child>
-                          <object class="GtkImage" id="image2">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="icon_name">go-down-symbolic</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="down_rate_label">
-                            <property name="width_request">80</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label">0.0 KiB/s</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkBox" id="hbox_up_rate">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="spacing">8</property>
-                        <child>
-                          <object class="GtkImage" id="image3">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="icon_name">go-up-symbolic</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="up_rate_label">
-                            <property name="width_request">80</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label">0.0 KiB/s</property>
-                            <property name="single_line_mode">True</property>
-                            <property name="xalign">0</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
+                    <property name="label">&lt;b&gt;IP:&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="selectable">True</property>
+                    <property name="xalign">0</property>
                   </object>
                 </child>
               </object>
@@ -357,8 +275,8 @@
           <object class="GtkAlignment" id="alignment_graph">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="bottom_padding">6</property>
             <property name="top_padding">6</property>
+            <property name="bottom_padding">6</property>
             <property name="left_padding">6</property>
             <property name="right_padding">6</property>
             <child>
@@ -377,39 +295,206 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="hbox1">
+          <object class="GtkBox" id="net_graph_box">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="orientation">horizontal</property>
+            <property name="margin-top">6</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkGrid" id="net_table1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
+                <property name="margin_right">6</property>
+                <property name="halign">center</property>
+                <property name="hexpand">True</property>
+                <property name="column_spacing">6</property>
+                <property name="row_homogeneous">True</property>
+                <child>
+                  <object class="GtkColorButton" id="receiving_color">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="rgba">rgb(46,125,179)</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                    <property name="height">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="receiving_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">False</property>
+                    <property name="label" translatable="yes">Receiving</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="total_received_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">False</property>
+                    <property name="label" translatable="yes">Total Received</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+
+                <child>
+                  <object class="GtkLabel" id="down_rate_label">
+                    <property name="width_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label"></property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+
+                <child>
+                  <object class="GtkLabel" id="total_received_value">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkGrid" id="net_table2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
+                <property name="margin_right">6</property>
+                <property name="halign">center</property>
+                <property name="hexpand">True</property>
+                <property name="column_spacing">6</property>
+                <property name="row_homogeneous">True</property>
+                <child>
+                  <object class="GtkColorButton" id="sending_color">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="rgba">rgb(132,71,153)</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                    <property name="height">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="sending_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">False</property>
+                    <property name="label" translatable="yes">Sending</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="total_sent_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">False</property>
+                    <property name="label" translatable="yes">Total Sent</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                
+                <child>
+                  <object class="GtkLabel" id="up_rate_label">
+                    <property name="width_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label"></property>
+                    <property name="single_line_mode">True</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                
+                <child>
+                  <object class="GtkLabel" id="total_sent_value">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">2</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label_net_warning">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="border_width">6</property>
-            <child>
-              <object class="GtkLabel" id="total_received_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Total received:</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="total_sent_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Total sent:</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
+            <property name="margin_top">12</property>
+            <property name="margin_bottom">12</property>
+            <property name="label" translatable="yes">Note: The network speed calculation it's approximate</property>
+            <property name="xalign">0.5</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">6</property>
+            <property name="position">7</property>
           </packing>
         </child>
       </object>
@@ -425,9 +510,9 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Refresh</property>
             <property name="image">image_refresh</property>
             <property name="always_show_image">True</property>
-            <property name="tooltip_text" translatable="yes">Refresh</property>
             <accelerator key="F5" signal="clicked"/>
           </object>
           <packing>
@@ -457,8 +542,8 @@
   <object class="GtkDialog" id="add_port_window">
     <property name="can_focus">False</property>
     <property name="border_width">12</property>
-    <property name="resizable">False</property>
     <property name="title" translatable="yes">Add new port forward</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
@@ -525,12 +610,12 @@
                 <property name="width_request">320</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">12</property>
                 <property name="label" translatable="yes">Insert here a short description for this port</property>
                 <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <attributes>
-                  <attribute name="style" value="italic"/>
-                </attributes>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -559,8 +644,6 @@
                   <object class="GtkSpinButton" id="add_ext_port">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="caps_lock_warning">False</property>
                     <property name="adjustment">adjustment1</property>
                     <property name="numeric">True</property>
                   </object>
@@ -575,13 +658,13 @@
               <object class="GtkLabel" id="label4">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">12</property>
                 <property name="label" translatable="yes">Insert here the port exposed by the router to Internet</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <attributes>
-                  <attribute name="style" value="italic"/>
-                </attributes>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -622,12 +705,12 @@
               <object class="GtkLabel" id="label10">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_bottom">12</property>
                 <property name="label" translatable="yes">Select here the protocol used, usually TCP</property>
                 <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <attributes>
-                  <attribute name="style" value="italic"/>
-                </attributes>
+                <style>
+                  <class name="dim-label"/>
+                </style>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -666,6 +749,7 @@
                     <property name="width_request">100</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_top">12</property>
                     <property name="label" translatable="yes">Local IP:</property>
                     <property name="xalign">0</property>
                   </object>
@@ -688,16 +772,15 @@
                 </child>
                 <child>
                   <object class="GtkLabel" id="label8">
-                    <property name="width_request">320</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_bottom">12</property>
                     <property name="label" translatable="yes">Insert here the local IP where forward packets, usually IP of this computer</property>
                     <property name="wrap">True</property>
                     <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <attributes>
-                      <attribute name="style" value="italic"/>
-                    </attributes>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -708,13 +791,13 @@
                   <object class="GtkLabel" id="label11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_bottom">12</property>
                     <property name="label" translatable="yes">Insert the the local port where forward the packets from router to your computer</property>
                     <property name="wrap">True</property>
                     <property name="xalign">0</property>
-                    <property name="yalign">0</property>
-                    <attributes>
-                      <attribute name="style" value="italic"/>
-                    </attributes>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
@@ -725,14 +808,13 @@
                   <object class="GtkAlignment" id="alignment5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_top">12</property>
                     <property name="xalign">0</property>
                     <property name="xscale">0</property>
                     <child>
                       <object class="GtkEntry" id="add_local_ip">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="caps_lock_warning">False</property>
                       </object>
                     </child>
                   </object>
@@ -751,8 +833,6 @@
                       <object class="GtkSpinButton" id="add_local_port">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="invisible_char">•</property>
-                        <property name="caps_lock_warning">False</property>
                         <property name="adjustment">adjustment2</property>
                         <property name="numeric">True</property>
                       </object>

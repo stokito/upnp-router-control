@@ -40,36 +40,49 @@ void gui_set_router_info (const gchar *router_friendly_name,
                           const gchar *router_model_name,
                           const gchar *router_model_number);
 
-void gui_set_ext_ip(const gchar *ip);
+void
+gui_set_ext_ip(const gchar *ip);
 
-void gui_disable_ext_ip();
+void
+gui_disable_ext_ip();
 
-void gui_set_conn_status(const gchar *state);
+void
+gui_set_conn_status(const gchar *state);
 
-void gui_update_graph();
+void
+gui_update_graph();
 
-void gui_disable_conn_status();
+void
+gui_disable_conn_status();
 
-void gui_disable_total_received (void);
+void
+gui_disable_total_received (void);
 
-void gui_disable_total_sent (void);
+void
+gui_disable_total_sent (void);
 
-void gui_set_total_received (unsigned int total_received);
+void
+gui_set_total_received (unsigned int total_received);
 
-void gui_set_total_sent (unsigned int total_sent);
+void
+gui_set_total_sent (unsigned int total_sent);
 
-void gui_disable_download_speed(void);
+void
+gui_disable_download_speed(void);
 
-void gui_disable_upload_speed(void);
+void
+gui_disable_upload_speed(void);
 
-void gui_set_download_speed(const gdouble down_speed);
+void
+gui_set_download_speed(const gdouble down_speed);
 
-void gui_set_upload_speed(const gdouble up_speed);
+void
+gui_set_upload_speed(const gdouble up_speed);
 
-void gui_add_mapped_ports(const GSList *port_list);
+void
+gui_add_mapped_ports(const GSList *port_list);
 
-void gui_clear_ports_list_treeview(void);
-
-void gui_set_router_icon(gchar *image_path);
+void
+gui_clear_ports_list_treeview(void);
 
 #endif /* __URC_GUI_H__ */

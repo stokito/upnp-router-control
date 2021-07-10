@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: upnp-router-control\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-23 19:28+0100\n"
+"POT-Creation-Date: 2021-07-08 20:58+0200\n"
 "PO-Revision-Date: 2010-09-23 04:58+0000\n"
 "Last-Translator: Daniele Napolitano <dnax88@gmail.com>\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
@@ -20,201 +20,214 @@ msgstr ""
 msgid "UPnP Router Control"
 msgstr "Controllo router UPnP"
 
-#: ../src/urc-gui.c:153
+#: ../src/urc-gui.c:137
 msgid "Unable to set this port forward"
 msgstr "Impossibile impostare questa nuova porta"
 
-#: ../src/urc-gui.c:344
+#: ../src/urc-gui.c:334
 msgid "Unable to remove this port forward"
 msgstr "Impossibile rimuovere questa porta"
 
-#: ../src/urc-gui.c:407
+#: ../src/urc-gui.c:374
 msgid "Enabled"
 msgstr "Abilitato"
 
-#: ../src/urc-gui.c:408
+#: ../src/urc-gui.c:375
 msgid "Description"
 msgstr "Descrizione"
 
-#: ../src/urc-gui.c:409
+#: ../src/urc-gui.c:376
 msgid "Protocol"
 msgstr "Protocollo"
 
-#: ../src/urc-gui.c:410
+#: ../src/urc-gui.c:377
 msgid "Int. Port"
 msgstr "Porta int."
 
-#: ../src/urc-gui.c:411
+#: ../src/urc-gui.c:378
 msgid "Ext. Port"
 msgstr "Porta ext."
 
-#: ../src/urc-gui.c:412
+#: ../src/urc-gui.c:379
 msgid "Local IP"
 msgstr "IP locale"
 
-#: ../src/urc-gui.c:523 ../src/urc-gui.c:903 ../src/upnp-router-control.ui.h:5
-msgid "Total received:"
-msgstr "Totale ricevuti:"
-
-#: ../src/urc-gui.c:569 ../src/urc-gui.c:908 ../src/upnp-router-control.ui.h:6
-msgid "Total sent:"
-msgstr "Totale inviati:"
-
-#: ../src/urc-gui.c:706 ../src/urc-gui.c:708 ../src/urc-gui.c:710
-#: ../src/urc-gui.c:712 ../src/urc-gui.c:728 ../src/urc-gui.c:887
+#: ../src/urc-gui.c:683 ../src/urc-gui.c:685 ../src/urc-gui.c:687
+#: ../src/urc-gui.c:689 ../src/urc-gui.c:691 ../src/urc-gui.c:708
+#: ../src/urc-gui.c:865
 msgid "WAN status:"
 msgstr "Stato WAN:"
 
-#: ../src/urc-gui.c:706
+#: ../src/urc-gui.c:683
 msgid "Connected"
 msgstr "Connesso"
 
-#: ../src/urc-gui.c:708
+#: ../src/urc-gui.c:685
 msgid "Disconnected"
 msgstr "Disconnesso"
 
-#: ../src/urc-gui.c:710
+#: ../src/urc-gui.c:687
 msgid "Connecting"
 msgstr "In connessione"
 
-#: ../src/urc-gui.c:712
+#: ../src/urc-gui.c:689
 msgid "Disconnecting"
 msgstr "In disconnessione"
 
-#: ../src/urc-gui.c:728 ../src/urc-gui.c:764
+#: ../src/urc-gui.c:708 ../src/urc-gui.c:746
 msgid "unknown"
 msgstr "sconosciuto"
 
-#: ../src/urc-gui.c:745 ../src/urc-gui.c:747 ../src/urc-gui.c:764
-#: ../src/urc-gui.c:892
+#: ../src/urc-gui.c:726 ../src/urc-gui.c:728 ../src/urc-gui.c:746
+#: ../src/urc-gui.c:870
 msgid "IP:"
 msgstr "IP:"
 
-#: ../src/urc-gui.c:745
+#: ../src/urc-gui.c:726
 msgid "none"
 msgstr "nessuno"
 
-#: ../src/urc-gui.c:785 ../src/urc-gui.c:882
-msgid "Router name:"
-msgstr "Nome router:"
-
-#: ../src/urc-gui.c:792
+#: ../src/urc-gui.c:774
 msgid "Brand"
 msgstr "Produttore"
 
-#: ../src/urc-gui.c:794
+#: ../src/urc-gui.c:776
 msgid "Brand website:"
 msgstr "Sito web produttore:"
 
-#: ../src/urc-gui.c:796
+#: ../src/urc-gui.c:778
 msgid "Model Description:"
 msgstr "Descrizione modello:"
 
-#: ../src/urc-gui.c:798
+#: ../src/urc-gui.c:780
 msgid "Model Name:"
 msgstr "Nome modello:"
 
-#: ../src/urc-gui.c:800
+#: ../src/urc-gui.c:782
 msgid "Model Number:"
 msgstr "Numero modello:"
 
-#: ../src/urc-gui.c:815
+#: ../src/urc-gui.c:797
 msgid "Open the router config in the default browser"
 msgstr "Apri la configurazione del router nel browser predefinito"
 
-#: ../src/urc-gui.c:819 ../src/urc-gui.c:882 ../src/urc-gui.c:887
-#: ../src/urc-gui.c:892 ../src/urc-gui.c:913
+#: ../src/urc-gui.c:801 ../src/urc-gui.c:862 ../src/urc-gui.c:865
+#: ../src/urc-gui.c:870 ../src/urc-gui.c:881
 msgid "not available"
 msgstr "non disponibile"
 
 #. Feel free to put your names here translators :-)
-#: ../src/urc-gui.c:944
+#: ../src/urc-gui.c:912
 msgid "translator-credits"
 msgstr ""
 "Launchpad Contributions:\n"
 "  Daniele Napolitano https://launchpad.net/~dnax88"
 
-#: ../src/urc-gui.c:950 ../data/upnp-router-control.desktop.in.h:2
+#: ../src/urc-gui.c:918 ../data/upnp-router-control.desktop.in.h:2
 msgid "A simple program to manage UPnP IGD compliant routers"
 msgstr "Un semplice programma per gestire router compatibili con UPnP IGD"
 
-#: ../src/urc-graph.c:149
+#: ../src/urc-graph.c:163
 #, c-format
 msgid "%u seconds"
 msgstr "%u secondi"
 
 #: ../src/upnp-router-control.ui.h:1
+msgid "Router name:"
+msgstr "Nome router:"
+
+#: ../src/upnp-router-control.ui.h:2
 msgid "Config:"
 msgstr "Configurazione:"
 
-#: ../src/upnp-router-control.ui.h:2
+#: ../src/upnp-router-control.ui.h:3
 msgid "_Add"
 msgstr "_Aggiungi"
 
-#: ../src/upnp-router-control.ui.h:3
+#: ../src/upnp-router-control.ui.h:4
 msgid "_Remove"
 msgstr "_Rimuovi"
 
-#: ../src/upnp-router-control.ui.h:4
+#: ../src/upnp-router-control.ui.h:5
 msgid "Network history"
 msgstr "Cronologia rete"
 
+#: ../src/upnp-router-control.ui.h:6
+msgid "Receiving"
+msgstr "Ricezione"
+
 #: ../src/upnp-router-control.ui.h:7
+msgid "Total Received"
+msgstr "Totale ricevuti"
+
+#: ../src/upnp-router-control.ui.h:8
+msgid "Sending"
+msgstr "Invio"
+
+#: ../src/upnp-router-control.ui.h:9
+msgid "Total Sent"
+msgstr "Totale inviati"
+
+#: ../src/upnp-router-control.ui.h:10
+msgid "Note: The network speed calculation it's approximate"
+msgstr "Nota: il calcolo della velocità di rete è approssimativo"
+
+#: ../src/upnp-router-control.ui.h:11
 msgid "Refresh"
 msgstr "Aggiorna"
 
-#: ../src/upnp-router-control.ui.h:8
+#: ../src/upnp-router-control.ui.h:12
 msgid "Add new port forward"
 msgstr "Aggiungi una nuova porta"
 
-#: ../src/upnp-router-control.ui.h:9
+#: ../src/upnp-router-control.ui.h:13
 msgid "_Cancel"
 msgstr "A_nnulla"
 
-#: ../src/upnp-router-control.ui.h:10
+#: ../src/upnp-router-control.ui.h:14
 msgid "_Apply"
 msgstr "_Applica"
 
-#: ../src/upnp-router-control.ui.h:11
+#: ../src/upnp-router-control.ui.h:15
 msgid "Description:"
 msgstr "Descrizione:"
 
-#: ../src/upnp-router-control.ui.h:12
+#: ../src/upnp-router-control.ui.h:16
 msgid "Insert here a short description for this port"
 msgstr "Inserisci qui una breve descrizione per questa porta"
 
-#: ../src/upnp-router-control.ui.h:13
+#: ../src/upnp-router-control.ui.h:17
 msgid "External port:"
 msgstr "Porta esterna:"
 
-#: ../src/upnp-router-control.ui.h:14
+#: ../src/upnp-router-control.ui.h:18
 msgid "Insert here the port exposed by the router to Internet"
 msgstr "Inserisci qui la porta esposta dal router su Internet"
 
-#: ../src/upnp-router-control.ui.h:15
+#: ../src/upnp-router-control.ui.h:19
 msgid "Protocol:"
 msgstr "Protocollo:"
 
-#: ../src/upnp-router-control.ui.h:16
+#: ../src/upnp-router-control.ui.h:20
 msgid "Select here the protocol used, usually TCP"
 msgstr "Seleziona qui il protocollo usato, di solito TCP"
 
-#: ../src/upnp-router-control.ui.h:17
+#: ../src/upnp-router-control.ui.h:21
 msgid "Local IP:"
 msgstr "IP locale:"
 
-#: ../src/upnp-router-control.ui.h:18
+#: ../src/upnp-router-control.ui.h:22
 msgid "Local port:"
 msgstr "Porta locale:"
 
-#: ../src/upnp-router-control.ui.h:19
+#: ../src/upnp-router-control.ui.h:23
 msgid ""
 "Insert here the local IP where forward packets, usually IP of this computer"
 msgstr ""
 "Inserisci qui l'IP locale dove trasferire i pacchetti,di solito l'IP di "
 "questo computer"
 
-#: ../src/upnp-router-control.ui.h:20
+#: ../src/upnp-router-control.ui.h:24
 msgid ""
 "Insert the the local port where forward the packets from router to your "
 "computer"
@@ -222,28 +235,10 @@ msgstr ""
 "Inserisci la porta locale dove trasferire i pacchetti dal tuo router al tuo "
 "computer"
 
-#: ../src/upnp-router-control.ui.h:21
+#: ../src/upnp-router-control.ui.h:25
 msgid "Advanced parameters"
 msgstr "Parametri avanzati"
 
 #: ../src/upnp-router-control-headermenu.ui.h:1
 msgid "_About"
 msgstr "_Informazioni"
-
-#~ msgid "n.a."
-#~ msgstr "n.d."
-
-#~ msgid "Click for map a new port"
-#~ msgstr "Clicca per mappare una nuova porta"
-
-#~ msgid "Click for remove a port mapping"
-#~ msgstr "Clicca per rimuovere una porta mappata"
-
-#~ msgid "_File"
-#~ msgstr "_File"
-
-#~ msgid "_Help"
-#~ msgstr "A_iuto"
-
-#~ msgid "_Switch router"
-#~ msgstr "_Cambia router"

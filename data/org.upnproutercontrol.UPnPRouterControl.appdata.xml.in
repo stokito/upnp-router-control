@@ -29,12 +29,41 @@
   </screenshots>
 
   <update_contact>dnax88@gmail.com</update_contact>
+  <!-- Translators: This is my name -->
+  <developer_name>Daniele Napolitano</developer_name>
+
   <project_group>GNOME</project_group>
   <translation type="gettext">upnp-router-control</translation>
 
   <content_rating type="oars-1.1"/>
 
   <releases>
+    <release version="0.3.1" date="2021-07-10">
+
+      <description>
+        <p>
+          This release fixes some bugs since 0.3 release,
+          mostly the subdevice detection was broken causing the UI
+          almost completely disabled.
+        </p>
+        <p>Other changements:</p>
+        <ul>
+          <li>Possibility to change network graph colors</li>
+          <li>Small GUI improvements</li>
+          <li>Removed icon download support (and libcurl dep)</li>
+          <li>Fixed network speed calculation</li>
+          <li>Fixed graph speed scale labels</li>
+        </ul>
+      </description>
+
+      <url>https://launchpad.net/upnp-router-control/trunk/0.3.1</url>
+
+      <issues>
+        <issue url="https://bugs.launchpad.net/bugs/769573">lp#769573</issue>
+        <issue url="https://bugs.launchpad.net/bugs/1923601">lp#1923601</issue>
+      </issues>
+
+    </release>
 
     <release version="0.3" date="2021-02-24">
 
