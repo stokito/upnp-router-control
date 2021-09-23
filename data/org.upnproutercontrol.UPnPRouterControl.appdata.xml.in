@@ -21,13 +21,21 @@
     </p>
   </description>
 
-  <url type="bugtracker">https://bugs.launchpad.net/upnp-router-control</url>
   <url type="homepage">https://launchpad.net/upnp-router-control</url>
+  <url type="bugtracker">https://bugs.launchpad.net/upnp-router-control</url>
+  <url type="translate">https://translations.launchpad.net/upnp-router-control</url>
+  <url type="donation">https://liberapay.com/UPnPRouterControl/donate</url>
 
   <screenshots>
-    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/07/urc1.png</screenshot>
-    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/07/urc2.png</screenshot>
-    <screenshot type="default">https://dashboard.snapcraft.io/site_media/appmedia/2021/07/urc3.png</screenshot>
+    <screenshot type="default">
+        <image type="source">https://gitlab.gnome.org/DnaX/upnp-router-control/-/raw/develop/data/screenshots/urc1.png</image>
+    </screenshot>
+    <screenshot>
+        <image type="source">https://gitlab.gnome.org/DnaX/upnp-router-control/-/raw/develop/data/screenshots/urc2.png</image>
+    </screenshot>
+    <screenshot>
+        <image type="source">https://gitlab.gnome.org/DnaX/upnp-router-control/-/raw/develop/data/screenshots/urc3.png</image>
+    </screenshot>
   </screenshots>
 
   <update_contact>dnax88@gmail.com</update_contact>
