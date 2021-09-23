@@ -10,7 +10,7 @@ A GTK application to access the parameters of the router exposed via UPnP-IGD. A
 
 ## Screenshot
 
-![screenshot](https://dashboard.snapcraft.io/site_media/appmedia/2021/07/urc1.png)
+![screenshot](https://gitlab.gnome.org/DnaX/upnp-router-control/-/raw/develop/data/screenshots/urc1.png)
 
 ## Installing from Flathub
 
@@ -25,12 +25,12 @@ In order to compile UPnP Router Control you need following software packages:
 * GSSDP library ( >= 1.2 )
 * GUPnP library ( >= 1.2 )
 
-To compile:
+To build you need Meson (and thereby Ninja) build system:
 
 ```bash
-./configure --prefix=/usr
-make
-sudo make install
+meson build
+ninja -C build
+ninja -C build install
 ```
 
 ## Information
