@@ -72,7 +72,7 @@ endforeach
 # Dependencies #
 ################
 
-glib = dependency('glib-2.0', version: '>= 2.67.5')
+glib = dependency('glib-2.0', version: '>= 2.66.8')
 gtk = dependency('gtk+-3.0', version: '>= 3.10')
 gssdp = dependency('gssdp-1.2', version: '>= 1.2')
 gupnp = dependency('gupnp-1.2', version: '>= 1.2')
