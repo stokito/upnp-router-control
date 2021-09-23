@@ -1,6 +1,6 @@
 # UPnP Router Control
 
-![logo](data/apps_scalable_org.upnproutercontrol.UPnPRouterControl.svg)
+![logo](data/icons/scalable/apps/org.upnproutercontrol.UPnPRouterControl.svg)
 
 A GTK application to access the parameters of the router exposed via UPnP-IGD. Access to network speed, external IP and model name. It can manage port forwarding through a simple GUI interface.
 
