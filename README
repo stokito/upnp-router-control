@@ -14,14 +14,11 @@ In order to compile UPnP Router Control you need following software packages:
     - GSSDP library ( >= 1.2 )
     - GUPnP library ( >= 1.2 )
 
-To configure run:
-	./configure --prefix=/usr
+To build you need Meson (and thereby Ninja) build system:
 
-Configure automatically searches for all required components and packages.
-
-To compile and install run:
-	make
-	sudo make install
+    meson build
+    ninja -C build
+    (sudo) ninja -C build install
 
 
 Information

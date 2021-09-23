@@ -1,10 +1,9 @@
 # List of source files containing translatable strings.
-[encoding: UTF-8]
 src/urc-main.c
 src/urc-upnp.c
 src/urc-gui.c
 src/urc-graph.c
-[type: gettext/glade]src/upnp-router-control.ui
-[type: gettext/glade]src/upnp-router-control-headermenu.ui
-data/upnp-router-control.desktop.in
-[type: gettext/xml]data/org.upnproutercontrol.UPnPRouterControl.appdata.xml.in
+src/upnp-router-control.ui
+src/upnp-router-control-headermenu.ui
+data/upnp-router-control.desktop.in.in
+data/org.upnproutercontrol.UPnPRouterControl.appdata.xml.in

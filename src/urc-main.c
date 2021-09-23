@@ -54,9 +54,7 @@ urc_activate_cb (GApplication *app, gpointer user_data)
 {
     g_set_application_name(_("UPnP Router Control"));
 
-    gtk_window_set_default_icon_name ("upnp-router-control");
-    gtk_icon_theme_append_search_path(gtk_icon_theme_get_default (),
-          DATADIR G_DIR_SEPARATOR_S "icons");
+    gtk_window_set_default_icon_name (APPLICATION_ID);
 
     /* Initialize the GUI */
     urc_gui_init(app);
@@ -82,7 +80,7 @@ main(int argc, char** argv)
     GOptionContext *context = NULL;
     
     /* gettext */
-    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);  
+    bindtextdomain(GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);  
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
      

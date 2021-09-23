@@ -1,8 +1,9 @@
 [Desktop Entry]
 Type=Application
-_Name=UPnP Router Control
-_Comment=A simple program to manage UPnP IGD compliant routers
+Name=UPnP Router Control
+Comment=A simple program to manage UPnP IGD compliant routers
 Exec=upnp-router-control
 Icon=org.upnproutercontrol.UPnPRouterControl
+StartupNotify=true
 Terminal=false
-Categories=Utility;
+Categories=GTK;Network;Utility;
