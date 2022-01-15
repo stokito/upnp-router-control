@@ -87,3 +87,5 @@ top_inc = include_directories('.')
 subdir('src')
 subdir('data')
 subdir('po')
+
+meson.add_install_script('build-aux/meson/postinstall.py')
