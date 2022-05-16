@@ -39,10 +39,10 @@ void
 update_upload_graph_data(SpeedValue *speed);
 
 void
-disable_graph();
+urc_disable_graph();
 
 void
-enable_graph();
+urc_enable_graph();
 
 void
 urc_graph_set_receiving_color(GdkRGBA color);

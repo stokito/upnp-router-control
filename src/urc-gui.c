@@ -804,7 +804,7 @@ gui_disable()
 
     gtk_widget_set_sensitive(gui->refresh_button, FALSE);
 
-    disable_graph();
+    urc_disable_graph();
     gui_update_graph();
 }
 

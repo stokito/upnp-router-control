@@ -415,7 +415,7 @@ update_upload_graph_data(SpeedValue *speed)
 }
 
 void
-disable_graph()
+urc_disable_graph()
 {
     GList *elem;
 
@@ -441,7 +441,7 @@ disable_graph()
 }
 
 void
-enable_graph()
+urc_enable_graph()
 {
     graph_enabled = TRUE;
     clear_graph_data ();

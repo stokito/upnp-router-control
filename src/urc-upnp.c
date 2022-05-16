@@ -26,6 +26,7 @@
 #include <libgssdp/gssdp.h>
 
 #include "urc-gui.h"
+#include "urc-graph.h"
 #include "urc-upnp.h"
 
 extern gboolean opt_debug;
@@ -1054,7 +1055,7 @@ device_proxy_available_cb (GUPnPControlPoint *cp,
                 /* Start data rate timer */
                 update_data_rate_cb (router);
                 
-                enable_graph ();
+                urc_enable_graph ();
 
             }
             /* Is a WAN IP Connection service or other? */
