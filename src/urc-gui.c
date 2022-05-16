@@ -835,7 +835,7 @@ on_about_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_
         "copyright", "Copyright © 2009-2021 Daniele Napolitano \"DnaX\"",
         "version", VERSION,
         "license-type", GTK_LICENSE_GPL_3_0,
-        "website", "https://launchpad.net/upnp-router-control",
+        "website", "https://gitlab.gnome.org/DnaX/upnp-router-control",
         "logo-icon-name", "org.upnproutercontrol.UPnPRouterControl",
         NULL);
 }

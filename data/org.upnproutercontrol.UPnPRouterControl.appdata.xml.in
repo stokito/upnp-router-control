@@ -21,7 +21,7 @@
     </p>
   </description>
 
-  <url type="homepage">https://launchpad.net/upnp-router-control</url>
+  <url type="homepage">https://gitlab.gnome.org/DnaX/upnp-router-control</url>
   <url type="bugtracker">https://bugs.launchpad.net/upnp-router-control</url>
   <url type="translate">https://translations.launchpad.net/upnp-router-control</url>
   <url type="donation">https://liberapay.com/UPnPRouterControl/donate</url>

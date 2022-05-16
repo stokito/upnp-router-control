@@ -1,5 +1,5 @@
-UPnP Router Control 0.3.1
-*************************
+UPnP Router Control
+*******************
 
 Copyright (C) 2021  Daniele Napolitano <dnax88@gmail.com>
 
@@ -25,7 +25,7 @@ Information
 ===========
 
 Main project site:
-	https://launchpad.net/upnp-router-control
+	https://gitlab.gnome.org/DnaX/upnp-router-control
 
 For bugs filling and search:
 	https://bugs.launchpad.net/upnp-router-control
