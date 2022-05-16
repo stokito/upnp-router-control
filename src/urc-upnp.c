@@ -1053,6 +1053,8 @@ device_proxy_available_cb (GUPnPControlPoint *cp,
 
                 /* Start data rate timer */
                 update_data_rate_cb (router);
+                
+                enable_graph ();
 
             }
             /* Is a WAN IP Connection service or other? */

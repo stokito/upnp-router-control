@@ -29,6 +29,8 @@
 #define GRAPH_POINTS 90
 #define FRAME_WIDTH 4
 
+gboolean graph_enabled = FALSE;
+
 cairo_surface_t *background = NULL;
 cairo_surface_t *graph = NULL;
 
@@ -107,7 +109,12 @@ graph_draw_background (GtkWidget *widget)
 
     context = gtk_widget_get_style_context (widget);
     state = gtk_widget_get_state_flags (widget);
-    gtk_style_context_get_color (context, state, &color);
+    
+    if (graph_enabled) {
+        state &= GTK_STATE_FLAG_INSENSITIVE;
+    }
+    
+    gtk_style_context_get_color (context, GTK_STATE_FLAG_NORMAL & GTK_STATE_FLAG_INSENSITIVE , &color);
     pango_context = gtk_widget_get_pango_context (widget);
 
     layout = pango_cairo_create_layout (cr);
@@ -408,7 +415,7 @@ update_upload_graph_data(SpeedValue *speed)
 }
 
 void
-disable_graph_data()
+disable_graph()
 {
     GList *elem;
 
@@ -429,6 +436,14 @@ disable_graph_data()
         elem = elem->next;
     } while(elem);
 
+    graph_enabled = FALSE;
+    clear_graph_data ();
+}
+
+void
+enable_graph()
+{
+    graph_enabled = TRUE;
     clear_graph_data ();
 }
 
