@@ -33,7 +33,6 @@
 
 enum Columns
 {
-    UPNP_COLUMN_ENABLED,
     UPNP_COLUMN_DESC,
     UPNP_COLUMN_PROTOCOL,
     UPNP_COLUMN_INT_PORT,
@@ -279,7 +278,6 @@ gui_add_mapped_ports (const GSList *port_list)
         gtk_list_store_prepend (GTK_LIST_STORE (model), &iter);
         gtk_list_store_set (GTK_LIST_STORE (model),
                             &iter,
-                            UPNP_COLUMN_ENABLED, port_info->enabled,
                             UPNP_COLUMN_DESC, port_info->description,
                             UPNP_COLUMN_PROTOCOL, port_info->protocol,
                             UPNP_COLUMN_INT_PORT, port_info->internal_port,
@@ -372,8 +370,7 @@ gui_init_treeview()
     GtkTreeModel *model;
     GtkTreeSelection *selection;
     int i;
-    char *headers[8] = {_("Enabled"),
-                        _("Description"),
+    char *headers[7] = {_("Description"),
                         _("Protocol"),
                         _("Int. Port"),
                         _("Ext. Port"),
@@ -383,8 +380,7 @@ gui_init_treeview()
 
     GtkListStore *store;
 
-    store = gtk_list_store_new (7,
-                                G_TYPE_BOOLEAN, /* Enabled           */
+    store = gtk_list_store_new (6,
                                 G_TYPE_STRING,  /* Description       */
                                 G_TYPE_STRING,  /* Protocol          */
                                 G_TYPE_UINT,    /* Internal port     */
@@ -402,35 +398,15 @@ gui_init_treeview()
         GtkTreeViewColumn *column;
 
         column = gtk_tree_view_column_new ();
-        if(i == 0)
-        {
-            renderer = gtk_cell_renderer_toggle_new ();
-            gtk_tree_view_column_pack_end (column, renderer, FALSE);
 
-            gtk_tree_view_column_add_attribute (column,
-                                            renderer,
-                                            "active", i);
+        renderer = gtk_cell_renderer_text_new ();
+        gtk_tree_view_column_pack_end (column, renderer, TRUE);
+        gtk_tree_view_column_set_title (column, headers[i]);
 
-            /* enable/disable port mapping callback */
-            /*g_signal_connect(G_OBJECT(renderer), "toggled",
-                 G_CALLBACK(list_enable_toggled_cb),
-                 NULL);*/
+        gtk_tree_view_column_add_attribute (column,
+                                        renderer,
+                                        "text", i);
 
-            g_object_set(renderer,
-             "radio", FALSE,
-             "activatable", TRUE,
-              NULL);
-        }
-        else
-        {
-            renderer = gtk_cell_renderer_text_new ();
-            gtk_tree_view_column_pack_end (column, renderer, TRUE);
-            gtk_tree_view_column_set_title (column, headers[i]);
-
-            gtk_tree_view_column_add_attribute (column,
-                                            renderer,
-                                            "text", i);
-        }
 
         gtk_tree_view_column_set_sort_column_id(column, i);
 
