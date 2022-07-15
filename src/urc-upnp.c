@@ -909,6 +909,7 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
     router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
     router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
     router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
+    router->data_rate_timer = 0;
     g_print ("UPnP descriptor: %s\n", gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
 
     if (opt_debug) {
@@ -1160,7 +1161,10 @@ device_proxy_unavailable_cb (GUPnPControlPoint *cp,
     if(g_strcmp0(router->udn, gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy))) == 0 ) {
 
         g_source_remove (router->refresh_timeout);
-        g_source_remove (router->data_rate_timer);
+        if (router->data_rate_timer > 0) {
+          g_source_remove (router->data_rate_timer);
+        }
+
         gui_disable ();
 
         router->main_device = NULL;
