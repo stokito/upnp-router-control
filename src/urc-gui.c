@@ -659,7 +659,7 @@ gui_set_router_info (RouterInfo *router)
 
     gtk_widget_set_sensitive(gui->router_name_hbox, TRUE);
 
-    str = g_strdup_printf( "<b>%s</b>\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
+    str = g_markup_printf_escaped ( "<b>%s</b>\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
                            router->friendly_name,
                            _("Brand"),
                            router->brand,
