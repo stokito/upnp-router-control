@@ -935,13 +935,7 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
             router->friendly_name = g_strdup (router->model_name);
     }
 
-    gui_set_router_info (router->friendly_name,
-                         router->http_address,
-                         router->brand,
-                         router->brand_website,
-                         router->model_description,
-                         router->model_name,
-                         router->model_number);
+    gui_set_router_info (router);
 }
 
 static void
@@ -1064,10 +1058,7 @@ device_proxy_available_cb (GUPnPControlPoint *cp,
             {
 
                 router->wan_conn_service = services->data;
-
-                gui_set_ports_buttons_callback_data (router->wan_conn_service);
-
-                gui_set_refresh_callback_data (router);
+                gui_activate_buttons();
 
                 if(opt_debug) {
                     print_indent (level);

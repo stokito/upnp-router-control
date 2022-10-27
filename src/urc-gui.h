@@ -21,24 +21,17 @@
 #define __URC_GUI_H__
 
 #include <glib.h>
+#include "urc-upnp.h"
 
 void urc_gui_init(GApplication *app);
 
-void gui_enable();
-
 void gui_disable();
 
-void gui_set_ports_buttons_callback_data(gpointer data);
+void
+gui_set_router_info (RouterInfo *router);
 
-void gui_set_refresh_callback_data(gpointer data);
-
-void gui_set_router_info (const gchar *router_friendly_name,
-                          const gchar *router_conf_url,
-                          const gchar *router_brand,
-                          const gchar *router_brand_website,
-                          const gchar *router_model_description,
-                          const gchar *router_model_name,
-                          const gchar *router_model_number);
+void
+gui_activate_buttons();
 
 void
 gui_set_ext_ip(const gchar *ip);

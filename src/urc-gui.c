@@ -85,6 +85,8 @@ typedef struct
 
     GMenuModel *headermenu;
 
+    RouterInfo *router;
+
 } GuiContext;
 
 static GuiContext* gui;
@@ -644,42 +646,38 @@ gui_disable_ext_ip()
 
 /* Set router informations */
 void
-gui_set_router_info (const gchar *router_friendly_name,
-                     const gchar *router_conf_url,
-                     const gchar *router_brand,
-                     const gchar *router_brand_website,
-                     const gchar *router_model_description,
-                     const gchar *router_model_name,
-                     const gchar *router_model_number)
+gui_set_router_info (RouterInfo *router)
 {
     gchar* str;
 
     if(gui == NULL || gui->main_window == NULL)
         return;
 
-    gtk_label_set_text (GTK_LABEL(gui->router_name_label), router_friendly_name);
+    gui->router = router;
+
+    gtk_label_set_text (GTK_LABEL(gui->router_name_label), router->friendly_name);
 
     gtk_widget_set_sensitive(gui->router_name_hbox, TRUE);
 
     str = g_strdup_printf( "<b>%s</b>\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s\n<b>%s</b> %s",
-                           router_friendly_name,
+                           router->friendly_name,
                            _("Brand"),
-                           router_brand,
+                           router->brand,
                            _("Brand website:"),
-                           router_brand_website,
+                           router->brand_website,
                            _("Model Description:"),
-                           router_model_description,
+                           router->model_description,
                            _("Model Name:"),
-                           router_model_name,
+                           router->model_name,
                            _("Model Number:"),
-                           router_model_number);
+                           router->model_number);
 
     gtk_widget_set_tooltip_markup(gui->router_name_label, str);
     g_free(str);
 
-    if(router_conf_url != NULL) {
+    if(router->http_address != NULL) {
 
-        str = g_strdup_printf( "<a href=\"%s\">%s</a>", router_conf_url, router_conf_url);
+        str = g_strdup_printf( "<a href=\"%s\">%s</a>", router->http_address, router->http_address);
         gtk_label_set_markup (GTK_LABEL(gui->router_url_label), str);
         g_free(str);
 
@@ -705,40 +703,19 @@ on_refresh_activate_cb (GtkMenuItem *menuitem,
 }
 
 void
-gui_set_ports_buttons_callback_data(gpointer data)
-{
-    g_signal_connect(gui->button_remove, "clicked",
-                     G_CALLBACK(on_button_remove_clicked), data);
-
-    g_signal_connect(gui->button_add, "clicked",
-                     G_CALLBACK(gui_run_add_port_window), data);
-
-    gtk_widget_set_sensitive(gui->button_add, TRUE);
-}
-
-void
-gui_set_refresh_callback_data(gpointer data)
-{
+gui_activate_buttons() {
+    // Refresh button
     g_signal_connect(gui->refresh_button, "clicked",
-                     G_CALLBACK(on_refresh_activate_cb), data);
+                     G_CALLBACK(on_refresh_activate_cb), gui->router);
+
+    // Add/remove buttons
+    g_signal_connect(gui->button_add, "clicked",
+                     G_CALLBACK(gui_run_add_port_window), gui->router->wan_conn_service);
+    g_signal_connect(gui->button_remove, "clicked",
+                     G_CALLBACK(on_button_remove_clicked), gui->router->wan_conn_service);
 
     gtk_widget_set_sensitive(gui->refresh_button, TRUE);
-}
-
-void
-gui_enable()
-{
-    if(gui == NULL || gui->main_window == NULL)
-        return;
-
-    gtk_widget_set_sensitive(gui->router_name_hbox, TRUE);
-    gtk_widget_set_sensitive(gui->wan_status_label, TRUE);
-    gtk_widget_set_sensitive(gui->ip_label, TRUE);
-    gtk_widget_set_sensitive(gui->net_graph_box, TRUE);
-    gtk_widget_set_sensitive(gui->router_url_label, TRUE);
     gtk_widget_set_sensitive(gui->button_add, TRUE);
-    gtk_widget_set_sensitive(gui->config_label, TRUE);
-    gtk_widget_set_sensitive(gui->refresh_button, TRUE);
 }
 
 void
