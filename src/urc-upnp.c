@@ -909,8 +909,10 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
     router->model_number = gupnp_device_info_get_model_number (GUPNP_DEVICE_INFO (proxy));
     router->upc = gupnp_device_info_get_upc (GUPNP_DEVICE_INFO (proxy));
     router->udn = gupnp_device_info_get_udn (GUPNP_DEVICE_INFO (proxy));
+    router->device_descriptor = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
     router->data_rate_timer = 0;
-    g_print ("UPnP descriptor: %s\n", gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy)));
+
+    g_print ("UPnP descriptor: %s\n", router->device_descriptor);
 
     if (opt_debug) {
 

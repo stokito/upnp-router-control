@@ -50,6 +50,7 @@ typedef struct
     gchar* http_address;
     gchar* upc;
     const gchar* udn;
+    const gchar* device_descriptor;
 
     gchar* external_ip;
 

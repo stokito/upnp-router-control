@@ -85,6 +85,8 @@ typedef struct
 
     GMenuModel *headermenu;
 
+    GActionGroup *actions;
+
     RouterInfo *router;
 
 } GuiContext;
@@ -649,6 +651,7 @@ void
 gui_set_router_info (RouterInfo *router)
 {
     gchar* str;
+    GAction* action;
 
     if(gui == NULL || gui->main_window == NULL)
         return;
@@ -692,6 +695,10 @@ gui_set_router_info (RouterInfo *router)
         gtk_widget_set_sensitive(gui->config_label, FALSE);
     }
 
+    // Enable the menu item to open the XML descriptor.
+    action = g_action_map_lookup_action (G_ACTION_MAP (gui->actions), "open-xml-descriptor");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+
 }
 
 /* updates all values */
@@ -725,6 +732,9 @@ gui_disable()
         return;
 
     gchar *str;
+    GAction *action;
+
+    g_print ("gui_disable()\n");
 
     gui_clear_ports_list_treeview();
 
@@ -757,8 +767,18 @@ gui_disable()
 
     gtk_widget_set_sensitive(gui->refresh_button, FALSE);
 
+    action = g_action_map_lookup_action (G_ACTION_MAP (gui->actions), "open-xml-descriptor");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+
     urc_disable_graph();
     gui_update_graph();
+}
+
+/* Menu About activate callback */
+static void
+on_open_xml_descriptor_activate_cb (GSimpleAction *simple, GVariant *parameter, gpointer user_data)
+{
+    gtk_show_uri_on_window(NULL, gui->router->device_descriptor, GDK_CURRENT_TIME, NULL);
 }
 
 
@@ -913,12 +933,13 @@ urc_gui_init(GApplication *app)
 
     // Menu actions.
     const GActionEntry entries[] = {
-        { "about", on_about_activate_cb }
+        { "about", on_about_activate_cb },
+        { "open-xml-descriptor", on_open_xml_descriptor_activate_cb }
     };
 
-    GActionGroup *actions = G_ACTION_GROUP( g_simple_action_group_new () );
-    gtk_widget_insert_action_group (gui->main_window, "app", actions);
-    g_action_map_add_action_entries (G_ACTION_MAP (actions), entries, G_N_ELEMENTS (entries), gui->main_window);
+    gui->actions = G_ACTION_GROUP( g_simple_action_group_new () );
+    g_action_map_add_action_entries (G_ACTION_MAP (gui->actions), entries, G_N_ELEMENTS (entries), gui->main_window);
+    gtk_widget_insert_action_group (gui->main_window, "app", gui->actions);
     gtk_menu_button_set_menu_model(gui->menu_button, gui->headermenu);
 
     g_object_unref (G_OBJECT (builder));
