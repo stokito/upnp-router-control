@@ -74,6 +74,7 @@ typedef struct
               *total_sent_label,
               *button_remove,
               *button_add,
+              *headerbar,
               *refresh_button,
               *network_drawing_area,
               *receiving_color,
@@ -658,6 +659,10 @@ gui_set_router_info (RouterInfo *router)
 
     gui->router = router;
 
+    str = g_strdup_printf (_("Connected to %s"), router->device_ip);
+    gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gui->headerbar), str);
+    g_free(str);
+
     gtk_label_set_text (GTK_LABEL(gui->router_name_label), router->friendly_name);
 
     gtk_widget_set_sensitive(gui->router_name_hbox, TRUE);
@@ -769,6 +774,8 @@ gui_disable()
 
     action = g_action_map_lookup_action (G_ACTION_MAP (gui->actions), "open-xml-descriptor");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+
+    gtk_header_bar_set_subtitle(GTK_HEADER_BAR(gui->headerbar), _("Devices discovery started…"));
 
     urc_disable_graph();
     gui_update_graph();
@@ -901,6 +908,7 @@ urc_gui_init(GApplication *app)
     gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
     gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
 
+    gui->headerbar = GTK_WIDGET (gtk_builder_get_object (builder, "headerbar"));
     gui->refresh_button = GTK_WIDGET (gtk_builder_get_object (builder, "refresh_button"));
     gui->menu_button = GTK_MENU_BUTTON (gtk_builder_get_object (builder, "menu_button"));
 

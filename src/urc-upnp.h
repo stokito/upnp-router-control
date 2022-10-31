@@ -51,6 +51,7 @@ typedef struct
     gchar* upc;
     const gchar* udn;
     const gchar* device_descriptor;
+    const gchar* device_ip;
 
     gchar* external_ip;
 

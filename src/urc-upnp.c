@@ -892,6 +892,8 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
                     RouterInfo        *router,
                     gboolean           is_complaiant_igd_device)
 {
+    const SoupURI *url_base;
+
     if (is_complaiant_igd_device) {
         g_print ("*** Selected IGD compliant device\n");
     }
@@ -912,6 +914,9 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
     router->device_descriptor = gupnp_device_info_get_location(GUPNP_DEVICE_INFO (proxy));
     router->data_rate_timer = 0;
 
+    url_base = gupnp_device_info_get_url_base (GUPNP_DEVICE_INFO (proxy));
+    router->device_ip = url_base->host;
+
     g_print ("UPnP descriptor: %s\n", router->device_descriptor);
 
     if (opt_debug) {
@@ -923,6 +928,7 @@ urc_set_main_device(GUPnPServiceProxy *proxy,
         g_print ("    Presentation URL: %s\n", router->http_address);
         g_print ("                 UPC: %s\n", router->upc);
         g_print ("  Unique Device Name: %s\n", router->udn);
+        g_print ("                  IP: %s\n", router->device_ip);
     }
 
     router->http_address = parse_presentation_url(router->http_address,
