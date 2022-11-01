@@ -46,7 +46,8 @@ typedef struct
     GtkWidget *window,
               *add_desc,
               *add_ext_port,
-              *add_proto,
+              *add_proto_tcp,
+              *add_proto_udp,
               *add_local_ip,
               *add_local_port,
               *button_apply,
@@ -94,11 +95,26 @@ typedef struct
 
 static GuiContext* gui;
 
+void
+gui_reset_add_port_window ()
+{
+
+    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_desc), "");
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_ext_port), 0);
+    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_local_ip), get_client_ip());
+    gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), 0);
+
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui->add_port_window->add_proto_udp), FALSE);
+    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gui->add_port_window->add_proto_tcp), TRUE);
+}
+
 static void
 gui_add_port_window_close (GtkWidget *button,
                            gpointer   user_data)
 {
+
     gtk_widget_hide (gui->add_port_window->window);
+    gui_reset_add_port_window();
 }
 
 static void
@@ -114,7 +130,7 @@ gui_add_port_window_apply (GtkWidget *button,
     port_info = g_malloc( sizeof(PortForwardInfo) );
 
     port_info->description = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_desc)) );
-    port_info->protocol = g_strdup( gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT (gui->add_port_window->add_proto)) );
+    port_info->protocol = g_strdup( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (gui->add_port_window->add_proto_tcp)) ? "TCP" : "UDP" );
     port_info->internal_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_local_port) );
     port_info->external_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON (gui->add_port_window->add_ext_port) );
     port_info->internal_host = g_strdup( gtk_entry_get_text(GTK_ENTRY(gui->add_port_window->add_local_ip)) );
@@ -160,6 +176,7 @@ gui_add_port_window_apply (GtkWidget *button,
     if (error == NULL) {
         // No errors, close the dialog.
         gtk_widget_hide (gui->add_port_window->window);
+        gui_reset_add_port_window();
     }
     else {
         g_error_free (error);
@@ -184,12 +201,6 @@ static void
 gui_run_add_port_window (GtkWidget *button,
                          gpointer   user_data)
 {
-
-    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_desc), "");
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_ext_port), 0);
-    gtk_entry_set_text (GTK_ENTRY(gui->add_port_window->add_local_ip), get_client_ip());
-    gtk_spin_button_set_value (GTK_SPIN_BUTTON(gui->add_port_window->add_local_port), 0);
-
     /* Disconnect previous signals */
     g_signal_handlers_disconnect_matched(gui->add_port_window->button_apply,
                                          G_SIGNAL_MATCH_FUNC,
@@ -206,7 +217,7 @@ gui_run_add_port_window (GtkWidget *button,
     gtk_widget_show_all (gui->add_port_window->window);
 }
 
-static void 
+static void
 gui_create_add_port_window (GtkBuilder* builder)
 {
     AddPortWindow* add_port_window;
@@ -220,17 +231,13 @@ gui_create_add_port_window (GtkBuilder* builder)
 
     add_port_window->add_desc = GTK_WIDGET (gtk_builder_get_object (builder, "add_desc"));
     add_port_window->add_ext_port = GTK_WIDGET (gtk_builder_get_object (builder, "add_ext_port"));
-    add_port_window->add_proto = GTK_WIDGET (gtk_builder_get_object (builder, "add_proto"));
+    add_port_window->add_proto_tcp = GTK_WIDGET (gtk_builder_get_object (builder, "add_proto_tcp"));
+    add_port_window->add_proto_udp = GTK_WIDGET (gtk_builder_get_object (builder, "add_proto_udp"));
     add_port_window->add_local_ip = GTK_WIDGET (gtk_builder_get_object (builder, "add_local_ip"));
     add_port_window->add_local_port = GTK_WIDGET (gtk_builder_get_object (builder, "add_local_port"));
     add_port_window->button_apply = GTK_WIDGET (gtk_builder_get_object (builder, "button_apply"));
     add_port_window->button_cancel = GTK_WIDGET (gtk_builder_get_object (builder, "button_cancel"));
     add_port_window->expander = GTK_WIDGET (gtk_builder_get_object (builder, "expander1"));
-
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(add_port_window->add_proto), "TCP");
-    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(add_port_window->add_proto), "UDP");
-    
-    gtk_combo_box_set_active(GTK_COMBO_BOX(add_port_window->add_proto), 0);
 
     g_signal_connect(add_port_window->add_ext_port, "value-changed",
                          G_CALLBACK(gui_add_port_window_on_port_change), NULL);
@@ -872,45 +879,45 @@ urc_gui_init(GApplication *app)
 
     gui = g_malloc( sizeof(GuiContext) );
 
-    builder = gtk_builder_new ();
-    if (!gtk_builder_add_from_resource (builder, URC_RESOURCE_BASE "ui/main.ui", &error))
+    gui->builder = gtk_builder_new ();
+    if (!gtk_builder_add_from_resource (gui->builder, URC_RESOURCE_BASE "ui/main.ui", &error))
     {
         g_error ("Couldn't load builder file: %s", error->message);
         g_error_free (error);
     }
 
-    gui->main_window = GTK_WIDGET (gtk_builder_get_object (builder, "main_window"));
+    gui->main_window = GTK_WIDGET (gtk_builder_get_object (gui->builder, "main_window"));
     g_assert (gui->main_window != NULL);
 
-    gui->treeview = GTK_WIDGET (gtk_builder_get_object (builder, "treeview1"));
+    gui->treeview = GTK_WIDGET (gtk_builder_get_object (gui->builder, "treeview1"));
 
-    gui->router_name_label = GTK_WIDGET (gtk_builder_get_object (builder, "router_name_label"));
-    gui->router_name_hbox = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_name"));
+    gui->router_name_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "router_name_label"));
+    gui->router_name_hbox = GTK_WIDGET (gtk_builder_get_object (gui->builder, "hbox_name"));
 
-    gui->router_url_label = GTK_WIDGET (gtk_builder_get_object (builder, "router_url_label"));
-    gui->config_label = GTK_WIDGET (gtk_builder_get_object (builder, "label_config"));
-    gui->wan_status_label = GTK_WIDGET (gtk_builder_get_object (builder, "wan_status_label"));
-    gui->ip_label = GTK_WIDGET (gtk_builder_get_object (builder, "ip_label"));
-    gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (builder, "network_graph"));
+    gui->router_url_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "router_url_label"));
+    gui->config_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "label_config"));
+    gui->wan_status_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "wan_status_label"));
+    gui->ip_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "ip_label"));
+    gui->network_drawing_area = GTK_WIDGET (gtk_builder_get_object (gui->builder, "network_graph"));
 
     // Network data labels.
-    gui->net_graph_box = GTK_WIDGET (gtk_builder_get_object (builder, "net_graph_box"));
-    gui->down_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "down_rate_label"));
-    gui->up_rate_label = GTK_WIDGET (gtk_builder_get_object (builder, "up_rate_label"));
-    gui->total_received_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_received_value"));
-    gui->total_sent_label = GTK_WIDGET (gtk_builder_get_object (builder, "total_sent_value"));
+    gui->net_graph_box = GTK_WIDGET (gtk_builder_get_object (gui->builder, "net_graph_box"));
+    gui->down_rate_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "down_rate_label"));
+    gui->up_rate_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "up_rate_label"));
+    gui->total_received_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "total_received_value"));
+    gui->total_sent_label = GTK_WIDGET (gtk_builder_get_object (gui->builder, "total_sent_value"));
 
     // Color buttons.
-    gui->receiving_color = GTK_WIDGET (gtk_builder_get_object (builder, "receiving_color"));
-    gui->sending_color = GTK_WIDGET (gtk_builder_get_object (builder, "sending_color"));
+    gui->receiving_color = GTK_WIDGET (gtk_builder_get_object (gui->builder, "receiving_color"));
+    gui->sending_color = GTK_WIDGET (gtk_builder_get_object (gui->builder, "sending_color"));
 
     // Port management buttons.
-    gui->button_add = GTK_WIDGET (gtk_builder_get_object (builder, "button_add"));
-    gui->button_remove = GTK_WIDGET (gtk_builder_get_object (builder, "button_remove"));
+    gui->button_add = GTK_WIDGET (gtk_builder_get_object (gui->builder, "button_add"));
+    gui->button_remove = GTK_WIDGET (gtk_builder_get_object (gui->builder, "button_remove"));
 
-    gui->headerbar = GTK_WIDGET (gtk_builder_get_object (builder, "headerbar"));
-    gui->refresh_button = GTK_WIDGET (gtk_builder_get_object (builder, "refresh_button"));
-    gui->menu_button = GTK_MENU_BUTTON (gtk_builder_get_object (builder, "menu_button"));
+    gui->headerbar = GTK_WIDGET (gtk_builder_get_object (gui->builder, "headerbar"));
+    gui->refresh_button = GTK_WIDGET (gtk_builder_get_object (gui->builder, "refresh_button"));
+    gui->menu_button = GTK_MENU_BUTTON (gtk_builder_get_object (gui->builder, "menu_button"));
 
     // Sets the graph color default values
     gui_on_colors_change(gui);
@@ -924,8 +931,7 @@ urc_gui_init(GApplication *app)
     g_signal_connect(G_OBJECT(gui->main_window), "delete-event",
                      G_CALLBACK(gui_destroy), NULL);
 
-    gui_create_add_port_window(builder);
-    g_object_unref (G_OBJECT (builder));
+    gui_create_add_port_window(gui->builder);
 
     gtk_icon_theme_add_resource_path (gtk_icon_theme_get_default (),
                                     URC_RESOURCE_BASE"/icons");

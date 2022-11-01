@@ -2,16 +2,6 @@
 <!-- Generated with glade 3.38.2 -->
 <interface domain="upnp-router-control">
   <requires lib="gtk+" version="3.20"/>
-   <object class="GtkAdjustment" id="port_adj1">
-    <property name="upper">65535</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-  </object>
-  <object class="GtkAdjustment" id="port_adj2">
-    <property name="upper">65535</property>
-    <property name="step-increment">1</property>
-    <property name="page-increment">10</property>
-  </object>
   <object class="GtkImage" id="image_refresh">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
@@ -528,7 +518,16 @@
       </object>
     </child>
   </object>
-
+  <object class="GtkAdjustment" id="port_adj1">
+    <property name="upper">65535</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="port_adj2">
+    <property name="upper">65535</property>
+    <property name="step-increment">1</property>
+    <property name="page-increment">10</property>
+  </object>
   <object class="GtkDialog" id="add_port_window">
     <property name="can-focus">False</property>
     <property name="border-width">12</property>
@@ -675,15 +674,53 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText" id="add_proto">
+              <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="halign">start</property>
-                <property name="active">0</property>
-                <items>
-                  <item id="TCP" translatable="yes">TCP</item>
-                  <item id="UTP" translatable="yes">UTP</item>
-                </items>
+                <property name="can-focus">False</property>
+                <property name="baseline-position">top</property>
+                <child>
+                  <object class="GtkRadioButton" id="add_proto_tcp">
+                    <property name="label" translatable="yes">TCP</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="active">True</property>
+                    <property name="draw-indicator">False</property>
+                    <property name="group">add_proto_udp</property>
+                    <style>
+                      <class name="text-button"/>
+                      <class name="radio"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkRadioButton" id="add_proto_udp">
+                    <property name="label" translatable="yes">UDP</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
+                    <property name="draw-indicator">False</property>
+                    <property name="group">add_proto_tcp</property>
+                    <style>
+                      <class name="text-button"/>
+                      <class name="radio"/>
+                    </style>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <style>
+                  <class name="linked"/>
+                  <class name="horizontal"/>
+                </style>
               </object>
               <packing>
                 <property name="left-attach">1</property>
