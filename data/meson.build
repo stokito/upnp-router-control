@@ -17,7 +17,6 @@ install_man('upnp-router-control.1')
 
 # Appdata files
 appdata = i18n.merge_file(
-  'appdata',
   input: '@0@.appdata.xml.in'.format(application_id),
   output: '@0@.appdata.xml'.format(application_id),
   po_dir: po_dir,
