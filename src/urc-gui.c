@@ -746,8 +746,6 @@ gui_disable()
     gchar *str;
     GAction *action;
 
-    g_print ("gui_disable()\n");
-
     gui_clear_ports_list_treeview();
 
     gtk_label_set_text (GTK_LABEL(gui->router_name_label), _("not available"));
